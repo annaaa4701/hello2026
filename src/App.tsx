@@ -1,175 +1,242 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
-import { CursorVariant } from './types';
-import { STAGES } from './constants/stages';
+import { CursorVariant, MessageData } from './types';
+import { MESSAGES, PO_BOXES } from './constants/messages';
 import { audioCtx, bgmPlayer, playSound } from './utils/audio';
+
 import { CustomCursor } from './components/CustomCursor';
-import { RacingIntroCanvas } from './components/RacingIntroCanvas';
+import { WinterForestCanvas } from './components/WinterForestCanvas'; 
 import { SnowCanvas } from './components/SnowCanvas';
 import { GlitchText } from './components/GlitchText';
 import { PixelDoor } from './components/PixelDoor';
 import { StartScreen } from './components/StartScreen';
-import { Modal } from './components/Modal';
+import { LoginModal } from './components/PostOffice/LoginModal';
+import { PostOfficeModal } from './components/PostOffice/PostOfficeModal';
+import { PublicLetterModal } from './components/PostOffice/PublicLetterModal';
+
 import './styles/global.css';
 
-/**
- * HEART-BIT: 80s Retro Style Interactive Winter Message Board
- * 
- * 겨울 테마의 인터랙티브 메시지 보드입니다.
- * 레트로 8비트 스타일로 12개의 스테이지로 구성되어 있습니다.
- */
-
 export default function App() {
-  // 상태 관리
-  const [started, setStarted] = useState(false);
-  const [selectedStage, setSelectedStage] = useState<number | null>(null);
-  const [isPasswordOpen, setIsPasswordOpen] = useState(false);
-  const [passwordInput, setPasswordInput] = useState('');
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [glitchMode, setGlitchMode] = useState(false);
+  // ======================
+  // 🎵 Audio & UI State
+  // ======================
   const [isMuted, setIsMuted] = useState(false);
-  const [shake, setShake] = useState(false);
-  const [cursorVariant, setCursorVariant] = useState<CursorVariant>('default');
+  const [cursorVariant, setCursorVariant] = useState<CursorVariant>('snowflake');
 
-  // 시작 핸들러
+  // ======================
+  // 🌟 UX Flow State
+  // ======================
+  const [started, setStarted] = useState(false);                      // Phase 1: StartScreen
+  const [showPublicLetter, setShowPublicLetter] = useState(false);   // Phase 2: PublicLetterModal (초대장)
+  const [showLogin, setShowLogin] = useState(false);                  // Phase 4: LoginModal (본인 확인)
+  const [loginError, setLoginError] = useState(false);
+  const [targetDoorId, setTargetDoorId] = useState<number | null>(null);   // Phase 5: 흔들릴 문 ID
+  const [openedDoorId, setOpenedDoorId] = useState<number | null>(null);   // Phase 5: 열린 문 ID
+  const [foundMessage, setFoundMessage] = useState<MessageData | null>(null); // Phase 6: 읽을 메시지
+  const [showLetter, setShowLetter] = useState(false);                // Phase 6: PostOfficeModal
+
+  // ======================
+  // 📬 Phase 1: 진입 (StartScreen → PublicLetterModal)
+  // ======================
   const handleStart = () => {
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     bgmPlayer.start();
     playSound('click');
     setStarted(true);
+    
+    // 부드러운 전환 후 초대장 표시
+    setTimeout(() => {
+      setShowPublicLetter(true);
+      setCursorVariant('pointer'); // 편지 위에서는 pointer가 더 인터랙티브함
+    }, 1000);
   };
 
-  // 음소거 토글
-  const handleMute = () => {
-    setIsMuted(!isMuted);
-    if (!isMuted) bgmPlayer.stop();
-    else bgmPlayer.start();
-  };
-
-  // 스테이지 클릭
-  const handleStageClick = (id: number) => {
+  // ======================
+  // 📬 Phase 2 → Phase 3: 초대장 읽기 완료 → 우체국 로비 입장
+  // ======================
+  const handleEnterPostOffice = () => {
     playSound('click');
-    setSelectedStage(id);
-    setPasswordInput('');
-    setIsUnlocked(false);
-    setIsPasswordOpen(true);
+    setShowPublicLetter(false);
+    setCursorVariant('snowflake'); // 로비로 돌아오면 다시 눈꽃 커서
   };
 
-  // 모달 닫기
-  const handleClose = () => {
-    playSound('click');
-    setIsPasswordOpen(false);
-    setSelectedStage(null);
-  };
-
-  // 비밀번호 확인
-  const checkPassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (passwordInput === '1234') {
+  // ======================
+  // 📬 Phase 4 → Phase 5: 로그인 성공 → 문 흔들림 → 열림
+  // ======================
+  const handleLogin = (name: string, pw: string) => {
+    const msg = MESSAGES.find(m => m.receiver === name && m.password === pw);
+    
+    if (msg) {
+      setLoginError(false);
+      setShowLogin(false);
+      setFoundMessage(msg);
+      setTargetDoorId(msg.doorId); // 문 흔들림 시작!
       playSound('success');
-      setIsUnlocked(true);
+
+      // [연출] 1초 후 문이 "끼이익-" 소리와 함께 열립니다
+      setTimeout(() => {
+        playSound('open');
+        setOpenedDoorId(msg.doorId);
+        
+        // [연출] 0.8초 후 편지가 줌인되며 화면을 채웁니다
+        setTimeout(() => {
+          setShowLetter(true);
+          setCursorVariant('default');
+        }, 800);
+      }, 1000);
+
     } else {
+      // 실패 시 모달 흔들림
       playSound('error');
-      triggerGlitch();
+      setLoginError(true);
     }
   };
 
-  // 글리치 효과 트리거
-  const triggerGlitch = () => {
-    setGlitchMode(true);
-    setShake(true);
+  // ======================
+  // 📬 Phase 6: 답장 전송 → Phase 7: 퇴장 (로비 복귀)
+  // ======================
+  const handleReply = (content: string) => {
+    console.log("📮 답장 전송:", content);
+    playSound('success');
+    // 편지가 날아가는 애니메이션 후 모든 상태 초기화
     setTimeout(() => {
-      setGlitchMode(false);
-      setShake(false);
-    }, 500);
+      handleCloseAll();
+    }, 2000);
   };
 
-  const currentStage = STAGES.find(s => s.id === selectedStage);
+  const handleCloseAll = () => {
+    setShowLetter(false);
+    setOpenedDoorId(null);
+    setTargetDoorId(null);
+    setFoundMessage(null);
+    setShowLogin(false);
+    setCursorVariant('snowflake'); // 다시 로비 - 눈꽃 커서
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    if (!isMuted) bgmPlayer.stop(); else bgmPlayer.start();
+  };
 
   return (
-    <div className={`min-h-screen bg-[#050510] text-white font-mono overflow-hidden select-none cursor-none ${glitchMode ? 'animate-glitch-screen' : ''}`}>
+    <div className="min-h-screen bg-[#050510] text-white font-mono overflow-hidden select-none cursor-none">
       
-      {/* 커스텀 커서 */}
+      {/* ❄️ 눈꽃 커서 적용 */}
       <CustomCursor variant={cursorVariant} />
 
-      {/* 배경 레이어 */}
-      {started ? <SnowCanvas /> : <RacingIntroCanvas />}
-      
-      <div className="fixed inset-0 scanlines pointer-events-none z-40 opacity-30"></div>
-      <div className="fixed inset-0 pointer-events-none z-50 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)]"></div>
+      {/* 배경 */}
+      <div className="fixed inset-0 z-0">
+         {started ? <SnowCanvas /> : <WinterForestCanvas />}
+         <div className="absolute inset-0 scanlines opacity-20 pointer-events-none"></div>
+      </div>
 
-      {/* 시작 화면 */}
       {!started && (
         <StartScreen 
-          onStart={handleStart}
-          onMouseEnter={() => setCursorVariant('coin')}
-          onMouseLeave={() => setCursorVariant('default')}
+          onStart={handleStart} 
+          onMouseEnter={() => setCursorVariant('pointer')}
+          onMouseLeave={() => setCursorVariant('snowflake')}
         />
       )}
 
-      {/* 메인 콘텐츠 */}
-      <div className={`relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col ${started ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000`}>
+      {/* 메인 우체국 화면 */}
+      <div className={`relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col transition-all duration-1000 ${started ? 'opacity-100' : 'opacity-0'} ${showPublicLetter ? 'blur-sm scale-95' : ''}`}>
         
         {/* 헤더 */}
-        <header className="flex justify-between items-center mb-12 border-b-4 border-white/20 pb-4">
-          <div className="text-left">
-            <h2 className="text-[#FF00FF] text-sm md:text-base mb-2 animate-pulse">1P START</h2>
-            <GlitchText text="HEART-BIT" className="text-2xl md:text-4xl text-white drop-shadow-[2px_2px_0px_#FF00FF]" />
+        <header className="flex justify-between items-center mb-4 border-b-4 border-[#8B4513] pb-4 bg-black/40 backdrop-blur-sm p-4 rounded-lg">
+          <div 
+            onClick={() => setShowPublicLetter(true)}
+            className="cursor-none group"
+          >
+            <p className="text-[#FFD700] text-xs mb-1 animate-pulse">Goodbye 2025</p>
+            <GlitchText text="You have a letter!" className="text-xl md:text-3xl text-[#E8E6D1]" />
+            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors block mt-1 opacity-0 group-hover:opacity-100">
+              ( Click to read letter for all again )
+            </span>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right hidden md:block">
-              <p className="text-[#00FF00] text-xs">SCORE: <span className="text-white">999999</span></p>
-              <p className="text-[#00FF00] text-xs">TIME: <span className="text-white">∞</span></p>
-            </div>
-            <button 
-              onClick={handleMute}
-              onMouseEnter={() => setCursorVariant('pointer')}
-              onMouseLeave={() => setCursorVariant('default')}
-              className="p-2 border-2 border-white hover:bg-white/20 transition-colors"
-            >
-              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
-          </div>
+          <button 
+            onClick={toggleMute} 
+            className="p-2 hover:bg-white/10 rounded-full border border-white/20"
+            onMouseEnter={() => setCursorVariant('pointer')}
+            onMouseLeave={() => setCursorVariant('snowflake')}
+          >
+            {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          </button>
         </header>
 
-        {/* 스테이지 그리드 */}
-        <div className="flex-1 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8 pb-12 px-4">
-          {STAGES.map((stage) => (
+        {/* FIND MY LETTER 버튼 */}
+        <div className="mb-4 text-center">
+          <button 
+            onClick={() => setShowLogin(true)}
+            onMouseEnter={() => setCursorVariant('pointer')}
+            onMouseLeave={() => setCursorVariant('snowflake')}
+            disabled={showPublicLetter}
+            className="px-8 py-3 bg-[#8B4513] border-4 border-[#E8E6D1] text-[#E8E6D1] font-bold text-base hover:bg-[#a0522d] transition-transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            FIND MY LETTER
+          </button>
+        </div>
+
+        {/* 사서함 그리드 */}
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 p-4 bg-[#1a0f0a] border-8 border-[#3e2723] rounded-lg shadow-2xl relative">
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#3e2723] rounded-t-lg flex justify-center items-center border-t border-l border-r border-[#5d4037]">
+            <div className="w-2 h-2 rounded-full bg-[#FFD700] mx-1"></div>
+            <div className="w-2 h-2 rounded-full bg-[#FFD700] mx-1"></div>
+          </div>
+
+          {PO_BOXES.map((box) => (
             <PixelDoor 
-              key={stage.id} 
-              stage={stage} 
-              onClick={() => handleStageClick(stage.id)}
-              onMouseEnter={() => {
-                playSound('hover');
-                setCursorVariant('pointer');
+              key={box.id} 
+              id={box.id} 
+              isTarget={targetDoorId === box.id}
+              isOpen={openedDoorId === box.id}
+              onClick={() => {
+                if(!openedDoorId && !showPublicLetter) {
+                    setShowLogin(true);
+                    setCursorVariant('default');
+                }
               }}
-              onMouseLeave={() => setCursorVariant('default')}
+              onMouseEnter={() => {
+                 if(!openedDoorId && !showPublicLetter) {
+                     playSound('hover');
+                     setCursorVariant('key');
+                 }
+              }}
+              onMouseLeave={() => setCursorVariant('snowflake')}
             />
           ))}
         </div>
 
-        {/* 푸터 */}
-        <footer className="text-center text-xs text-gray-500 mt-auto crt-flicker pt-12">
-          <p>© 2024 HEART-BIT SYSTEM. ALL RIGHTS RESERVED.</p>
-          <p className="mt-2 text-[#FFFF00]">INSERT PASSWORD TO UNLOCK MEMORIES</p>
+        <footer className="mt-4 text-center py-4 text-gray-500 text-xs">
+          <p>© 2025 ANNAAA4701. ALL MEMORIES RESERVED.</p>
         </footer>
       </div>
 
-      {/* 모달 */}
-      {isPasswordOpen && currentStage && (
-        <Modal 
-          stage={currentStage}
-          isUnlocked={isUnlocked}
-          passwordInput={passwordInput}
-          glitchMode={glitchMode}
-          shake={shake}
-          onClose={handleClose}
-          onPasswordChange={setPasswordInput}
-          onSubmit={checkPassword}
+      {showPublicLetter && (
+        <PublicLetterModal
+          onClose={handleEnterPostOffice}
           onMouseEnter={() => setCursorVariant('pointer')}
           onMouseLeave={() => setCursorVariant('default')}
+        />
+      )}
+
+      {showLogin && (
+        <LoginModal 
+          onClose={() => { setShowLogin(false); setLoginError(false); }}
+          onSubmit={handleLogin}
+          error={loginError}
+          onMouseEnter={() => setCursorVariant('pointer')}
+          onMouseLeave={() => setCursorVariant('default')}
+        />
+      )}
+
+      {showLetter && foundMessage && (
+        <PostOfficeModal 
+          messageData={foundMessage}
+          onClose={handleCloseAll}
+          onReply={handleReply}
+          onMouseEnter={() => {}}
+          onMouseLeave={() => {}}
+          setCursor={setCursorVariant}
         />
       )}
     </div>

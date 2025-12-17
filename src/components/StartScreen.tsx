@@ -12,53 +12,62 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   onMouseLeave 
 }) => {
   return (
-    <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
-      {/* 메인 로고 */}
-      <div className="relative mb-12 transform hover:scale-105 transition-transform duration-300">
-        <h1 
-          className="text-6xl md:text-8xl text-center font-bold tracking-tighter chrome-text snow-cap animate-rainbow"
-          data-text="HEART-BIT"
-        >
-          HEART-BIT
-        </h1>
-        <div className="absolute -bottom-8 w-full text-center">
-          <span className="text-[#FF00FF] text-lg md:text-xl tracking-[0.2em] font-bold drop-shadow-[0_0_10px_#FF00FF] animate-pulse">
-            8-BIT WINTER LOVE
-          </span>
-        </div>
-        
-        {/* 반짝이는 별 장식 */}
-        <div className="absolute -top-4 -right-8 text-yellow-300 animate-sparkle text-4xl">✦</div>
-        <div className="absolute top-12 -left-12 text-cyan-300 animate-sparkle text-2xl" style={{animationDelay: '0.5s'}}>✦</div>
-        <div className="absolute -bottom-4 right-0 text-pink-300 animate-sparkle text-3xl" style={{animationDelay: '1s'}}>✦</div>
-      </div>
-
-      {/* START 버튼 */}
-      <button 
-        onClick={onStart}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        className="group relative px-10 py-5 bg-black border-4 text-2xl font-bold animate-coin transition-all transform hover:scale-110"
-      >
-        <span className="drop-shadow-md">INSERT COIN</span>
-        
-        {/* 버튼 빛나는 효과 */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30 group-hover:animate-pulse"></div>
-      </button>
+    <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/60 backdrop-blur-[3px] animate-fade-in">
       
-      {/* 하단 정보 */}
-      <div className="mt-8 flex flex-col items-center gap-2">
-        <p className="text-white/80 text-xs bg-black/50 px-3 py-1 rounded border border-white/20 animate-pulse">
-          SOUND CARD: <span className="text-[#00FF00]">DETECTED</span>
-        </p>
-        <p className="text-white/60 text-[10px]">© 198X WINTER SOFT / ALL MEMORIES RESERVED</p>
+      {/* 🌙 메인 타이틀 영역 */}
+      <div className="relative text-center mb-16 group cursor-none">
+        
+        {/* 장식용 별 */}
+        <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-yellow-200 animate-pulse text-4xl">✨</div>
+
+        {/* 메인 텍스트 */}
+        <h1 className="text-4xl md:text-7xl font-['Press_Start_2P'] text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] mb-4 tracking-tighter">
+          <span className="text-[#A5F2F3] inline-block hover:-translate-y-2 transition-transform duration-300">W</span>
+          <span className="text-white inline-block hover:-translate-y-2 transition-transform duration-300 delay-75">I</span>
+          <span className="text-white inline-block hover:-translate-y-2 transition-transform duration-300 delay-100">N</span>
+          <span className="text-white inline-block hover:-translate-y-2 transition-transform duration-300 delay-150">T</span>
+          <span className="text-white inline-block hover:-translate-y-2 transition-transform duration-300 delay-200">E</span>
+          <span className="text-[#A5F2F3] inline-block hover:-translate-y-2 transition-transform duration-300 delay-300">R</span>
+          <br />
+          <span className="block md:inline mt-4 md:mt-0 text-3xl md:text-6xl text-[#E8E6D1]">POST OFFICE</span>
+        </h1>
+
+        {/* 서브 텍스트 (감성) */}
+        <div className="mt-8 space-y-2">
+          <p className="text-lg md:text-2xl text-white/80 font-['Gowun_Batang'] font-bold tracking-widest border-t border-b border-white/20 py-2 inline-block">
+            You have reached end of 2025
+          </p>
+          <p className="text-xs text-white/40 font-mono mt-2 tracking-[0.3em]">
+            By Nayeon
+          </p>
+        </div>
       </div>
 
-      {/* 장식용 픽셀 프레임 */}
-      <div className="absolute top-8 left-8 w-16 h-16 border-4 border-cyan-400 animate-pulse"></div>
-      <div className="absolute top-8 right-8 w-16 h-16 border-4 border-pink-400 animate-pulse" style={{animationDelay: '0.5s'}}></div>
-      <div className="absolute bottom-8 left-8 w-16 h-16 border-4 border-yellow-400 animate-pulse" style={{animationDelay: '1s'}}></div>
-      <div className="absolute bottom-8 right-8 w-16 h-16 border-4 border-green-400 animate-pulse" style={{animationDelay: '1.5s'}}></div>
+      {/* 🚪 입장 버튼 */}
+      <div className="relative group">
+        <button 
+          onClick={onStart}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          className="relative px-12 py-4 bg-transparent border-2 border-[#E8E6D1] text-[#E8E6D1] font-['Press_Start_2P'] text-sm md:text-lg tracking-widest hover:bg-[#E8E6D1] hover:text-[#050510] transition-all duration-300 shadow-[0_0_20px_rgba(232,230,209,0.2)] hover:shadow-[0_0_40px_rgba(232,230,209,0.6)] hover:scale-105 active:scale-95"
+        >
+          ENTER
+        </button>
+        
+        {/* 버튼 주변 장식 (회전하는 픽셀 눈송이) */}
+        <div className="absolute -left-10 top-1/2 -translate-y-1/2 text-2xl text-[#A5F2F3] opacity-0 group-hover:opacity-100 transition-all duration-300 animate-spin-slow group-hover:scale-125">❄</div>
+        <div className="absolute -right-10 top-1/2 -translate-y-1/2 text-2xl text-[#A5F2F3] opacity-0 group-hover:opacity-100 transition-all duration-300 animate-spin-slow group-hover:scale-125" style={{ animationDirection: 'reverse' }}>❄</div>
+        
+        {/* 상단/하단 눈송이 */}
+        <div className="absolute left-1/2 -translate-x-1/2 -top-8 text-xl text-white/60 opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:-translate-y-2">✨</div>
+        <div className="absolute left-1/2 -translate-x-1/2 -bottom-8 text-xl text-white/60 opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:translate-y-2">✨</div>
+      </div>
+
+      {/* 하단 푸터 */}
+      <div className="absolute bottom-8 text-center text-white/20 text-[10px] font-mono">
+        <p className="animate-pulse">PRESS START TO CONNECT</p>
+      </div>
+
     </div>
   );
 };

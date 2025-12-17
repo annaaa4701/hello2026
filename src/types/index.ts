@@ -1,11 +1,18 @@
-// 타입 정의
-export interface Stage {
-  id: number;
-  keyword: string;
-  color: string;
-  message: string;
+// 타입 정의 업데이트
+export interface MessageData {
+  id: string; 
+  receiver: string; 
+  password: string; 
+  content: string; 
+  from: string; 
+  doorId: number; 
+  themeColor?: string; 
 }
 
+// 커서 종류 업데이트 (snowflake 추가)
+export type CursorVariant = 'default' | 'pointer' | 'key' | 'quill' | 'stamp' | 'snowflake';
+
+// ... (기존 타입 유지)
 export interface House {
   x: number;
   y: number;
@@ -26,16 +33,4 @@ export interface Particle {
   y: number;
   size: number;
   speed: number;
-}
-
-export type CursorVariant = 'default' | 'pointer' | 'coin';
-export type SoundType = 'hover' | 'click' | 'success' | 'error';
-
-// JSX 타입 정의
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elemName: string]: any;
-    }
-  }
 }
