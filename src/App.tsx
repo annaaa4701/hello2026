@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { CursorVariant, MessageData } from './types';
-import { MESSAGES, PO_BOXES } from './constants/messages';
+import { PO_BOXES } from './constants/messages';
 import { audioCtx, bgmPlayer, playSound } from './utils/audio';
+import { findMessage, addReply, markAsRead } from './utils/firebaseService';
 
 import { CustomCursor } from './components/CustomCursor';
-import { WinterForestCanvas } from './components/WinterForestCanvas'; 
-import { SnowCanvas } from './components/SnowCanvas';
+import { NoiseCanvas } from './components/NoiseCanvas';
 import { GlitchText } from './components/GlitchText';
 import { PixelDoor } from './components/PixelDoor';
 import { StartScreen } from './components/StartScreen';
@@ -21,22 +21,27 @@ export default function App() {
   // 🎵 Audio & UI State
   // ======================
   const [isMuted, setIsMuted] = useState(false);
-  const [cursorVariant, setCursorVariant] = useState<CursorVariant>('snowflake');
+  const [cursorVariant, setCursorVariant] = useState<CursorVariant>('default');
 
   // ======================
   // 🌟 UX Flow State
   // ======================
-  const [started, setStarted] = useState(false);                      // Phase 1: StartScreen
-  const [showPublicLetter, setShowPublicLetter] = useState(false);   // Phase 2: PublicLetterModal (초대장)
-  const [showLogin, setShowLogin] = useState(false);                  // Phase 4: LoginModal (본인 확인)
+  const [started, setStarted] = useState(false);                      
+  const [showPublicLetter, setShowPublicLetter] = useState(false);   
+  const [showLogin, setShowLogin] = useState(false);                  
   const [loginError, setLoginError] = useState(false);
-  const [targetDoorId, setTargetDoorId] = useState<number | null>(null);   // Phase 5: 흔들릴 문 ID
-  const [openedDoorId, setOpenedDoorId] = useState<number | null>(null);   // Phase 5: 열린 문 ID
-  const [foundMessage, setFoundMessage] = useState<MessageData | null>(null); // Phase 6: 읽을 메시지
-  const [showLetter, setShowLetter] = useState(false);                // Phase 6: PostOfficeModal
+  const [targetDoorId, setTargetDoorId] = useState<number | null>(null);   
+  const [openedDoorId, setOpenedDoorId] = useState<number | null>(null);   
+  const [foundMessage, setFoundMessage] = useState<MessageData | null>(null); 
+  const [showLetter, setShowLetter] = useState(false);
 
   // ======================
-  // 📬 Phase 1: 진입 (StartScreen → PublicLetterModal)
+  // 🔥 Firebase State
+  // ======================
+  const [isLoadingMessage, setIsLoadingMessage] = useState(false);
+
+  // ======================
+  // 📬 Phase 1: 진입 
   // ======================
   const handleStart = () => {
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
@@ -44,64 +49,88 @@ export default function App() {
     playSound('click');
     setStarted(true);
     
-    // 부드러운 전환 후 초대장 표시
+    // 부드러운 전환 후 앨범 속지(초대장) 표시
     setTimeout(() => {
       setShowPublicLetter(true);
-      setCursorVariant('pointer'); // 편지 위에서는 pointer가 더 인터랙티브함
+      setCursorVariant('pointer');
     }, 1000);
   };
 
   // ======================
-  // 📬 Phase 2 → Phase 3: 초대장 읽기 완료 → 우체국 로비 입장
+  // Phase 2 -> 3: 앨범 속지 닫고 트랙리스트(로비) 입장
   // ======================
   const handleEnterPostOffice = () => {
     playSound('click');
     setShowPublicLetter(false);
-    setCursorVariant('snowflake'); // 로비로 돌아오면 다시 눈꽃 커서
+    setCursorVariant('default'); 
   };
 
   // ======================
-  // 📬 Phase 4 → Phase 5: 로그인 성공 → 문 흔들림 → 열림
+  // 📬 Phase 4 -> 5: 로그인 (Firebase 연동)
   // ======================
-  const handleLogin = (name: string, pw: string) => {
-    const msg = MESSAGES.find(m => m.receiver === name && m.password === pw);
+  const handleLogin = async (name: string, pw: string) => {
+    setIsLoadingMessage(true);
     
-    if (msg) {
-      setLoginError(false);
-      setShowLogin(false);
-      setFoundMessage(msg);
-      setTargetDoorId(msg.doorId); // 문 흔들림 시작!
-      playSound('success');
+    try {
+      // Firebase에서 메시지 찾기
+      const msg = await findMessage(name, pw);
+      
+      if (msg) {
+        setLoginError(false);
+        setShowLogin(false);
+        setFoundMessage(msg);
+        setTargetDoorId(msg.doorId);
+        playSound('success');
 
-      // [연출] 1초 후 문이 "끼이익-" 소리와 함께 열립니다
-      setTimeout(() => {
-        playSound('open');
-        setOpenedDoorId(msg.doorId);
-        
-        // [연출] 0.8초 후 편지가 줌인되며 화면을 채웁니다
+        // 읽음 상태 업데이트
+        if (msg.firebaseId && !msg.isRead) {
+          await markAsRead(msg.firebaseId);
+        }
+
         setTimeout(() => {
-          setShowLetter(true);
-          setCursorVariant('default');
-        }, 800);
-      }, 1000);
+          playSound('open');
+          setOpenedDoorId(msg.doorId);
+          
+          setTimeout(() => {
+            setShowLetter(true);
+            setCursorVariant('default');
+          }, 800);
+        }, 1000);
 
-    } else {
-      // 실패 시 모달 흔들림
+      } else {
+        playSound('error');
+        setLoginError(true);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
       playSound('error');
       setLoginError(true);
+    } finally {
+      setIsLoadingMessage(false);
     }
   };
 
   // ======================
-  // 📬 Phase 6: 답장 전송 → Phase 7: 퇴장 (로비 복귀)
+  // 📮 답장 전송 (Firebase 연동)
   // ======================
-  const handleReply = (content: string) => {
-    console.log("📮 답장 전송:", content);
-    playSound('success');
-    // 편지가 날아가는 애니메이션 후 모든 상태 초기화
-    setTimeout(() => {
-      handleCloseAll();
-    }, 2000);
+  const handleReply = async (content: string) => {
+    if (!foundMessage?.firebaseId) {
+      console.error('No message ID found');
+      return;
+    }
+
+    try {
+      // Firebase에 답장 저장
+      await addReply(foundMessage.firebaseId, content);
+      playSound('success');
+      
+      setTimeout(() => {
+        handleCloseAll();
+      }, 2000);
+    } catch (error) {
+      console.error('Reply error:', error);
+      alert('답장 전송에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleCloseAll = () => {
@@ -110,7 +139,7 @@ export default function App() {
     setTargetDoorId(null);
     setFoundMessage(null);
     setShowLogin(false);
-    setCursorVariant('snowflake'); // 다시 로비 - 눈꽃 커서
+    setCursorVariant('default');
   };
 
   const toggleMute = () => {
@@ -119,69 +148,68 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050510] text-white font-mono overflow-hidden select-none cursor-none">
+    <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-sans overflow-hidden select-none cursor-none">
       
-      {/* ❄️ 눈꽃 커서 적용 */}
+      {/* 🖱️ 커서 (추후 CD 아이콘 등으로 업데이트 가능) */}
       <CustomCursor variant={cursorVariant} />
 
-      {/* 배경 */}
-      <div className="fixed inset-0 z-0">
-         {started ? <SnowCanvas /> : <WinterForestCanvas />}
-         <div className="absolute inset-0 scanlines opacity-20 pointer-events-none"></div>
-      </div>
+      {/* 📺 노이즈 배경 (전역) */}
+      <NoiseCanvas />
+      
+      {/* 📺 스캔라인 오버레이 (CRT 느낌) */}
+      <div className="fixed inset-0 pointer-events-none z-[5] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_2px,3px_100%] bg-repeat opacity-20"></div>
 
       {!started && (
         <StartScreen 
           onStart={handleStart} 
           onMouseEnter={() => setCursorVariant('pointer')}
-          onMouseLeave={() => setCursorVariant('snowflake')}
+          onMouseLeave={() => setCursorVariant('default')}
         />
       )}
 
-      {/* 메인 우체국 화면 */}
+      {/* 💿 메인 트랙리스트 (구 우체국 로비) */}
       <div className={`relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col transition-all duration-1000 ${started ? 'opacity-100' : 'opacity-0'} ${showPublicLetter ? 'blur-sm scale-95' : ''}`}>
         
         {/* 헤더 */}
-        <header className="flex justify-between items-center mb-4 border-b-4 border-[#8B4513] pb-4 bg-black/40 backdrop-blur-sm p-4 rounded-lg">
+        <header className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
           <div 
             onClick={() => setShowPublicLetter(true)}
             className="cursor-none group"
           >
-            <p className="text-[#FFD700] text-xs mb-1 animate-pulse">Goodbye 2025</p>
-            <GlitchText text="You have a letter!" className="text-xl md:text-3xl text-[#E8E6D1]" />
-            <span className="text-[10px] text-gray-400 group-hover:text-white transition-colors block mt-1 opacity-0 group-hover:opacity-100">
-              ( Click to read letter for all again )
+            <p className="text-[10px] font-mono text-gray-500 mb-1 tracking-widest">NOW PLAYING</p>
+            <GlitchText text="THE RESILIENCE MIX" className="text-xl md:text-3xl font-bold text-white font-serif italic" />
+            <span className="text-[10px] text-gray-500 group-hover:text-white transition-colors block mt-1 opacity-0 group-hover:opacity-100 font-mono">
+              ( View Liner Notes )
             </span>
           </div>
           <button 
             onClick={toggleMute} 
-            className="p-2 hover:bg-white/10 rounded-full border border-white/20"
+            className="p-3 hover:bg-white/10 rounded-full border border-white/10 transition-colors"
             onMouseEnter={() => setCursorVariant('pointer')}
-            onMouseLeave={() => setCursorVariant('snowflake')}
+            onMouseLeave={() => setCursorVariant('default')}
           >
-            {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+            {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
           </button>
         </header>
 
-        {/* FIND MY LETTER 버튼 */}
-        <div className="mb-4 text-center">
+        {/* FIND MY TRACK 버튼 */}
+        <div className="mb-8 text-center">
           <button 
             onClick={() => setShowLogin(true)}
             onMouseEnter={() => setCursorVariant('pointer')}
-            onMouseLeave={() => setCursorVariant('snowflake')}
+            onMouseLeave={() => setCursorVariant('default')}
             disabled={showPublicLetter}
-            className="px-8 py-3 bg-[#8B4513] border-4 border-[#E8E6D1] text-[#E8E6D1] font-bold text-base hover:bg-[#a0522d] transition-transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-10 py-3 bg-white text-black font-bold text-sm tracking-widest hover:bg-gray-300 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed font-mono shadow-[4px_4px_0_rgba(255,255,255,0.2)]"
           >
-            FIND MY LETTER
+            UNLOCK HIDDEN TRACK
           </button>
         </div>
 
-        {/* 사서함 그리드 */}
-        <div className="grid grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 p-4 bg-[#1a0f0a] border-8 border-[#3e2723] rounded-lg shadow-2xl relative">
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#3e2723] rounded-t-lg flex justify-center items-center border-t border-l border-r border-[#5d4037]">
-            <div className="w-2 h-2 rounded-full bg-[#FFD700] mx-1"></div>
-            <div className="w-2 h-2 rounded-full bg-[#FFD700] mx-1"></div>
-          </div>
+        {/* 트랙리스트 그리드 (구 사서함) */}
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-4 p-6 bg-[#111] border border-white/10 relative shadow-2xl">
+          {/* CD 케이스 힌지 장식 */}
+          <div className="absolute left-0 top-0 bottom-0 w-3 bg-[#1a1a1a] border-r border-white/5 z-20"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/5 z-20"></div>
 
           {PO_BOXES.map((box) => (
             <PixelDoor 
@@ -201,13 +229,13 @@ export default function App() {
                      setCursorVariant('key');
                  }
               }}
-              onMouseLeave={() => setCursorVariant('snowflake')}
+              onMouseLeave={() => setCursorVariant('default')}
             />
           ))}
         </div>
 
-        <footer className="mt-4 text-center py-4 text-gray-500 text-xs">
-          <p>© 2025 ANNAAA4701. ALL MEMORIES RESERVED.</p>
+        <footer className="mt-12 text-center py-4 text-gray-600 text-[10px] font-mono uppercase tracking-widest">
+          <p>© 2026 Resilience Records. All Rights Reserved.</p>
         </footer>
       </div>
 
@@ -234,9 +262,8 @@ export default function App() {
           messageData={foundMessage}
           onClose={handleCloseAll}
           onReply={handleReply}
-          onMouseEnter={() => {}}
-          onMouseLeave={() => {}}
-          setCursor={setCursorVariant}
+          onMouseEnter={() => setCursorVariant('pointer')}
+          onMouseLeave={() => setCursorVariant('default')}
         />
       )}
     </div>

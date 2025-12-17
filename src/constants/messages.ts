@@ -1,6 +1,9 @@
 import { MessageData } from '../types';
 
 // 💌 모두에게 보내는 공통 편지 (초대장)
+// ⚠️ 주의: 이제 Firebase에서 불러옵니다. 
+// Firebase Console에서 publicMessage를 수정하거나
+// firebaseService.ts의 getPublicMessage()를 사용하세요.
 export const PUBLIC_MESSAGE = {
   from: "Nayeon",
   title: "To. My Dear Visitor",
@@ -21,7 +24,10 @@ export const PUBLIC_MESSAGE = {
   아끼는 마음이 닿길 바랍니다.
   `,
 };
-// 임시 데이터베이스 (나중에 실제 DB로 교체 가능)
+
+// ⚠️ 로컬 샘플 데이터 (이제 Firebase 사용 - 참고용으로만 유지)
+// 실제 메시지는 Firebase Realtime Database에 저장됩니다.
+// Firebase 초기 데이터 업로드는 firebaseService.ts의 uploadSampleData() 사용
 export const MESSAGES: MessageData[] = [
   {
     id: 'msg_001',

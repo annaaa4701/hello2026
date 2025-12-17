@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import { X, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Mic, Square, Play, Save, Disc, Activity } from 'lucide-react';
 import { MessageData } from '../../types';
-import { PostcardContainer, PostcardSide, LinedPaperArea } from '../assets/PostcardBase';
-import { PixelStamp } from '../assets/PixelStamp';
 
 interface PostOfficeModalProps {
   messageData: MessageData;
@@ -10,168 +8,260 @@ interface PostOfficeModalProps {
   onReply: (content: string) => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
-  setCursor: (variant: 'default' | 'quill' | 'stamp' | 'pointer') => void;
+  setCursor?: (variant: 'default' | 'quill' | 'stamp' | 'pointer') => void;
 }
 
 export const PostOfficeModal: React.FC<PostOfficeModalProps> = ({
   messageData,
   onClose,
-  onReply,
-  setCursor
+  onReply
 }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
   const [replyContent, setReplyContent] = useState('');
-  const [isStamped, setIsStamped] = useState(false);
-  const [isSent, setIsSent] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingProgress, setRecordingProgress] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
 
-  const handleStampClick = () => {
+  // 녹음(전송) 시뮬레이션
+  const handleRecord = () => {
     if (!replyContent.trim()) {
-      alert("답장 내용을 적어주세요!");
+      alert("Please enter a message before recording.");
       return;
     }
-    setIsStamped(true);
-    // 우표 찍는 효과음 재생 (상위에서 처리하거나 여기서)
-    setTimeout(() => {
-      setIsSent(true);
-      onReply(replyContent);
-    }, 1500); // 1.5초 후 전송 완료 처리
+    
+    setIsRecording(true);
+    let progress = 0;
+    
+    const interval = setInterval(() => {
+      progress += 2;
+      setRecordingProgress(progress);
+      
+      if (progress >= 100) {
+        clearInterval(interval);
+        setIsRecording(false);
+        setIsCompleted(true);
+        setTimeout(() => {
+          onReply(replyContent);
+        }, 1500);
+      }
+    }, 50);
   };
 
+  // 배경 스크롤 방지
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 overflow-hidden">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-hidden">
       
       {/* 닫기 버튼 */}
       <button 
         onClick={onClose}
-        onMouseEnter={() => setCursor('pointer')}
-        onMouseLeave={() => setCursor('default')}
-        className="absolute top-6 right-6 text-white/50 hover:text-white z-50 transition-colors"
+        className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-50"
       >
-        <X size={32} />
+        <X size={24} />
       </button>
 
-      {/* 엽서 컨테이너 */}
-      <div className={`relative w-full max-w-3xl transition-all duration-1000 ${isSent ? 'translate-y-[-150vh] rotate-12' : 'translate-y-0'}`}>
-        <PostcardContainer isFlipped={isFlipped}>
-          
-          {/* [앞면] 받은 편지 */}
-          <PostcardSide side="front" className="flex flex-col md:flex-row">
-            
-            {/* 좌측: 편지 내용 */}
-            <div className="flex-1 p-8 md:p-12 flex flex-col bg-white/50 relative">
-              <div className="mb-6 border-b-2 border-[#2C3E50]/10 pb-4">
-                <span className="text-xs text-[#2C3E50]/60 font-bold tracking-widest">FROM. {messageData.from}</span>
-                <h2 className="text-2xl md:text-3xl mt-2 font-bold text-[#2C3E50] korean-text">
-                  To. {messageData.receiver}
-                </h2>
-              </div>
-              
-              <div className="flex-1 overflow-y-auto custom-scrollbar">
-                <p className="text-base md:text-lg leading-loose text-[#2C3E50] korean-text whitespace-pre-line">
-                  {messageData.content}
-                </p>
-              </div>
-
-              {/* 하단 액션: 답장 쓰기 버튼 */}
-              <div className="mt-8 pt-4 border-t-2 border-[#2C3E50]/10 flex justify-end">
-                <button
-                  onClick={() => {
-                    setIsFlipped(true);
-                    setTimeout(() => setCursor('quill'), 600); // 뒤집힌 후 깃펜 커서로
-                  }}
-                  onMouseEnter={() => setCursor('pointer')}
-                  onMouseLeave={() => setCursor('default')}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#2C3E50] text-[#FFFDF0] font-bold text-xs hover:bg-[#34495e] transition-colors shadow-md hover:scale-105 transform"
-                >
-                  <RotateCcw size={14} className="animate-spin-slow" />
-                  REPLY (뒤집기)
-                </button>
-              </div>
-            </div>
-
-            {/* 우측: 장식용 (우체국 소인 등) */}
-            <div className="hidden md:flex w-24 bg-[#E8E6D1]/30 border-l border-dashed border-[#dcdcdc] flex-col items-center py-8">
-              <div className="w-16 h-16 rounded-full border-4 border-[#2C3E50]/20 flex items-center justify-center rotate-12 mb-4">
-                <span className="text-[10px] font-bold text-[#2C3E50]/40 text-center">DEC<br/>25</span>
-              </div>
-              <div className="flex-1 w-[1px] bg-[#2C3E50]/10 my-4"></div>
-              <div className="w-4 h-4 bg-[#2C3E50]/20 rounded-full"></div>
-            </div>
-          </PostcardSide>
-
-          {/* [뒷면] 답장 쓰기 */}
-          <PostcardSide side="back" className="flex flex-col md:flex-row">
-            
-            {/* 좌측: 메시지 작성 영역 (깃펜 커서) */}
-            <div 
-              className="flex-1 border-r-2 border-dashed border-[#E0D4B4] relative bg-[#FFFDF0]/50"
-              onMouseEnter={() => setCursor('quill')}
-              onMouseLeave={() => setCursor('stamp')}
-            >
-              <LinedPaperArea 
-                value={replyContent} 
-                onChange={(e) => setReplyContent(e.target.value)}
-              />
-            </div>
-
-            {/* 우측: 주소 및 우표 */}
-            <div className="w-full md:w-1/3 flex flex-col items-center p-6 md:p-8 gap-8 bg-[#FFFDF0]">
-              
-              {/* 우표 영역 - "쾅!" 찍는 연출 */}
-              <div 
-                className="relative w-[70px] h-[80px] border-2 border-dashed border-[#E0D4B4] bg-black/5 flex items-center justify-center cursor-none group hover:bg-black/10 transition-colors"
-                onClick={handleStampClick}
-                onMouseEnter={() => !isStamped && setCursor('stamp')}
-                onMouseLeave={() => setCursor('default')}
-              >
-                {isStamped ? (
-                  <PixelStamp variant="heart" className="animate-stamp-thud shadow-xl" />
-                ) : (
-                  <div className="text-center opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-200">
-                    <span className="text-[10px] font-bold text-[#2C3E50]">STAMP<br/>HERE</span>
-                    <div className="text-2xl mt-1">📮</div>
-                  </div>
-                )}
-              </div>
-
-              {/* 수신인 주소 (고정) */}
-              <div className="mt-auto w-full text-left font-mono">
-                <div className="border-b border-[#2C3E50] pb-1 mb-2">
-                  <span className="text-[10px] text-[#888] block mb-1">TO.</span>
-                  <span className="text-sm font-bold text-[#2C3E50]">{messageData.from} (DEV)</span>
+      {/* Main Container: Split View (CD Player + DAW) */}
+      <div className="flex flex-col md:flex-row items-center gap-8 w-full max-w-6xl h-[85vh]">
+        
+        {/* LEFT: Spinning CD Player (Visualizer) */}
+        <div className="hidden md:flex flex-col items-center justify-center w-1/3 h-full animate-fade-in-up">
+          <div className="relative w-[300px] h-[300px] group">
+             <div className="absolute inset-0 bg-[#A5F2F3] rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
+             
+             <div className="relative w-full h-full rounded-full border border-white/10 bg-black shadow-2xl animate-spin-slow flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full cd-hologram opacity-40 mix-blend-color-dodge"></div>
+                <div className="w-[120px] h-[120px] bg-[#111] rounded-full border border-white/20 flex flex-col items-center justify-center text-center p-2 z-10">
+                   <p className="text-[8px] font-mono text-gray-500 mb-1">NOW PLAYING</p>
+                   <p className="text-[10px] font-serif font-bold text-white leading-tight">{messageData.from}'s<br/>VOICE LETTER</p>
                 </div>
-                <p className="text-[10px] text-[#888] leading-tight">
-                  Github Page St.<br/>
-                  Winter Forest, 1225
-                </p>
-              </div>
-
-              {/* 다시 앞면으로 버튼 */}
-              {!isStamped && (
-                <button
-                  onClick={() => setIsFlipped(false)}
-                  onMouseEnter={() => setCursor('pointer')}
-                  onMouseLeave={() => setCursor('default')}
-                  className="text-[10px] text-gray-400 hover:text-gray-600 underline decoration-dashed"
-                >
-                  &lt; BACK TO READ
-                </button>
-              )}
+             </div>
+             
+             <div className="absolute -top-10 -right-10 w-32 h-32 border-l border-b border-white/20 rounded-bl-full pointer-events-none"></div>
+          </div>
+          
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
+               <Activity size={12} className="text-[#A5F2F3] animate-pulse" />
+               <span className="text-[10px] font-mono text-[#A5F2F3]">AUDIO VISUALIZER ACTIVE</span>
             </div>
-          </PostcardSide>
-
-        </PostcardContainer>
-      </div>
-
-      {/* 전송 완료 메시지 */}
-      {isSent && (
-        <div className="absolute inset-0 flex items-center justify-center z-50">
-          <div className="text-center animate-fade-in bg-black/80 p-8 border-2 border-[#E8E6D1]">
-            <h3 className="text-[#FFD700] text-xl mb-4 font-['Press_Start_2P']">SENT!</h3>
-            <p className="text-white text-sm">소중한 마음이 전송되었습니다.</p>
           </div>
         </div>
-      )}
+
+        {/* RIGHT: DAW Interface */}
+        <div className="flex-1 w-full h-full bg-[#111] border border-white/10 rounded-lg shadow-2xl flex flex-col overflow-hidden animate-slide-up relative">
+          
+          {/* DAW Header */}
+          <div className="h-10 bg-[#1a1a1a] border-b border-white/10 flex items-center justify-between px-4 select-none">
+            <div className="flex items-center gap-2">
+               <div className="flex gap-1.5">
+                 <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                 <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                 <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+               </div>
+               <span className="ml-3 text-xs font-mono text-gray-400">Resilience_Studio_v2.0.26 - {messageData.from}.proj</span>
+            </div>
+            <div className="flex items-center gap-4 text-[10px] font-mono text-gray-500">
+               <span>CPU: 12%</span>
+               <span>MEM: 2048MB</span>
+            </div>
+          </div>
+
+          {/* Toolbar */}
+          <div className="h-12 bg-[#0a0a0a] border-b border-white/5 flex items-center px-4 gap-4">
+             <div className="flex gap-1">
+                <button 
+                  className="p-2 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors"
+                  title="Stop"
+                  disabled={!isRecording}
+                >
+                  <Square size={14} fill="currentColor" />
+                </button>
+                <button 
+                  className="p-2 hover:bg-white/10 rounded text-[#A5F2F3] transition-colors"
+                  title="Play"
+                >
+                  <Play size={14} fill="currentColor" />
+                </button>
+                <button 
+                  onClick={handleRecord}
+                  disabled={isRecording || isCompleted || !replyContent.trim()}
+                  className={`p-2 rounded flex items-center gap-2 transition-all ${
+                    isRecording 
+                      ? 'bg-red-500/20 text-red-500 animate-pulse' 
+                      : !replyContent.trim() || isCompleted
+                      ? 'bg-gray-800 text-gray-600 cursor-not-allowed'
+                      : 'hover:bg-red-500/10 text-red-500 hover:text-red-400'
+                  }`}
+                  title="Record and Send"
+                >
+                  <div className={`w-3 h-3 rounded-full bg-current ${isRecording ? 'animate-ping' : ''}`}></div>
+                  <span className="text-xs font-mono font-bold">REC</span>
+                </button>
+             </div>
+             <div className="w-[1px] h-6 bg-white/10"></div>
+             <div className="text-xs font-mono text-[#A5F2F3]">
+                {isRecording ? `00:00:0${Math.floor(recordingProgress/20)}` : "00:00:00"}
+             </div>
+             
+             <div className="flex-1 h-8 bg-[#050505] rounded border border-white/5 relative overflow-hidden flex items-center px-2">
+                <div className="absolute inset-0 w-full h-full opacity-20" style={{ backgroundImage: 'linear-gradient(90deg, #333 1px, transparent 1px)', backgroundSize: '20px 100%' }}></div>
+                <div className="h-full w-[2px] bg-red-500 absolute left-[30%] opacity-50"></div>
+             </div>
+          </div>
+
+          {/* Main Workspace (Tracks) */}
+          <div className="flex-1 bg-[#050505] p-1 overflow-y-auto custom-scrollbar relative">
+             <div className="absolute inset-0 pointer-events-none opacity-10" style={{ backgroundImage: 'linear-gradient(#222 1px, transparent 1px)', backgroundSize: '100% 40px' }}></div>
+
+             {/* TRACK 1: Sender's Letter */}
+             <div className="mb-2 flex bg-[#111] border border-white/5 rounded h-[200px] md:h-[250px] relative group overflow-hidden">
+                <div className="w-32 bg-[#1a1a1a] border-r border-white/5 flex flex-col p-3 gap-2 shrink-0 z-10">
+                   <span className="text-[10px] font-mono text-gray-500">TRACK 01</span>
+                   <div className="flex items-center gap-2">
+                      <Mic size={14} className="text-[#A5F2F3]" />
+                      <span className="text-xs font-bold text-white truncate">{messageData.from}</span>
+                   </div>
+                   <div className="mt-auto flex gap-1">
+                      <div className="w-full h-1 bg-green-500/50 rounded-full"></div>
+                      <div className="w-full h-1 bg-green-500/50 rounded-full"></div>
+                   </div>
+                </div>
+                
+                <div className="flex-1 p-6 relative overflow-y-auto custom-scrollbar">
+                   <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none flex items-center">
+                      {Array.from({ length: 50 }).map((_, i) => (
+                        <div key={i} className="flex-1 mx-[1px] bg-white" style={{ height: `${Math.random() * 60 + 20}%` }}></div>
+                      ))}
+                   </div>
+                   <p className="relative z-10 font-serif text-sm md:text-base leading-loose text-white/90 whitespace-pre-line">
+                      "{messageData.content}"
+                   </p>
+                </div>
+             </div>
+
+             {/* TRACK 2: User's Reply */}
+             <div className="flex bg-[#111] border border-white/5 rounded min-h-[180px] relative group">
+                <div className="w-32 bg-[#1a1a1a] border-r border-white/5 flex flex-col p-3 gap-2 shrink-0">
+                   <span className="text-[10px] font-mono text-gray-500">TRACK 02</span>
+                   <div className="flex items-center gap-2">
+                      <Disc size={14} className="text-red-500" />
+                      <span className="text-xs font-bold text-white">Reply_Mix</span>
+                   </div>
+                   <div className={`mt-auto w-2 h-2 rounded-full ${isRecording ? 'bg-red-500 animate-ping' : 'bg-gray-700'}`}></div>
+                </div>
+
+                <div className="flex-1 relative flex items-center justify-center bg-[#080808]">
+                   
+                   {!isRecording && !isCompleted && (
+                      <textarea
+                        value={replyContent}
+                        onChange={(e) => setReplyContent(e.target.value)}
+                        placeholder="Type your message here to record and send..."
+                        className="w-full h-full bg-transparent p-6 text-white font-serif text-sm md:text-base resize-none outline-none placeholder:text-gray-700 focus:bg-white/5 transition-colors leading-relaxed z-10"
+                        spellCheck={false}
+                        autoFocus
+                      />
+                   )}
+
+                   {isRecording && (
+                      <div className="w-full h-full flex items-center px-4 gap-[2px]">
+                         {Array.from({ length: 60 }).map((_, i) => (
+                            <div 
+                              key={i} 
+                              className="flex-1 bg-gradient-to-t from-red-900 to-red-500 rounded-sm transition-all duration-75"
+                              style={{ 
+                                height: i < (recordingProgress / 100 * 60) ? `${Math.random() * 80 + 10}%` : '2px',
+                                opacity: i < (recordingProgress / 100 * 60) ? 1 : 0.2
+                              }}
+                            ></div>
+                         ))}
+                         <div 
+                           className="absolute top-0 bottom-0 w-[2px] bg-red-500 shadow-[0_0_10px_red] z-20 transition-all duration-75 ease-linear"
+                           style={{ left: `${recordingProgress}%` }}
+                         ></div>
+                      </div>
+                   )}
+
+                   {isCompleted && (
+                      <div className="w-full h-full flex items-center justify-center flex-col gap-4 animate-fade-in">
+                         <div className="w-full h-24 flex items-center px-4 gap-[2px] opacity-60">
+                            {Array.from({ length: 60 }).map((_, i) => (
+                               <div 
+                                 key={i} 
+                                 className="flex-1 bg-green-500 rounded-sm"
+                                 style={{ height: `${Math.random() * 80 + 10}%` }}
+                               ></div>
+                            ))}
+                         </div>
+                         <div className="flex items-center gap-2 text-green-500 font-mono text-xs">
+                            <Save size={14} />
+                            <span>TRACK SAVED SUCCESSFULLY</span>
+                         </div>
+                      </div>
+                   )}
+                   
+                   {!isRecording && !isCompleted && !replyContent && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                         <span className="font-mono text-4xl text-gray-500 font-bold uppercase tracking-widest">Empty Track</span>
+                      </div>
+                   )}
+                </div>
+             </div>
+
+          </div>
+
+          {/* Footer Status Bar */}
+          <div className="h-6 bg-[#0a0a0a] border-t border-white/5 flex items-center justify-between px-2 text-[9px] font-mono text-gray-500">
+             <span>SAMPLE RATE: 44100Hz</span>
+             <span>LATENCY: 0ms</span>
+          </div>
+
+        </div>
+
+      </div>
     </div>
   );
 };

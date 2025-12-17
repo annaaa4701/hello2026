@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Lock, Unlock, AlertTriangle } from 'lucide-react';
 
 interface LoginModalProps {
   onClose: () => void;
@@ -33,56 +33,68 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className={`w-full max-w-md bg-[#2C3E50] border-4 border-[#E8E6D1] p-1 relative shadow-[10px_10px_0px_rgba(0,0,0,0.5)] transition-transform duration-150 ${
-        error ? 'animate-shake-horizontal' : ''
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+      {/* Container */}
+      <div className={`w-full max-w-md bg-[#0a0a0a] border border-white/20 p-1 relative shadow-[0_0_40px_rgba(0,0,0,0.8)] transition-transform duration-150 ${
+        error ? 'animate-shake-horizontal border-red-500/50' : ''
       }`}>
-        {/* 내부 프레임 */}
-        <div className="border-2 border-dashed border-[#E8E6D1]/30 p-6 flex flex-col items-center">
-          
+        
+        {/* Scanner Line Animation */}
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-[#A5F2F3] animate-[scan_2s_linear_infinite] opacity-50"></div>
+
+        <div className="bg-[#111] p-8 flex flex-col items-center relative overflow-hidden">
+          {/* Background Grid */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"></div>
+
           <button 
             onClick={onClose}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className="absolute top-4 right-4 text-[#E8E6D1] hover:text-red-400 cursor-none p-2 hover:bg-white/10 rounded transition-colors z-10"
+            className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-20"
           >
-            <X size={24} />
+            <X size={20} />
           </button>
 
-          <h2 className="text-xl md:text-2xl text-[#E8E6D1] mb-8 font-['Press_Start_2P'] text-center leading-relaxed">
-            TO FIND YOUR LETTER<br/>
-            <span className="text-xs text-[#95a5a6] mt-2 block">ID/PW IN YOUR CARD</span>
-          </h2>
+          <div className="mb-8 flex flex-col items-center z-10">
+            <div className={`p-4 rounded-full mb-4 ${error ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-[#A5F2F3]'}`}>
+               {error ? <AlertTriangle size={32} /> : <Lock size={32} />}
+            </div>
+            <h2 className="text-xl text-white font-mono font-bold tracking-widest text-center">
+              SECURITY CHECK
+            </h2>
+            <p className="text-[10px] text-gray-500 mt-2 font-mono uppercase">
+              Enter credentials to unlock track
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <label className="text-xs text-[#E8E6D1]">NAME (RECEIVER)</label>
+          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5 z-10">
+            <div className="flex flex-col gap-2 group">
+              <label className="text-[10px] text-gray-500 font-mono group-focus-within:text-[#A5F2F3] transition-colors">LISTENER NAME</label>
               <input 
                 type="text" 
                 value={name}
                 onChange={e => setName(e.target.value)}
-                className="bg-black/50 border-b-2 border-[#E8E6D1] p-2 text-[#E8E6D1] outline-none focus:bg-black/80 korean-text"
-                placeholder="이름을 입력하세요"
+                className="bg-black/50 border border-white/10 p-3 text-white outline-none focus:border-[#A5F2F3] focus:shadow-[0_0_10px_rgba(165,242,243,0.2)] transition-all font-mono text-sm"
+                placeholder="Ex) GUEST"
                 autoFocus
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-xs text-[#E8E6D1]">PASSWORD</label>
+            <div className="flex flex-col gap-2 group">
+              <label className="text-[10px] text-gray-500 font-mono group-focus-within:text-[#A5F2F3] transition-colors">ACCESS CODE</label>
               <input 
                 type="password" 
                 value={pw}
                 onChange={e => setPw(e.target.value)}
-                className="bg-black/50 border-b-2 border-[#E8E6D1] p-2 text-[#E8E6D1] outline-none focus:bg-black/80 font-mono tracking-widest"
-                placeholder="****"
+                className="bg-black/50 border border-white/10 p-3 text-white outline-none focus:border-[#A5F2F3] focus:shadow-[0_0_10px_rgba(165,242,243,0.2)] transition-all font-mono text-sm tracking-[0.5em]"
+                placeholder="••••"
               />
             </div>
 
             {error && (
-              <div className="text-center bg-red-900/30 border border-red-400/50 p-3 rounded animate-fade-in">
-                <p className="text-red-400 text-xs animate-pulse">
-                  ⚠️ 정보를 찾을 수 없습니다.<br/>
-                  <span className="text-[10px] text-red-300 opacity-70">이름과 암호를 다시 확인해주세요.</span>
+              <div className="text-center py-2 animate-fade-in">
+                <p className="text-red-500 text-xs font-mono">
+                  ERROR: INVALID CREDENTIALS
                 </p>
               </div>
             )}
@@ -91,9 +103,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               type="submit"
               onMouseEnter={onMouseEnter}
               onMouseLeave={onMouseLeave}
-              className="mt-4 py-3 bg-[#E8E6D1] text-[#2C3E50] font-bold hover:bg-white transition-colors box-shadow-retro active:translate-x-1 active:translate-y-1 active:shadow-none"
+              className="mt-4 py-4 bg-white text-black font-bold font-mono text-xs hover:bg-[#A5F2F3] transition-all flex items-center justify-center gap-2 group"
             >
-              FIND MY LETTER
+              <span>UNLOCK</span>
+              <Unlock size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
         </div>

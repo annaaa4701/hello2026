@@ -1,12 +1,19 @@
-// 타입 정의 업데이트
+// 타입 정의 업데이트 (Firebase 연동)
 export interface MessageData {
   id: string; 
+  firebaseId?: string; // Firebase Realtime Database 고유 ID
   receiver: string; 
   password: string; 
   content: string; 
   from: string; 
   doorId: number; 
-  themeColor?: string; 
+  themeColor?: string;
+  reply?: string; // 답장 내용
+  repliedAt?: number; // 답장 시간
+  isRead?: boolean; // 읽음 상태
+  readAt?: number; // 읽은 시간
+  hasReply?: boolean; // 답장 여부
+  createdAt?: number; // 생성 시간
 }
 
 // Stage 타입 정의

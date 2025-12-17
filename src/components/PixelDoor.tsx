@@ -1,10 +1,10 @@
 import React from 'react';
-import { Lock, Unlock } from 'lucide-react';
+import { Lock, Disc, Music2 } from 'lucide-react';
 
 interface PixelDoorProps {
   id: number;
-  isTarget: boolean; // 내가 찾아야 할 문인지
-  isOpen: boolean;   // 열려 있는지
+  isTarget: boolean; // 내가 찾아야 할 트랙인지 (로그인 성공 시)
+  isOpen: boolean;   // 열려 있는지 (재생 중)
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   onClick: () => void;
@@ -18,60 +18,58 @@ export const PixelDoor: React.FC<PixelDoorProps> = ({
   onMouseLeave,
   onClick
 }) => {
+  // 트랙 제목 더미 데이터 (분위기용)
+  const trackTitles = [
+    "Intro: Uncertainty", "Natural", "Deep Dive", "Cracks",
+    "Winter Haze", "Cocoa Break", "Fireplace", "Polaris",
+    "Music Box", "Midnight Blue", "Side B", "Shelter"
+  ];
+
   return (
     <div 
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`relative group cursor-none transition-transform duration-300 ${
-        isTarget && !isOpen ? 'animate-door-shake z-10' : ''
-      } ${isOpen ? 'z-20' : ''}`}
+      className={`relative group cursor-none w-full h-24 border-b border-white/10 flex items-center px-4 hover:bg-white/5 transition-colors overflow-hidden ${
+        isTarget ? 'animate-pulse bg-white/10' : ''
+      }`}
     >
-      {/* 문 프레임 (외곽) - 사서함 비율 */}
-      <div className="w-full aspect-[4/3] bg-[#2a1b15] p-2 rounded-sm shadow-[4px_4px_0px_rgba(0,0,0,0.5)] border-t border-l border-[#5c4033] border-b-4 border-r-4 border-black relative overflow-hidden perspective-1000">
-        
-        {/* 문짝 (나무 질감) - 3D 회전 효과 */}
-        <div className={`w-full h-full bg-[#463325] wood-texture relative transition-all duration-1000 transform origin-left transform-style-3d ${
-          isOpen ? '-rotate-y-90 translate-x-[-5%]' : ''
-        } border border-[#5c4033]/30`}>
-          
-          {/* 금속 번호판 */}
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-6 bg-gradient-to-br from-[#ffd700] to-[#b8860b] flex items-center justify-center border-2 border-[#8b6508] shadow-sm">
-            <span className="font-['Press_Start_2P'] text-[10px] text-[#423108]">{String(id).padStart(2, '0')}</span>
-            {/* 나사 구멍 */}
-            <div className="absolute top-1 left-1 w-1 h-1 bg-[#8b6508] rounded-full opacity-50"></div>
-            <div className="absolute top-1 right-1 w-1 h-1 bg-[#8b6508] rounded-full opacity-50"></div>
-            <div className="absolute bottom-1 left-1 w-1 h-1 bg-[#8b6508] rounded-full opacity-50"></div>
-            <div className="absolute bottom-1 right-1 w-1 h-1 bg-[#8b6508] rounded-full opacity-50"></div>
-          </div>
+      {/* 배경 노이즈 (Hover 시 등장) */}
+      <div className="absolute inset-0 bg-noise opacity-0 group-hover:opacity-20 transition-opacity"></div>
 
-          {/* 문 손잡이 */}
-          <div className="absolute top-1/2 right-2 w-2 h-6 bg-[#2a2a2a] rounded-sm shadow-md border-l border-gray-600"></div>
+      {/* 왼쪽: 트랙 번호 */}
+      <div className="w-12 text-sm font-mono text-gray-500 group-hover:text-[#A5F2F3] transition-colors">
+        {String(id).padStart(2, '0')}
+      </div>
 
-          {/* 자물쇠 아이콘 */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[#1a1a1a]/50">
-             {isOpen ? <Unlock size={14} /> : <Lock size={14} />}
-          </div>
-
-          {/* 낡은 효과 (Overlay) */}
-          <div className="absolute inset-0 bg-black/10 pointer-events-none mix-blend-multiply"></div>
+      {/* 중앙: 트랙 정보 */}
+      <div className="flex-1 flex flex-col justify-center ml-2">
+        <div className={`font-serif text-lg text-gray-300 group-hover:text-white group-hover:tracking-wider transition-all duration-300 ${isTarget ? 'glitch-wrapper' : ''}`} data-text={trackTitles[id-1]}>
+          {trackTitles[id-1]}
         </div>
-
-        {/* 문 내부 (어두운 공간 + 편지가 빛나는 연출) */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] z-[-1] flex items-center justify-center">
-          {isOpen && (
-             <div className="relative">
-               {/* 편지 봉투 */}
-               <div className="w-12 h-8 bg-[#FFFDF0] rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.8)] animate-letter-reveal border border-[#E8E6D1]">
-                 {/* 봉투 플랩 */}
-                 <div className="w-0 h-0 border-l-[24px] border-l-transparent border-r-[24px] border-r-transparent border-t-[15px] border-t-[#E8E6D1] absolute top-0 left-0"></div>
-                 {/* 밀랍 */}
-                 <div className="absolute top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-red-600 rounded-full opacity-60"></div>
-               </div>
-             </div>
-          )}
+        <div className="text-[10px] text-gray-600 font-mono group-hover:text-gray-400">
+          3:24 • REMASTERED 2026
         </div>
       </div>
+
+      {/* 오른쪽: 상태 아이콘 */}
+      <div className="ml-4 text-gray-600 group-hover:text-white transition-colors">
+        {isOpen ? (
+          <Disc size={20} className="animate-spin-slow text-[#A5F2F3]" />
+        ) : isTarget ? (
+          <Music2 size={20} className="animate-bounce text-[#FF00FF]" />
+        ) : (
+          <Lock size={16} className="opacity-50" />
+        )}
+      </div>
+
+      {/* 재생 바 (Hover 시 늘어남) */}
+      <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-[#A5F2F3] to-[#FF00FF] w-0 group-hover:w-full transition-all duration-700 ease-out"></div>
+      
+      {/* Glitch Overlay (타겟일 때) */}
+      {isTarget && (
+        <div className="absolute inset-0 bg-white/5 animate-pulse mix-blend-overlay pointer-events-none"></div>
+      )}
     </div>
   );
 };

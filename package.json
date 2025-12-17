@@ -1,7 +1,7 @@
 {
-  "name": "winter-arcade-letter",
-  "version": "1.0.0",
-  "description": "80s Retro Style Interactive Message Board",
+  "name": "resilience-cd-player",
+  "version": "2.0.0",
+  "description": "Y2K Style Interactive CD Album Experience - The Resilience Mix 2026",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,12 +13,16 @@
     "react",
     "typescript",
     "vite",
-    "arcade",
-    "retro"
+    "y2k",
+    "cd-player",
+    "glitch",
+    "hologram",
+    "interactive-album"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "firebase": "^12.7.0",
     "lucide-react": "^0.560.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
