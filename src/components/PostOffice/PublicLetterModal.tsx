@@ -22,13 +22,13 @@ export const PublicLetterModal: React.FC<PublicLetterModalProps> = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 md:p-8 animate-fade-in">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 md:p-8 animate-fade-in overflow-y-auto">
       
       {/* Booklet Container */}
-      <div className="relative w-full max-w-5xl h-[80vh] bg-[#F0F0F0] text-[#111] shadow-[0_0_50px_rgba(255,255,255,0.1)] flex flex-col md:flex-row overflow-hidden transform transition-all duration-500">
+      <div className="relative w-full max-w-5xl my-auto bg-[#F0F0F0] text-[#111] shadow-[0_0_50px_rgba(255,255,255,0.1)] flex flex-col md:flex-row overflow-hidden transform transition-all duration-500 max-h-[90vh]">
         
         {/* Left Page: Artwork & Title */}
-        <div className="w-full md:w-1/2 bg-[#050505] text-[#E0E0E0] p-8 md:p-12 flex flex-col justify-between relative overflow-hidden border-r border-gray-800">
+        <div className="w-full md:w-1/2 bg-[#050505] text-[#E0E0E0] p-8 md:p-12 flex flex-col justify-between relative overflow-auto border-r border-gray-800">
           <div className="absolute inset-0 bg-noise opacity-20"></div>
           
           {/* Decorative Circle */}
@@ -53,7 +53,7 @@ export const PublicLetterModal: React.FC<PublicLetterModalProps> = ({
         </div>
 
         {/* Right Page: Message Content */}
-        <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col relative bg-[#F5F5F0]">
+        <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col relative bg-[#F5F5F0] overflow-auto">
           {/* Paper Texture Overlay */}
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}></div>
 
