@@ -7,6 +7,7 @@ interface LoginModalProps {
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   error: boolean;
+  isLoading?: boolean;
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ 
@@ -14,7 +15,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   onSubmit, 
   onMouseEnter,
   onMouseLeave,
-  error 
+  error,
+  isLoading = false
 }) => {
   const [name, setName] = useState('');
   const [pw, setPw] = useState('');
@@ -103,10 +105,20 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               type="submit"
               onMouseEnter={onMouseEnter}
               onMouseLeave={onMouseLeave}
-              className="mt-4 py-4 bg-white text-black font-bold font-mono text-xs hover:bg-[#A5F2F3] transition-all flex items-center justify-center gap-2 group"
+              disabled={isLoading}
+              className="mt-4 py-4 bg-white text-black font-bold font-mono text-xs hover:bg-[#A5F2F3] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>UNLOCK</span>
-              <Unlock size={14} className="group-hover:translate-x-1 transition-transform" />
+              {isLoading ? (
+                <>
+                  <span>LOADING...</span>
+                  <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                </>
+              ) : (
+                <>
+                  <span>UNLOCK</span>
+                  <Unlock size={14} className="group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
             </button>
           </form>
         </div>

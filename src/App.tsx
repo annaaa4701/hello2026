@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { CursorVariant, MessageData } from './types';
 import { PO_BOXES } from './constants/messages';
@@ -252,6 +252,7 @@ export default function App() {
           onClose={() => { setShowLogin(false); setLoginError(false); }}
           onSubmit={handleLogin}
           error={loginError}
+          isLoading={isLoadingMessage}
           onMouseEnter={() => setCursorVariant('pointer')}
           onMouseLeave={() => setCursorVariant('default')}
         />
