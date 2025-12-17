@@ -38,6 +38,19 @@ export default function App() {
   // 🔥 Firebase State
   // ======================
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
+  
+  // ======================
+  // 🎲 Random Track Display (로그인 전 12개만)
+  // ======================
+  const [randomDoors] = useState<number[]>(() => {
+    const allDoors = Array.from({ length: 24 }, (_, i) => i + 1);
+    // Fisher-Yates shuffle
+    for (let i = allDoors.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allDoors[i], allDoors[j]] = [allDoors[j], allDoors[i]];
+    }
+    return allDoors.slice(0, 12);
+  });
 
   // ======================
   // 📬 Phase 1: 진입 
@@ -144,7 +157,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-sans overflow-hidden select-none cursor-none">
+    <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-sans select-none cursor-none">
       
       {/* 🖱️ 커서 (추후 CD 아이콘 등으로 업데이트 가능) */}
       <CustomCursor variant={cursorVariant} />
@@ -207,7 +220,8 @@ export default function App() {
           <div className="absolute left-0 top-0 bottom-0 w-3 bg-[#1a1a1a] border-r border-white/5 z-20"></div>
           <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/5 z-20"></div>
 
-          {Array.from({ length: 24 }, (_, i) => i + 1).map((doorId) => (
+          {/* 로그인 전: 랜덤 12개만 표시, 로그인 후: 타겟 도어만 표시 */}
+          {(targetDoorId ? [targetDoorId] : randomDoors).map((doorId) => (
             <PixelDoor 
               key={doorId} 
               id={doorId} 

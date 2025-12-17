@@ -34,7 +34,7 @@ export const PublicLetterModal: React.FC<PublicLetterModalProps> = ({
     // Outer Overlay: 
     // 모바일: snap-y snap-mandatory (스크롤 스냅 적용), bg-black (완전 몰입)
     // 데스크탑: 일반 오버레이, 중앙 정렬
-    <div className="fixed inset-0 z-[150] bg-black md:bg-black/90 md:backdrop-blur-md animate-fade-in overflow-y-auto md:overflow-hidden snap-y snap-mandatory scroll-smooth">
+    <div className="fixed inset-0 z-[150] bg-black md:bg-black/90 md:backdrop-blur-md animate-fade-in overflow-y-auto snap-y snap-mandatory scroll-smooth">
       <div className="min-h-full w-full flex items-start md:items-center justify-center p-0 md:p-4">
         
         {/* 모바일용 닫기 버튼 (항상 최상단 고정) */}
