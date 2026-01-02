@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Lock, Unlock, AlertTriangle } from 'lucide-react';
 
-interface LoginModalProps {
+interface BarcodeScannerProps {
   onClose: () => void;
   onSubmit: (name: string, pw: string) => void;
   onMouseEnter: () => void;
@@ -10,7 +10,7 @@ interface LoginModalProps {
   isLoading?: boolean;
 }
 
-export const LoginModal: React.FC<LoginModalProps> = ({ 
+export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({ 
   onClose, 
   onSubmit, 
   onMouseEnter,

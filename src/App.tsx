@@ -7,11 +7,11 @@ import { findMessage, addReply, markAsRead } from './utils/firebaseService';
 import { CustomCursor } from './components/CustomCursor';
 import { NoiseCanvas } from './components/NoiseCanvas';
 import { GlitchText } from './components/GlitchText';
-import { PixelDoor } from './components/PixelDoor';
-import { StartScreen } from './components/StartScreen';
-import { LoginModal } from './components/PostOffice/LoginModal';
-import { PostOfficeModal } from './components/PostOffice/PostOfficeModal';
-import { PublicLetterModal } from './components/PostOffice/PublicLetterModal';
+import { StickerButton } from './components/StickerButton';
+import { LoadingIntro } from './components/LoadingIntro';
+import { BarcodeScanner } from './components/PostOffice/BarcodeScanner';
+import { HiddenTrack } from './components/PostOffice/HiddenTrack';
+import { LinerNote } from './components/PostOffice/LinerNote';
 
 import './styles/global.css';
 
@@ -169,7 +169,7 @@ export default function App() {
       <div className="fixed inset-0 pointer-events-none z-[5] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_2px,3px_100%] bg-repeat opacity-20"></div>
 
       {!started && (
-        <StartScreen 
+        <LoadingIntro 
           onStart={handleStart} 
           onMouseEnter={() => setCursorVariant('pointer')}
           onMouseLeave={() => setCursorVariant('default')}
@@ -222,7 +222,7 @@ export default function App() {
 
           {/* 로그인 전: 랜덤 12개만 표시, 로그인 후: 타겟 도어만 표시 */}
           {(targetDoorId ? [targetDoorId] : randomDoors).map((doorId) => (
-            <PixelDoor 
+            <StickerButton 
               key={doorId} 
               id={doorId} 
               isTarget={targetDoorId === doorId}
@@ -250,7 +250,7 @@ export default function App() {
       </div>
 
       {showPublicLetter && (
-        <PublicLetterModal
+        <LinerNote
           onClose={handleEnterPostOffice}
           onMouseEnter={() => setCursorVariant('pointer')}
           onMouseLeave={() => setCursorVariant('default')}
@@ -258,7 +258,7 @@ export default function App() {
       )}
 
       {showLogin && (
-        <LoginModal 
+        <BarcodeScanner 
           onClose={() => { setShowLogin(false); setLoginError(false); }}
           onSubmit={handleLogin}
           error={loginError}
@@ -269,7 +269,7 @@ export default function App() {
       )}
 
       {showLetter && foundMessage && (
-        <PostOfficeModal 
+        <HiddenTrack 
           messageData={foundMessage}
           onClose={handleCloseAll}
           onReply={handleReply}

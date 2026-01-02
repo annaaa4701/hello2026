@@ -1,13 +1,13 @@
 import React from 'react';
 import { Play } from 'lucide-react';
 
-interface StartScreenProps {
+interface LoadingIntroProps {
   onStart: () => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }
 
-export const StartScreen: React.FC<StartScreenProps> = ({ 
+export const LoadingIntro: React.FC<LoadingIntroProps> = ({ 
   onStart, 
   onMouseEnter, 
   onMouseLeave 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Mic, Square, Play, Save, Disc, Activity } from 'lucide-react';
 import { MessageData } from '../../types';
 
-interface PostOfficeModalProps {
+interface HiddenTrackProps {
   messageData: MessageData;
   onClose: () => void;
   onReply: (content: string) => void;
@@ -11,7 +11,7 @@ interface PostOfficeModalProps {
   setCursor?: (variant: 'default' | 'quill' | 'stamp' | 'pointer') => void;
 }
 
-export const PostOfficeModal: React.FC<PostOfficeModalProps> = ({
+export const HiddenTrack: React.FC<HiddenTrackProps> = ({
   messageData,
   onClose,
   onReply

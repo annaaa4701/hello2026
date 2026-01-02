@@ -2,13 +2,13 @@ import React, { useRef, useEffect } from 'react';
 import { ArrowRight, Disc, X, ChevronDown } from 'lucide-react';
 import { PUBLIC_MESSAGE } from '../../constants/messages';
 
-interface PublicLetterModalProps {
+interface LinerNoteProps {
   onClose: () => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }
 
-export const PublicLetterModal: React.FC<PublicLetterModalProps> = ({
+export const LinerNote: React.FC<LinerNoteProps> = ({
   onClose,
   onMouseEnter,
   onMouseLeave

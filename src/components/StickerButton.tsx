@@ -1,7 +1,7 @@
 import React from 'react';
 import { Lock, Disc, Music2 } from 'lucide-react';
 
-interface PixelDoorProps {
+interface StickerButtonProps {
   id: number;
   isTarget: boolean; // 내가 찾아야 할 트랙인지 (로그인 성공 시)
   isOpen: boolean;   // 열려 있는지 (재생 중)
@@ -10,7 +10,7 @@ interface PixelDoorProps {
   onClick: () => void;
 }
 
-export const PixelDoor: React.FC<PixelDoorProps> = ({ 
+export const StickerButton: React.FC<StickerButtonProps> = ({ 
   id, 
   isTarget, 
   isOpen,
