@@ -1,440 +1,244 @@
-# 💿 THE RESILIENCE MIX 2026
+# 🎵 THE RESILIENCE MIX 2026
 
-> Y2K 감성의 인터랙티브 CD 앨범 웹 경험
+> Y2K 스타일의 인터랙티브 CD 플레이어 경험 - 2026 New Year's Greeting
 
-![Status](https://img.shields.io/badge/Status-Active-success)
-![Version](https://img.shields.io/badge/Version-2.0.0-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![React](https://img.shields.io/badge/React-19.2.3-61dafb?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178c6?logo=typescript)
+![Firebase](https://img.shields.io/badge/Firebase-12.7.0-ffca28?logo=firebase)
 
-## 📖 프로젝트 개요
+## 📀 프로젝트 소개
 
-**THE RESILIENCE MIX**는 불확실함(Uncertainty)과 균열(Cracks)을 견뎌내고 회복하는 과정을 물리적 매체인 CD의 물성으로 표현한 인터랙티브 웹 경험입니다. 
+**THE RESILIENCE MIX**는 2026년 새해 인사를 위한 인터랙티브 CD 플레이어 컨셉의 웹 애플리케이션입니다.  
+Y2K 미학과 레트로 CD 플레이어의 향수를 현대적인 웹 기술로 재해석하여, 특별한 메시지를 숨겨진 트랙으로 전달하는 새로운 경험을 제공합니다.
 
-### 핵심 테마
-- **RESILIENCE (회복탄력성)**: 삶의 굴곡과 상처를 받아들이고, 그것을 통해 성장하는 힘
-- **Y2K Aesthetics**: 2000년대 초반의 디지털 감성 - 노이즈, 글리치, 홀로그램
-- **Physical Media**: CD라는 물리적 매체의 질감과 인터랙션을 디지털로 재현
+### ✨ 주요 특징
 
-### 디자인 키워드
-`Y2K` `Noise` `Glitch` `Hologram` `Physical Media` `Dark & Metallic` `CD Player` `Resilience`
+- 🎨 **Y2K 레트로 디자인**: 홀로그램 CD, 노이즈 효과, 글리치 타이포그래피
+- 💿 **CD 플레이어 경험**: 회전하는 CD 애니메이션, 트랙리스트 인터페이스
+- 🎹 **DAW 스타일 답장 시스템**: 실제 음악 작업 소프트웨어 느낌의 메시지 작성 UI
+- 🔐 **개인화된 메시지**: 이름과 비밀번호로 숨겨진 트랙(메시지)을 찾는 시스템
+- 🔥 **Firebase 실시간 동기화**: 메시지 저장 및 답장 기능
+- 🎵 **Web Audio API**: 인터랙티브한 사운드 효과와 BGM
+- 🖱️ **커스텀 커서**: 상황에 따라 변하는 특별한 커서 디자인
 
----
+## 🎮 사용 방법
 
-## 🎯 사용자 경험 흐름 (UX Flow)
+### 1️⃣ 앨범 재생 시작
+- "Play Disc" 버튼을 클릭하여 CD를 재생합니다
+- 회전하는 CD와 함께 BGM이 시작됩니다
 
-### Phase 1: 앨범 재생 (Intro / StartScreen) ✅
-**화면 구성**
-- 칠흑 같은 어둠(Deep Black, `#050505`) 속 지직거리는 TV 노이즈 배경
-- 중앙에서 천천히 회전하는 홀로그램 CD (메인 오브젝트)
-- 트랙 텍스트가 CD 곡면을 따라 원형으로 흐름
+### 2️⃣ 라이너 노트 읽기
+- 앨범 제목을 클릭하여 라이너 노트(앨범 소개 메시지)를 확인합니다
+- 모바일에서는 스크롤하여 전체 내용을 읽을 수 있습니다
 
-**타이포그래피**
-- 거친 글리치(Glitch) 효과가 적용된 "RESILIENCE" 세리프 타이틀
-- "Trust the uncertainty" 서브 타이틀
+### 3️⃣ 숨겨진 트랙 찾기
+- "UNLOCK HIDDEN TRACK" 버튼을 클릭합니다
+- 받은 이름과 비밀번호를 입력하여 자신을 위한 특별한 트랙을 찾습니다
+- 트랙이 열리면 발신자의 메시지를 확인할 수 있습니다
 
-**인터랙션**
-- `PLAY DISC` 버튼 클릭 시 CD 회전 속도가 빨라지며 다음 화면으로 전환
-- 마우스 이동 시 잔상이 남거나 반전되는 커서 효과
+### 4️⃣ 답장 보내기
+- DAW 스타일의 인터페이스에서 답장을 작성합니다
+- 빨간 REC 버튼을 눌러 답장을 녹음(전송)합니다
+- 답장은 Firebase에 실시간으로 저장됩니다
 
----
-
-### Phase 2: 라이너 노트 (Liner Notes / Intro Modal) ✅
-**개요**
-- 앨범 자켓을 펼친 듯한 속지(Booklet) 모달
-
-**화면 구성**
-- **좌측 (Artwork)**: 감각적인 타이포그래피 아트워크
-  - "TRUST THE UNCERTAINTY" 메인 카피
-  - 명언 인용구 블록
-- **우측 (Message)**: 앨범 소개글 (Foreword by Nayeon)
-  - 회복탄력성에 대한 메시지
-  - 연말 인사
-
-**디자인 디테일**
-- 구겨진 종이 질감 또는 매끄러운 아트지 질감
-- 중앙에 북릿 경첩(Spine) 그림자 효과
-
-**인터랙션**
-- `VIEW TRACKLIST` 버튼 클릭 시 속지가 닫히며 트랙리스트(로비)로 진입
-
----
-
-### Phase 3: 트랙리스트 (Main Lobby) ✅
-**화면 구성**
-- CD 케이스 뒷면(Back Cover) 디자인 컨셉
-- 12개의 트랙이 리스트 형태로 나열 (기존 우체국 사서함 대체)
-
-**레이아웃 디테일**
-- 플라스틱 케이스 힌지(Hinge) 시뮬레이션 (좌측 세로 라인)
-- 각 트랙:
-  - 트랙 번호 (01, 02, ...)
-  - 트랙 제목 ("Intro: Uncertainty", "Natural", "Deep Dive", ...)
-  - 재생 시간 표시 (3:24)
-  - 상태 아이콘 (🔒 잠금 / 💿 재생 중)
-
-**커서**
-- 십자선(Crosshair) 커서 또는 키 아이콘
-
-**인터랙션**
-- 트랙 Hover 시:
-  - 해당 라인이 하이라이트되거나 노이즈 발생
-  - 하단 프로그레스 바 애니메이션
-- `UNLOCK HIDDEN TRACK` 버튼 클릭 시 잠금 해제 화면으로 이동
-
----
-
-### Phase 4: 히든 트랙 잠금 해제 (Unlock / Login) ✅
-**화면 구성**
-- 디지털 도어락 혹은 금고 다이얼 느낌의 보안 검색 모달
-- 스캐너 라인 애니메이션
-
-**입력 필드**
-- LISTENER NAME (수신자 이름)
-- ACCESS CODE (비밀번호)
-
-**청각적 & 시각적 피드백**
-- **입력 시**: 기계적인 타이핑 사운드
-- **성공 시**: 
-  - "Access Granted" 사운드
-  - 잠금장치 풀리는 애니메이션 (🔓 아이콘 변화)
-  - 해당 트랙이 글리치 효과와 함께 깜빡임
-- **실패 시**: 
-  - 붉은색 글리치 노이즈
-  - "Access Denied" 경고음
-  - 모달이 좌우로 흔들림 (shake animation)
-
----
-
-### Phase 5: 케이스 오픈 (Reveal Animation) ✅
-**연출 시퀀스**
-1. 선택한 트랙 라인이 심하게 흔들림 (Glitch Effect)
-2. 플라스틱 케이스가 "탁!" 하고 열리는 소리 (Snap Sound)
-3. CD 알판(Disc)이 줌인되면서 풀스크린 모달로 등장
-
----
-
-### Phase 6: DAW 인터페이스 & 녹음 (Recording Studio) ✅
-**화면 구성**
-- **좌측**: 회전하는 CD 비주얼라이저 (음악 재생 중임을 암시)
-- **우측**: 레트로한 DAW(Digital Audio Workstation) 윈도우
-  - Mac OS 스타일의 윈도우 바 (빨강/노랑/초록 버튼)
-  - 상단 툴바: 재생/정지/녹음(REC) 버튼
-  - 타임라인 프로그레스 바
-
-#### **Track 01: 받은 메시지 (Vocal Track)**
-**화면**
-- 트랙 헤더: 마이크 아이콘 + 발신자 이름
-- 배경: 잔잔한 오디오 파형 (읽기 전용)
-- 내용: 발신자의 편지가 가사(Lyrics)처럼 표시
-
-#### **Track 02: 답장 작성 (Reply Track)**
-**State 1: 입력 모드**
-- 빈 트랙에 텍스트 입력 (textarea)
-- "Type your message here to record..." 플레이스홀더
-
-**State 2: 녹음 중 (Recording)**
-- 🔴 REC 버튼 클릭 시 시작
-- 실시간 오디오 파형 생성 애니메이션
-  - 빨간색 파형이 왼쪽에서 오른쪽으로 채워짐
-  - 빨간색 커서 라인이 이동
-  - 타이머 표시 (00:00:01, 00:00:02, ...)
-- 2.5초간 녹음 연출
-
-**State 3: 녹음 완료**
-- 파형이 초록색으로 변경
-- "TRACK SAVED SUCCESSFULLY" 메시지 표시
-- 1.5초 후 자동으로 전송 및 종료
-
-**버튼**
-- `● REC` 버튼 (빨간색)
-  - 입력 내용이 없으면 비활성화
-  - 녹음 중에는 맥박 효과(pulse)로 점멸
-  - 완료 후 비활성화
-
----
-
-### Phase 7: 퇴장 (Outro) ✅
-**복귀**
-- 자동으로 트랙리스트(Phase 3)로 복귀
-- 확인한 트랙 옆에 상태 표시:
-  - ✔️ **Played** (읽음)
-  - 🔥 **Burned** (답장 전송)
-
----
-
-## 🎨 비주얼 시스템 (Visual System)
-
-### 컬러 팔레트
-| 색상 | Hex | 용도 |
-|------|-----|------|
-| **Deep Black** | `#050505` | 전체 배경, 깊이감 |
-| **Metallic Silver** | `#E0E0E0` | 메인 텍스트, UI 라인 |
-| **Dark Grey** | `#111111` | 트랙리스트 배경, 컨테이너 |
-| **Hologram Cyan** | `#A5F2F3` / `#00FFFF` | 글리치(Glitch), 강조, 하이라이트 |
-| **Hologram Magenta** | `#FF00FF` | 글리치(Glitch), 강조 |
-| **Light Grey** | `#F5F5F0` | 라이너 노트 배경 (종이) |
-
-### 타이포그래피
-- **Headlines (Title)**: `Playfair Display` (Italic, Bold) - 우아함과 강렬함의 대비
-- **UI / Body**: `Inter` - 깔끔하고 가독성 좋은 산세리프
-- **Details**: `Press Start 2P` - 아주 작은 디테일에만 사용하여 디지털 감성 유지
-- **Message**: `Gowun Batang` - 진심이 담긴 메시지는 명조체 계열
-
-### 텍스처 & 이펙트
-- **Noise**: `NoiseCanvas`를 이용한 실시간 TV 노이즈 오버레이
-- **Scanlines**: CRT 모니터 느낌의 가로 줄무늬 (2px 반복)
-- **Glitch**: CSS `clip-path`를 이용한 텍스트 찢어짐 효과
-- **Blur**: `backdrop-filter: blur()`를 이용한 유리/플라스틱 질감
-- **Hologram**: `conic-gradient`를 이용한 CD 홀로그램 텍스처
-
----
-
-## 🖱️ 인터랙션 & 커서 (Interaction & Cursor)
-
-| 상태 | 커서 모양 | 메타포 |
-|------|-----------|--------|
-| **Default** | ○ (Small Ring) | 탐색 |
-| **Hover / Link** | ● (Filled Circle) | 포커스, 클릭 가능 |
-| **Track List** | ✛ (Crosshair) | 타겟팅, 선택 |
-| **Writing** | 🖊️ (Marker) | 기록 (CD 표면 낙서) |
-| **Burning** | 🔥 (Flame) | 전송 (CD 굽기) |
-
-**특징**
-- 모든 커서는 `mix-blend-difference` 속성으로 배경에 따라 색상 반전
-- 클릭 시 `scale(0.8)` 애니메이션
-- 부드러운 `transition` 효과
-
----
-
-## 🎵 오디오 전략 (Audio Strategy)
-
-| 사운드 타입 | 설명 | 용도 |
-|-------------|------|------|
-| **BGM** | 웅웅거리는 앰비언트 노이즈 + 낮은 베이스의 힙한 비트 | 전역 배경음악 |
-| **Click** | 기계식 키보드 소리 또는 스위치 딸깍임 | 버튼 클릭 |
-| **Hover** | 고주파의 짧은 노이즈 (치직-) | 트랙 호버 |
-| **Open** | CD 케이스 여는 소리 (플라스틱 마찰음) | 트랙 열기 |
-| **Success** | 잠금 해제 효과음 | 로그인 성공 |
-| **Error** | 경고음 (삑-) | 로그인 실패 |
-| **Burn** | CD 레코더 돌아가는 소리 (위잉~) | 메시지 전송 |
-
----
-
-## 🛠️ 기술 스택 (Tech Stack)
-
-- **Frontend Framework**: React 19.2 + TypeScript
-- **Build Tool**: Vite 7.2
-- **Styling**: TailwindCSS (JIT mode) + Custom CSS
-- **Icons**: Lucide React
-- **Audio**: Web Audio API
-- **Database**: Firebase Realtime Database 🔥
-- **Deployment**: GitHub Pages
-
----
-
-## 📦 컴포넌트 구조 (Component Architecture)
+## 🏗️ 프로젝트 구조
 
 ```
-src/
-├── App.tsx                      # 메인 앱 컨테이너, UX 흐름 제어
-├── main.tsx                     # 엔트리 포인트
-├── components/
-│   ├── CustomCursor.tsx         # ✅ 커스텀 커서 (context-aware)
-│   ├── NoiseCanvas.tsx          # ✅ TV 노이즈 배경 캔버스
-│   ├── GlitchText.tsx           # ✅ 글리치 텍스트 컴포넌트
-│   ├── StartScreen.tsx          # ✅ Phase 1: 앨범 커버 & CD 회전
-│   ├── PixelDoor.tsx            # ✅ Phase 3: 트랙 아이템 (리스트)
-│   └── PostOffice/
-│       ├── PublicLetterModal.tsx   # ✅ Phase 2: 라이너 노트 (속지)
-│       ├── LoginModal.tsx          # ✅ Phase 4: 히든 트랙 잠금 해제
-│       └── PostOfficeModal.tsx     # ✅ Phase 6: CD 플레이어 (읽기/쓰기)
-├── constants/
-│   ├── messages.ts              # 메시지 데이터베이스
-│   └── stages.ts                # 스테이지 설정
-├── types/
-│   └── index.ts                 # 타입 정의
-├── utils/
-│   └── audio.ts                 # 오디오 컨트롤러
-└── styles/
-    └── global.css               # 글로벌 스타일 & 애니메이션
+cdplayer2025/
+├── src/
+│   ├── components/
+│   │   ├── PostOffice/
+│   │   │   ├── LoginModal.tsx          # 로그인(트랙 찾기) 모달
+│   │   │   ├── PostOfficeModal.tsx     # DAW 스타일 메시지 뷰어
+│   │   │   └── PublicLetterModal.tsx   # 라이너 노트 모달
+│   │   ├── CustomCursor.tsx            # 커스텀 커서 컴포넌트
+│   │   ├── GlitchText.tsx              # 글리치 효과 텍스트
+│   │   ├── NoiseCanvas.tsx             # 노이즈 배경 캔버스
+│   │   ├── PixelDoor.tsx               # 트랙 아이템 컴포넌트
+│   │   └── StartScreen.tsx             # 시작 화면 (CD 플레이어)
+│   ├── config/
+│   │   └── firebase.ts                 # Firebase 설정
+│   ├── constants/
+│   │   └── messages.ts                 # 공개 메시지 상수
+│   ├── styles/
+│   │   └── global.css                  # 전역 스타일 (Tailwind + Custom)
+│   ├── types/
+│   │   └── index.ts                    # TypeScript 타입 정의
+│   ├── utils/
+│   │   ├── audio.ts                    # Web Audio API 유틸리티
+│   │   └── firebaseService.ts          # Firebase 데이터베이스 함수
+│   ├── App.tsx                         # 메인 애플리케이션
+│   └── main.tsx                        # 진입점
+├── index.html
+├── package.json
+├── tailwind.config.js
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
 ```
 
-### 주요 컴포넌트 역할
+## 🛠️ 기술 스택
 
-| 컴포넌트 | 변경된 역할 (New Concept) | 상태 |
-|----------|---------------------------|------|
-| `StartScreen` | Album Cover & Play | ✅ 완료 |
-| `NoiseCanvas` | Global Background | ✅ 완료 |
-| `PublicLetterModal` | Liner Notes (속지) | ✅ 완료 |
-| `PixelDoor` | Track Item (CD Case) | ✅ 완료 |
-| `LoginModal` | Unlock Hidden Track | ✅ 완료 |
-| `PostOfficeModal` | CD Surface (Read/Write) | ✅ 완료 |
-| `CustomCursor` | Contextual Cursor | ✅ 완료 |
+### Frontend
+- **React 19.2.3** - UI 라이브러리
+- **TypeScript 5.9.3** - 타입 안전성
+- **Vite 7.2.7** - 빌드 도구 및 개발 서버
+- **Tailwind CSS 3.4.17** - 유틸리티 스타일링
 
----
+### Backend & Database
+- **Firebase Realtime Database 12.7.0** - 메시지 저장 및 실시간 동기화
 
-## 🚀 시작하기 (Getting Started)
-필수 조건
-- Node.js 18+ 설치
-- Firebase 프로젝트 (무료)
+### Audio
+- **Web Audio API** - 사운드 효과 및 BGM 생성
 
-### 설치
+### Icons & UI
+- **Lucide React 0.560.0** - 아이콘 라이브러리
+
+## 🚀 설치 및 실행
+
+### 1. 저장소 클론 및 의존성 설치
+
 ```bash
-# 저장소 클론
-git clone https://github.com/yourusername/cdplayer2025.git
-
-# 디렉토리 이동
+git clone <repository-url>
 cd cdplayer2025
-
-# 의존성 설치
 npm install
 ```
 
-### Firebase 설정 (필수)
+### 2. Firebase 설정
 
-Firebase 연동을 위해 다음 단계를 따라주세요:
+1. [Firebase Console](https://console.firebase.google.com/)에서 새 프로젝트 생성
+2. Realtime Database 활성화
+3. 웹 앱 추가 후 구성 정보 복사
+4. `src/config/firebase.ts` 파일에 본인의 Firebase 설정 정보 입력:
 
-1. **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)** 파일을 참고하여 Firebase 프로젝트 생성
-2. `.env.example`을 복사하여 `.env` 파일 생성:
-   ```bash
-   cp .env.example .env
-   ```
-3. Firebase Console에서 설정값을 복사하여 `.env`에 입력
-4. Firebase Realtime Database 규칙 설정
-
-**자세한 Firebase 설정 가이드는 [FIREBASE_SETUP.md](FIREBASE_SETUP.md)를 참고하세요!** install
+```typescript
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 ```
 
-### 개발 서버 실행
+### 3. 개발 서버 실행
+
 ```bash
 npm run dev
 ```
 
 브라우저에서 `http://localhost:5173` 접속
 
-### Firebase Console에서 메시지 관리
+### 4. 프로덕션 빌드
 
-1. [Firebase Console](https://console.firebase.google.com/) 접속
-2. Realtime Database > 데이터 탭
-3. `messages` 노드에서 직접 추가/수정/삭제
-
-### 코드로 메시지 추가
-
-`src/utils/firebaseService.ts`의 `addMessage` 함수 사용:
-
-```typescript
-import { addMessage } from './utils/firebaseService';
-
-await addMessage({
-  receiver: '수신자이름',
-  password: '비밀번호',
-  doorId: 5, // 1-12 사이의 트랙 번호
-  from: '발신자',
-  content: `메시지 내용...`,
-  themeColor: '#FF6B6B' // 옵션
-});
+```bash
+npm run build
+npm run preview  # 빌드 결과 미리보기
 ```
 
-### 공개 메시지 수정
+## 📝 Firebase 데이터 구조
 
-Firebase Console > Realtime Database > `publicMessage` 노드 수정
-
-또는 코드에서:
-
-```typescript
-import { updatePublicMessage } from './utils/firebaseService';
-
-await updatePublicMessage({
-  from: "Your Name",
-  title: "Your Title",
-  content: `Your foreword message here...`
-}); from: "Your Name",
-  title: "Your Title",
-  content: `Your foreword message here...`
-};
-```
-
-### 히든 트랙 메시지 추가
-`MESSAGES` 배열에 새로운 메시지 객체를 추가하세요:
-
-```typescript
+### Messages
+```json
 {
-  id: 'msg_003',
-  receiver: '수신자이름',
-  password: '비밀번호',
-  doorId: 5, // 1-12 사이의 트랙 번호
-  from: '발신자',
-  content: `메시지 내용...`,
-  themeColor: '#FF6B6B' // 옵션
+  "messages": {
+    "message-id-1": {
+      "id": "message-id-1",
+      "receiver": "홍길동",
+      "password": "1234",
+      "from": "김철수",
+      "content": "새해 복 많이 받으세요!",
+      "doorId": 5,
+      "createdAt": 1735689600000,
+      "isRead": true,
+      "readAt": 1735690000000,
+      "hasReply": true,
+      "reply": "감사합니다!",
+      "repliedAt": 1735691000000
+    }
+  }
 }
 ```
 
----
-
-## 🎨 스타일 커스터마이징 (Customizing Styles)
-
-### 컬러 변경
-`src/styles/global.css`의 CSS 변수를 수정하세요:
-
-```css
-:root {
-  --bg-color: #050505;
-  --text-main: #E0E0E0;
-  --accent-color: #A5F2F3;
+### Public Message (라이너 노트)
+```json
+{
+  "publicMessage": {
+    "from": "Nayeon",
+    "title": "To. My Dear Visitor",
+    "content": "앨범 소개 메시지..."
+  }
 }
 ```
 
-### 애니메이션 속도 조정
-```css
-.animate-spin-slow {
-  animation: spin 8s linear infinite; /* 숫자를 조정하세요 */
-}
-```
+## 🎨 디자인 컨셉
+
+### Y2K 미학 요소
+- **홀로그램 효과**: CD 표면의 무지개빛 반사
+- **노이즈/그레인**: CRT 모니터 느낌의 배경 질감
+- **스캔라인**: 옛날 TV 화면 효과
+- **글리치 타이포그래피**: 디지털 에러 느낌의 텍스트 효과
+- **네온 컬러**: 청록색(#A5F2F3)과 마젠타(#FF00FF) 그라데이션
+
+### 인터랙션 디자인
+- **커서 변화**: 상황에 따라 기본/포인터/열쇠 모양으로 변경
+- **사운드 피드백**: 마우스 호버, 클릭, 성공, 오류 시 각각 다른 소리
+- **애니메이션**: CD 회전, 페이드 인/아웃, 글리치 효과 등
+
+## 🎵 오디오 시스템
+
+### BGM (자동 재생)
+- Carol of the Bells 멜로디 기반
+- Web Audio API로 실시간 생성
+- 템포: 180 BPM
+- 음색: Square 파형
+
+### 효과음
+- **hover**: 트랙 위에 마우스 올릴 때
+- **click**: 버튼 클릭 시
+- **success**: 로그인 성공, 답장 전송 성공
+- **error**: 로그인 실패
+- **open**: 트랙 열릴 때
+
+## 📱 반응형 디자인
+
+- **모바일**: 전체 화면 몰입형 경험, 스크롤 스냅
+- **태블릿/데스크탑**: CD 플레이어 중심 레이아웃, 모달 오버레이
+
+## 🔧 주요 기능 구현
+
+### 1. 랜덤 트랙 표시
+로그인 전에는 24개 트랙 중 랜덤한 12개만 표시하여 미스터리한 느낌을 줍니다.
+
+### 2. 로그인 시스템
+이름과 비밀번호로 Firebase에서 메시지를 찾아 해당하는 트랙만 표시합니다.
+
+### 3. DAW 스타일 UI
+실제 음악 작업 소프트웨어(Logic, Ableton 등)의 UI를 모방하여 답장을 작성합니다.
+
+### 4. 실시간 읽음 상태
+메시지를 열면 자동으로 읽음 상태가 Firebase에 업데이트됩니다.
+
+## 🎯 사용 사례
+
+- 🎄 **새해 인사**: 특별한 방식으로 새해 메시지 전달
+- 🎁 **생일 축하**: 비밀번호로 보호된 개인화된 생일 메시지
+- 💌 **감사 인사**: 고객, 팀원, 친구에게 특별한 감사 편지
+- 🎓 **졸업 메시지**: 졸업생들에게 각각의 트랙 배정
+
+## 📄 라이선스
+
+ISC License
+
+## 👤 제작자
+
+Created with ❤️ by Nayeon
 
 ---
 
-## 🐛 알려진 이슈 & 개선 계획
+**Trust the uncertainty. Thanks to all the dips and cracks.**
 
-### 현재 버전 (v2.0.0)
-- ✅ 기본 UX 흐름 구현 완료
-- ✅ Y2K 비주얼 스타일 적용
-- ✅ 인터랙티브 커서 시스템
-- ✅ CD 플레이어 인터랙션
-- ✅ DAW 인터페이스 구현
-- ✅ **Firebase Realtime Database 연동**
-  - 실시간 메시지 저장/불러오기
-  - 답장 저장 및 확인
-  - 메시지 읽음 상태 추적
-  - 비밀번호 기반 메시지 보호
-
-### 향후 개선 사항
-- [ ] Firebase Authentication 추가 (보안 강화)
-- [ ] 트랙별 개별 테마 색상 적용
-- [ ] 모바일 최적화 (터치 제스처)
-- [ ] 다국어 지원 (i18n)
-- [ ] 관리자 대시보드 (메시지 관리)
-
----
-
-## 📄 라이선스 (License)
-
-MIT License - 자유롭게 사용, 수정, 배포할 수 있습니다.
-
----
-
-## 💌 크레딧 (Credits)
-
-**Design & Development**: Nayeon  
-**Concept**: Resilience - Trust the uncertainty, thanks to all the dips and cracks.  
-**Inspired by**: Y2K aesthetics, Physical CD albums, Glitch art
-
----
-
-## 📞 문의 (Contact)
-
-이슈나 질문이 있으시면 [GitHub Issues](https://github.com/yourusername/cdplayer2025/issues)에 남겨주세요.
-
----
-
-**© 2026 Resilience Records. All Rights Reserved.**  
-_Not For Sale. Personal Use Only._
+© 2026 Resilience Records. All Rights Reserved.
