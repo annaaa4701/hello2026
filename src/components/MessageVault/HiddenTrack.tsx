@@ -1,6 +1,6 @@
 // src/components/MessageVault/HiddenTrack.tsx
 import React, { useState, useEffect } from 'react';
-import { X, PenTool, Check, Send } from 'lucide-react';
+import { X, PenTool, Check, Send, Stamp, RotateCcw } from 'lucide-react';
 import { MessageData } from '../../types';
 
 interface HiddenTrackProps {
@@ -18,21 +18,26 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
 }) => {
   const [replyContent, setReplyContent] = useState(messageData.reply || '');
   const [isSending, setIsSending] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [hasExistingReply] = useState(!!messageData.reply);
+  // 초기 상태: 이미 답장이 있으면 '전송 완료' 상태로 시작
+  const [hasSentReply, setHasSentReply] = useState(!!messageData.reply);
 
   const handleSend = () => {
     if (!replyContent.trim()) return;
     
     setIsSending(true);
-    // 전송 시뮬레이션 (종이 접어서 넣는 느낌)
+    // 전송 시뮬레이션
     setTimeout(() => {
       setIsSending(false);
-      setIsCompleted(true);
-      setTimeout(() => {
-        onReply(replyContent);
-      }, 1000);
+      setHasSentReply(true); // 도장 쾅! 입력창 잠금
+      
+      // 실제 데이터 저장
+      onReply(replyContent); 
     }, 1500);
+  };
+
+  // ✏️ 수정 모드로 변경하는 함수
+  const handleRevise = () => {
+    setHasSentReply(false); // 도장 제거 & 입력창 잠금 해제
   };
 
   useEffect(() => {
@@ -52,7 +57,7 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
       <div className={`
         relative w-full max-w-2xl bg-[#fdfbf7] shadow-[0_20px_50px_rgba(0,0,0,0.5)] 
         transform transition-all duration-700 ease-out
-        ${isCompleted ? 'translate-y-[100vh] rotate-12 opacity-0' : 'translate-y-0 rotate-1 opacity-100'}
+        translate-y-0 rotate-1 opacity-100
         flex flex-col md:flex-row overflow-hidden rounded-sm
       `}>
         {/* 종이 질감 오버레이 */}
@@ -66,15 +71,16 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
 
         {/* [LEFT] 친구의 편지 (보낸 사람) */}
         <div className="w-full md:w-1/2 p-8 pt-12 border-b md:border-b-0 md:border-r border-[#dcdcdc] bg-[#f4f1ea] relative">
-            <div className="absolute top-4 left-4 opacity-30 font-barcode text-4xl">FROM</div>
-            
-            <div className="h-full flex flex-col">
-                <div className="border-b-2 border-[#1a1a1a] pb-2 mb-4 flex justify-between items-end">
+            <div className="border-b-2 border-[#1a1a1a] pb-2 mb-4 flex justify-between items-end">
+                <div className="flex items-center gap-2">
+                    <Stamp size={24} className="text-red-800 opacity-60" />
                     <span className="font-bebas text-2xl text-[#1a1a1a]">MESSAGE</span>
-                    <span className="font-hand text-lg text-red-600">To. You</span>
                 </div>
+                <span className="font-hand text-lg text-red-600">To. You</span>
+            </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
+            <div className="h-[calc(100%-60px)] flex flex-col">
+                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 relative z-10">
                     <p className="font-hand text-xl text-[#333] leading-loose whitespace-pre-line">
                         "{messageData.content}"
                     </p>
@@ -90,7 +96,15 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
 
         {/* [RIGHT] 답장 쓰기 (받는 사람) */}
         <div className="w-full md:w-1/2 p-8 pt-12 bg-[#fff] relative">
-             <div className="absolute top-4 right-4 opacity-30 font-barcode text-4xl">REPLY</div>
+             
+             {/* ✅ SENT 도장 (전송 완료 시에만 표시) */}
+             {hasSentReply && (
+                <div className="absolute top-1/2 right-8 -translate-y-1/2 rotate-[-15deg] z-30 pointer-events-none">
+                    <div className="animate-stamp inline-block border-[4px] border-red-700 text-red-700 px-6 py-2 font-black text-3xl opacity-80 mix-blend-multiply tracking-[0.2em] rounded-sm" style={{fontFamily: 'impact, sans-serif'}}>
+                        SENT
+                    </div>
+                </div>
+             )}
 
              <div className="h-full flex flex-col">
                 <div className="border-b-2 border-[#1a1a1a] pb-2 mb-4 flex justify-between items-end">
@@ -111,39 +125,55 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
                     <textarea
                         value={replyContent}
                         onChange={(e) => setReplyContent(e.target.value)}
-                        placeholder={hasExistingReply ? "수정할 내용을 적어주세요..." : "답장을 적어주세요..."}
-                        className="relative w-full h-full bg-transparent font-hand text-xl text-[#333] leading-[2rem] resize-none outline-none placeholder:text-gray-300 z-10"
+                        placeholder="답장을 적어주세요..."
+                        disabled={hasSentReply || isSending} // 전송 완료시 비활성화 (수정하려면 버튼 눌러야 함)
+                        className={`relative w-full h-full bg-transparent font-hand text-xl leading-[2rem] resize-none outline-none z-10 transition-colors
+                            ${hasSentReply ? 'text-gray-400 cursor-default' : 'text-[#333] placeholder:text-gray-300'}
+                        `}
                         spellCheck={false}
                     />
                 </div>
 
-                {/* 하단 버튼 (스탬프/전송) */}
+                {/* 하단 버튼 영역 */}
                 <div className="mt-6 flex justify-between items-center">
                     <div className="flex gap-2">
                         <div className="flex items-center gap-1 text-[10px] font-mono text-gray-400">
-                             <Check size={12} className="text-red-500" /> 
+                             <Check size={12} className={hasSentReply ? "text-red-500" : "text-gray-300"} /> 
                              <span>SATISFACTION</span>
                         </div>
                     </div>
 
-                    <button
-                        onClick={handleSend}
-                        disabled={isSending || isCompleted || !replyContent.trim()}
-                        className={`
-                            group flex items-center gap-2 px-4 py-2 rounded-sm border-2 border-[#1a1a1a]
-                            transition-all duration-200
-                            ${isSending ? 'bg-gray-100 cursor-wait' : 'bg-white hover:bg-[#1a1a1a] hover:text-white'}
-                        `}
-                    >
-                        {isSending ? (
-                            <span className="font-mono text-sm animate-pulse">SENDING...</span>
-                        ) : (
-                            <>
-                                <span className="font-bebas text-lg tracking-wider">SEND REPLY</span>
-                                <Send size={16} className="group-hover:translate-x-1 transition-transform"/>
-                            </>
-                        )}
-                    </button>
+                    {/* ✅ 버튼 로직 변경: 전송 전(Send) vs 전송 후(Revise) */}
+                    {!hasSentReply ? (
+                        // [전송 버튼]
+                        <button
+                            onClick={handleSend}
+                            disabled={isSending || !replyContent.trim()}
+                            className={`
+                                group flex items-center gap-2 px-4 py-2 rounded-sm border-2 border-[#1a1a1a]
+                                transition-all duration-200
+                                ${isSending ? 'bg-gray-100 cursor-wait' : 'bg-white hover:bg-[#1a1a1a] hover:text-white'}
+                            `}
+                        >
+                            {isSending ? (
+                                <span className="font-mono text-sm animate-pulse">SENDING...</span>
+                            ) : (
+                                <>
+                                    <span className="font-bebas text-lg tracking-wider">SEND REPLY</span>
+                                    <Send size={16} className="group-hover:translate-x-1 transition-transform"/>
+                                </>
+                            )}
+                        </button>
+                    ) : (
+                        // [수정 버튼] - 도장 찍힌 후 나타남
+                        <button
+                            onClick={handleRevise}
+                            className="group flex items-center gap-2 px-4 py-2 rounded-sm border-2 border-gray-400 text-gray-500 hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-all bg-white/50"
+                        >
+                            <span className="font-bebas text-lg tracking-wider">REVISE / RESEND</span>
+                            <RotateCcw size={16} className="group-hover:-rotate-180 transition-transform duration-500"/>
+                        </button>
+                    )}
                 </div>
              </div>
         </div>
