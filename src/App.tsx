@@ -30,6 +30,7 @@ export default function App() {
   // === State Management ===
   const [started, setStarted] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false); // 로그인 성공 애니메이션 제어
   const [showPublicLetter, setShowPublicLetter] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
@@ -104,7 +105,9 @@ export default function App() {
       }
 
       setLoginError(false);
-      setShowLogin(false);
+      
+      // ✅ 수정됨: 바로 닫지 않고 성공 상태 먼저 표시 (도장 애니메이션)
+      setLoginSuccess(true);
       setCurrentPassword(pw); // 비밀번호 저장
       setFoundMessage({
         content: data.content,
@@ -114,7 +117,13 @@ export default function App() {
         hasReplied: data.hasReplied, // DB의 has_replied 필드
       });
       playSound('success');
-      setTimeout(() => setShowLetter(true), 800);
+      
+      // ⏳ 1.2초 뒤에 창 닫고 편지 열기
+      setTimeout(() => {
+        setShowLogin(false);
+        setLoginSuccess(false); // 상태 초기화
+        setShowLetter(true);
+      }, 1200);
     } catch (err) {
       console.error('Login error:', err);
       playSound('error');
@@ -345,10 +354,11 @@ export default function App() {
       {/* Login / Barcode Scanner */}
       {showLogin && (
         <BarcodeScanner 
-          onClose={() => { setShowLogin(false); setLoginError(false); }} 
+          onClose={() => { setShowLogin(false); setLoginError(false); setLoginSuccess(false); }} 
           onSubmit={handleLogin} 
           error={loginError} 
-          isLoading={isLoadingMessage} 
+          isLoading={isLoadingMessage}
+          isSuccess={loginSuccess}
         />
       )}
       
