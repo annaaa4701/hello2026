@@ -101,10 +101,12 @@ export default function App() {
       if (!data.ok) {
         playSound('error');
         setLoginError(true);
+        setIsLoadingMessage(false); // 에러 시에만 즉시 로딩 해제
         return;
       }
 
       setLoginError(false);
+      setIsLoadingMessage(false); // 로딩 먼저 끝내기
       
       // ✅ 수정됨: 바로 닫지 않고 성공 상태 먼저 표시 (도장 애니메이션)
       setLoginSuccess(true);
@@ -128,8 +130,7 @@ export default function App() {
       console.error('Login error:', err);
       playSound('error');
       setLoginError(true);
-    } finally {
-      setIsLoadingMessage(false);
+      setIsLoadingMessage(false); // 에러 시 로딩 해제
     }
   };
 
