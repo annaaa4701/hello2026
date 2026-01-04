@@ -103,7 +103,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     );
   }
 
-  const now = Date.now();
+  const now = new Date().toISOString();
 
   // 답장 업데이트
   const updateStmt = env.DB

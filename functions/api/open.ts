@@ -94,7 +94,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     content: string; 
     reply: string | null; 
     from_name: string;
-    first_opened_at: number | null;
+    first_opened_at: string | null;
   } | null;
 
   if (!row) {
@@ -109,7 +109,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
 
   // 처음 열어보는 경우, first_opened_at 기록
   if (row.first_opened_at === null) {
-    const now = Date.now();
+    const now = new Date().toISOString();
     await env.DB.prepare(
       "UPDATE letters SET first_opened_at = ? WHERE pw_hash = ?"
     ).bind(now, pwHash).run();
