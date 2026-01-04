@@ -11,49 +11,49 @@ const tracks = [
     artist: 'Young K', 
     title: 'Natural', 
     cover: '/assets/1.jpg', 
-    note: "꾸며내지 않은 자연스러운 모습 그대로가 가장 멋지다는 걸 알려주고 싶었어." 
+    note: "And I can't get enough\nI wish I could've been there myself" 
   },
   { 
     id: 2, 
     artist: 'Anne-Marie', 
     title: 'To Be Young', 
     cover: '/assets/2.jpg', 
-    note: "우린 아직 젊고, 실수해도 괜찮아. 2026년은 더 과감하게 도전해보자!" 
+    note: "We're all a mess,\nbut I guess\nThis is what it feels like to be young" 
   },
   { 
     id: 3, 
     artist: 'Post Malone', 
     title: 'Myself', 
     cover: '/assets/3.jpg', 
-    note: "남들의 시선보다는 나 자신에게 집중하는 한 해가 되길 바라며." 
+    note: "Hope this might be the last one\n'Cause I'm not fooling anyone" 
   },
   { 
     id: 4, 
     artist: 'Ariana Grande', 
     title: 'Twilight Zone', 
     cover: '/assets/4.jpg', 
-    note: "가끔은 현실에서 벗어나 꿈같은 순간들을 즐기는 여유를 가졌으면 해." 
+    note: "And I swear I'm gonna lose it\nIf I keep playing your music\nBut what else is there to do?\nEverywhere I look I just see you" 
   },
   { 
     id: 5, 
     artist: 'Valley', 
     title: 'Can We Make It', 
     cover: '/assets/5.jpg', 
-    note: "어떤 어려움이 와도 우리는 결국 해낼 수 있을 거야. 믿어!" 
+    note: "The world doesn't have to be so scary\nHelp me help you help me get some clarity" 
   },
   { 
     id: 6, 
     artist: 'Baby Queen', 
     title: 'Dover beach', 
     cover: '/assets/6.jpg', 
-    note: "때론 멀리 떨어진 해변처럼, 나만의 공간이 필요할 때가 있어." 
+    note: "당연히 있을게 매일같이\n이 시간같이 힘들일 필요 없이" 
   },
   { 
     id: 7, 
     artist: 'Woodz', 
     title: 'Journey', 
     cover: '/assets/7.jpg', 
-    note: "끝이 아닌 여정 그 자체를 즐기며, 파도보다 더 크게 외쳐보자!" 
+    note: "아무도 모르는 나의 깊은 맘속 맑은 하늘 넓은 바다가 있어\n파도보다 더 크게 외쳐 when tears filled my eyes 울어도 돼\n시원한 바람이 불어올 때 내 몸을 맡긴 채로 날아 멀리\n이 바다 너머 저 작은 섬의 또 다른 나를 마주쳤어" 
   },
 ];
 
