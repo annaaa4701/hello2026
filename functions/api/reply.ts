@@ -112,7 +112,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     const now = new Date().toISOString();
 
     const result = await DB
-      .prepare("UPDATE letters SET reply = ?, updated_at = ? WHERE pw_hash = ?")
+      .prepare("UPDATE letters SET reply = ?, has_replied = 1, updated_at = ? WHERE pw_hash = ?")
       .bind(reply, now, pwHash)
       .run();
 

@@ -110,7 +110,8 @@ export default function App() {
         content: data.content,
         reply: data.reply,
         from: data.from,
-        to: data.to, // 추가: 받는 사람 이름
+        to: data.to,
+        hasReplied: data.hasReplied, // DB의 has_replied 필드
       });
       playSound('success');
       setTimeout(() => setShowLetter(true), 800);
@@ -368,10 +369,11 @@ export default function App() {
               
               if (data.ok) {
                 playSound('success');
-                // foundMessage 업데이트 (답장 내용 반영)
+                // foundMessage 업데이트 (답장 내용 + hasReplied 반영)
                 setFoundMessage((prev: any) => ({
                   ...prev,
-                  reply: txt
+                  reply: txt,
+                  hasReplied: true // DB에 has_replied=1로 저장됨
                 }));
               } else {
                 playSound('error');

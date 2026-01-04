@@ -18,12 +18,14 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
 }) => {
   const [replyContent, setReplyContent] = useState(messageData.reply || '');
   const [isSending, setIsSending] = useState(false);
-  const [hasSentReply, setHasSentReply] = useState(!!messageData.reply);
+  
+  // ✅ 로컬 상태 제거: DB의 hasReplied 사용
+  // const [hasSentReply, setHasSentReply] = useState(!!messageData.reply);
+  const hasSentReply = messageData.hasReplied || false;
 
   // 데이터 동기화
   useEffect(() => {
     setReplyContent(messageData.reply || '');
-    setHasSentReply(!!messageData.reply);
   }, [messageData.reply]);
 
   const handleSend = () => {
@@ -31,13 +33,14 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
     setIsSending(true);
     setTimeout(() => {
       setIsSending(false);
-      setHasSentReply(true); 
+      // setHasSentReply(true); 제거 - DB에서 관리
       onReply(replyContent); 
     }, 1500);
   };
 
   const handleRevise = () => {
-    setHasSentReply(false);
+    // setHasSentReply(false); 제거 - 답장 수정 시 DB 업데이트는 App.tsx에서 처리
+    // 실제로는 답장을 다시 보내는 것만 허용
   };
 
   useEffect(() => {

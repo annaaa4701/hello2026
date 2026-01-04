@@ -6,14 +6,14 @@ export interface MessageData {
   password: string; 
   content: string; 
   from: string;
-  to?: string; // 추가: 받는 사람 이름
+  to?: string; // 받는 사람 이름
   doorId: number; 
   themeColor?: string;
   reply?: string;
   repliedAt?: number;
   isRead?: boolean;
   readAt?: number;
-  hasReply?: boolean;
+  hasReplied?: boolean; // DB의 has_replied 필드 (내가 답장을 보냈는지)
   createdAt?: number;
 }
 
