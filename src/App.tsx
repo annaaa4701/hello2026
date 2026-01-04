@@ -17,13 +17,13 @@ import './styles/global.css';
 
 // 🎵 Music Data
 const TRACKS = [
-  { id: 1, title: "Natural", artist: "Young K", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track1.mp3", cover: "/assets/1.jpg" },
   { id: 2, title: "To Be Young", artist: "Anne-Marie", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track2.mp3", cover: "/assets/2.jpg" },
+  { id: 5, title: "Can We Make It", artist: "Valley", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track5.mp3", cover: "/assets/5.jpg" },
+  { id: 1, title: "Natural", artist: "Young K", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track1.mp3", cover: "/assets/1.jpg" },
+  { id: 7, title: "Journey", artist: "Woodz", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track7.mp3", cover: "/assets/7.jpg" },
   { id: 3, title: "Myself", artist: "Post Malone", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track3.mp3", cover: "/assets/3.jpg" },
   { id: 4, title: "Twilight Zone", artist: "Ariana Grande", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track4.mp3", cover: "/assets/4.jpg" },
-  { id: 5, title: "Can We Make It", artist: "Valley", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track5.mp3", cover: "/assets/5.jpg" },
   { id: 6, title: "Dover beach", artist: "Baby Queen", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track6.mp3", cover: "/assets/6.jpg" },
-  { id: 7, title: "Journey", artist: "Woodz", src: "https://pub-9ab44c0c4e78484a80ef9a109cf2cdab.r2.dev/track7.mp3", cover: "/assets/7.jpg" },
 ];
 
 export default function App() {
