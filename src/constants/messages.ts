@@ -1,7 +1,4 @@
 // 💌 모두에게 보내는 공통 편지 (초대장)
-// ⚠️ 주의: 이제 Firebase에서 불러옵니다. 
-// Firebase Console에서 publicMessage를 수정하거나
-// firebaseService.ts의 getPublicMessage()를 사용하세요.
 export const PUBLIC_MESSAGE = {
   from: "Nayeon",
   title: "To. My Dear Visitor",
