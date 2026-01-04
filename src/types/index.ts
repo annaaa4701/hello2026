@@ -20,4 +20,4 @@ export interface MessageData {
 export type SoundType = 'hover' | 'click' | 'success' | 'error' | 'open';
 
 // 커서 종류
-export type CursorVariant = 'default' | 'pointer' | 'key';
+export type CursorVariant = 'default' | 'pointer' | 'key' | 'snowflake' | 'quill' | 'stamp';

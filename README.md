@@ -5,75 +5,109 @@
 ![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![React](https://img.shields.io/badge/React-19.2.3-61dafb?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178c6?logo=typescript)
-![Firebase](https://img.shields.io/badge/Firebase-12.7.0-ffca28?logo=firebase)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-Pages-F38020?logo=cloudflare)
 
 ## 📀 프로젝트 소개
 
 **THE RESILIENCE MIX**는 2026년 새해 인사를 위한 인터랙티브 CD 플레이어 컨셉의 웹 애플리케이션입니다.  
-Y2K 미학과 레트로 CD 플레이어의 향수를 현대적인 웹 기술로 재해석하여, 특별한 메시지를 숨겨진 트랙으로 전달하는 새로운 경험을 제공합니다.
+Y2K 미학과 레트로 CD 플레이어의 향수를 현대적인 웹 기술로 재해석하여, 음악과 스티커로 꾸며진 스크랩북 같은 경험을 제공합니다.
 
 ### ✨ 주요 특징
 
-- 🎨 **Y2K 레트로 디자인**: 홀로그램 CD, 노이즈 효과, 글리치 타이포그래피
-- 💿 **CD 플레이어 경험**: 회전하는 CD 애니메이션, 트랙리스트 인터페이스
-- 🎹 **DAW 스타일 답장 시스템**: 실제 음악 작업 소프트웨어 느낌의 메시지 작성 UI
-- 🔐 **개인화된 메시지**: 이름과 비밀번호로 숨겨진 트랙(메시지)을 찾는 시스템
-- 🔥 **Firebase 실시간 동기화**: 메시지 저장 및 답장 기능
-- 🎵 **Web Audio API**: 인터랙티브한 사운드 효과와 BGM
+- 🎨 **Y2K 스크랩북 디자인**: 스티커, 테이프, 손글씨 메모가 어우러진 데스크 레이아웃
+- 💿 **리얼한 CD 플레이어**: 유리 케이스에 담긴 회전하는 CD, 7트랙 플레이리스트
+- 📀 **CD 렉 시스템**: 흩어진 CD들을 클릭하여 플레이리스트 확인
+- 📝 **손글씨 메모**: 직접 쓴 듯한 필기체 메시지
+- 🧾 **영수증 스타일 버튼**: 레트로 감성의 지그재그 영수증 디자인
+- 🎵 **7개의 큐레이션 트랙**: Young K, Anne-Marie, Post Malone, Ariana Grande, Valley, Baby Queen, Woodz
+- 📱 **완벽한 모바일 대응**: 라디오 바, 수직 스크롤 레이아웃
 - 🖱️ **커스텀 커서**: 상황에 따라 변하는 특별한 커서 디자인
+- 🔐 **비밀번호 보호 메시지**: Cloudflare D1 + Pages Functions로 구현된 보안 시스템
+- ⚡ **Rate Limiting**: IP당 10회/분 제한으로 보안 강화
 
 ## 🎮 사용 방법
 
-### 1️⃣ 앨범 재생 시작
-- "Play Disc" 버튼을 클릭하여 CD를 재생합니다
-- 회전하는 CD와 함께 BGM이 시작됩니다
+### 1️⃣ 인트로 시청
+- "PRESS PLAY" 버튼을 클릭하여 시작합니다
+- 자동으로 라이너 노트(앨범 소개 메시지)가 표시됩니다
 
 ### 2️⃣ 라이너 노트 읽기
-- 앨범 제목을 클릭하여 라이너 노트(앨범 소개 메시지)를 확인합니다
-- 모바일에서는 스크롤하여 전체 내용을 읽을 수 있습니다
+- 전체 공개 메시지를 스크롤하며 읽을 수 있습니다
+- X 버튼을 클릭하면 메인 화면으로 이동하며 음악이 시작됩니다
 
-### 3️⃣ 숨겨진 트랙 찾기
-- "UNLOCK HIDDEN TRACK" 버튼을 클릭합니다
-- 받은 이름과 비밀번호를 입력하여 자신을 위한 특별한 트랙을 찾습니다
-- 트랙이 열리면 발신자의 메시지를 확인할 수 있습니다
+### 3️⃣ CD 플레이어 조작
+- 중앙의 CD 플레이어에서 재생/일시정지 버튼 사용
+- 이전/다음 트랙 버튼으로 곡 변경
+- 모바일 상단의 라디오 바에서도 조작 가능
 
-### 4️⃣ 답장 보내기
-- DAW 스타일의 인터페이스에서 답장을 작성합니다
-- 빨간 REC 버튼을 눌러 답장을 녹음(전송)합니다
-- 답장은 Firebase에 실시간으로 저장됩니다
+### 4️⃣ 플레이리스트 보기
+- CD 렉(쌓인 CD들)을 클릭하여 전체 플레이리스트 확인
+- 각 트랙의 앨범 아트, 제목, 아티스트, 설명 확인
+- 원하는 트랙을 클릭하여 바로 재생
+
+### 5️⃣ 숨겨진 메시지 찾기
+- 영수증 스타일 버튼("SCAN TO UNLOCK")을 클릭
+- 받은 비밀번호를 입력하여 특별한 메시지 확인
+- DAW 스타일 UI에서 답장 작성 가능
+- ⚠️ IP당 10회/분 시도 제한 (보안)
+
+### 2️⃣ 라이너 노트 읽기
+- 전체 공개 메시지를 스크롤하며 읽을 수 있습니다
+- X 버튼을 클릭하면 메인 화면으로 이동하며 음악이 시작됩니다
+
+### 3️⃣ CD 플레이어 조작
+- 중앙의 CD 플레이어에서 재생/일시정지 버튼 사용
+- 이전/다음 트랙 버튼으로 곡 변경
+- 모바일 상단의 라디오 바에서도 조작 가능
+
+### 4️⃣ 플레이리스트 보기
+- CD 렉(쌓인 CD들)을 클릭하여 전체 플레이리스트 확인
+- 각 트랙의 앨범 아트, 제목, 아티스트, 설명 확인
+- 원하는 트랙을 클릭하여 바로 재생
+
+### 5️⃣ 숨겨진 메시지 찾기 (향후 구현)
+- 영수증 스타일 버튼("SCAN TO UNLOCK")을 클릭
+- 이름과 비밀번호를 입력하여 특별한 메시지 확인
+- *(현재 백엔드 미연동 - Cloudflare Workers 연동 예정)*
 
 ## 🏗️ 프로젝트 구조
 
 ```
-cdplayer2025/
+hello2026/
 ├── src/
 │   ├── components/
-│   │   ├── PostOffice/
-│   │   │   ├── LoginModal.tsx          # 로그인(트랙 찾기) 모달
-│   │   │   ├── PostOfficeModal.tsx     # DAW 스타일 메시지 뷰어
-│   │   │   └── PublicLetterModal.tsx   # 라이너 노트 모달
-│   │   ├── CustomCursor.tsx            # 커스텀 커서 컴포넌트
-│   │   ├── GlitchText.tsx              # 글리치 효과 텍스트
-│   │   ├── NoiseCanvas.tsx             # 노이즈 배경 캔버스
-│   │   ├── PixelDoor.tsx               # 트랙 아이템 컴포넌트
-│   │   └── StartScreen.tsx             # 시작 화면 (CD 플레이어)
+│   │   ├── MessageVault/
+│   │   │   ├── BarcodeScanner.tsx      # 비밀번호 입력 모달
+│   │   │   ├── HiddenTrack.tsx         # 숨겨진 메시지 뷰어
+│   │   │   └── LinerNote.tsx           # 공개 메시지 (라이너 노트)
+│   │   ├── CustomCursor.tsx            # 커스텀 커서
+│   │   ├── HandwrittenMemo.tsx         # 손글씨 메모 컴포넌트
+│   │   ├── LoadingIntro.tsx            # 인트로 화면
+│   │   ├── MobileRadiobar.tsx          # 모바일 상단 재생바
+│   │   ├── PlaylistModal.tsx           # 플레이리스트 모달
+│   │   ├── StickerButton.tsx           # 스티커/버튼 컴포넌트 모음
+│   │   └── TrackItem.tsx               # 트랙 아이템
 │   ├── config/
-│   │   └── firebase.ts                 # Firebase 설정
+│   │   └── firebase.ts                 # (미사용) Firebase 설정
 │   ├── constants/
-│   │   └── messages.ts                 # 공개 메시지 상수
+│   │   └── messages.ts                 # 공개 메시지 텍스트
 │   ├── styles/
-│   │   └── global.css                  # 전역 스타일 (Tailwind + Custom)
+│   │   └── global.css                  # 전역 스타일 (Tailwind)
 │   ├── types/
 │   │   └── index.ts                    # TypeScript 타입 정의
 │   ├── utils/
-│   │   ├── audio.ts                    # Web Audio API 유틸리티
-│   │   └── firebaseService.ts          # Firebase 데이터베이스 함수
+│   │   ├── audio.ts                    # 사운드 효과 유틸리티
+│   │   └── firebaseService.ts          # (미사용) Firebase 함수들
 │   ├── App.tsx                         # 메인 애플리케이션
 │   └── main.tsx                        # 진입점
+├── public/
+│   ├── assets/
+│   │   ├── music/                      # 7개 트랙 MP3 파일
+│   │   └── 1.jpg ~ 7.jpg              # 앨범 아트
+│   └── stickers/                       # SVG 스티커 에셋
 ├── index.html
 ├── package.json
 ├── tailwind.config.js
-├── tsconfig.json
 ├── vite.config.ts
 └── README.md
 ```
@@ -84,13 +118,14 @@ cdplayer2025/
 - **React 19.2.3** - UI 라이브러리
 - **TypeScript 5.9.3** - 타입 안전성
 - **Vite 7.2.7** - 빌드 도구 및 개발 서버
-- **Tailwind CSS 3.4.17** - 유틸리티 스타일링
+- **Tailwind CSS 3.4.17** - 유틸리티 기반 스타일링
 
-### Backend & Database
-- **Firebase Realtime Database 12.7.0** - 메시지 저장 및 실시간 동기화
+### Deployment
+- **Cloudflare Pages** - 정적 사이트 호스팅
+- **Wrangler 3.x** - Cloudflare 배포 CLI
 
 ### Audio
-- **Web Audio API** - 사운드 효과 및 BGM 생성
+- **HTML5 Audio API** - 음악 재생 및 제어
 
 ### Icons & UI
 - **Lucide React 0.560.0** - 아이콘 라이브러리
@@ -101,27 +136,16 @@ cdplayer2025/
 
 ```bash
 git clone <repository-url>
-cd cdplayer2025
+cd hello2026
 npm install
 ```
 
-### 2. Firebase 설정
+### 2. 환경 변수 설정 (선택사항)
 
-1. [Firebase Console](https://console.firebase.google.com/)에서 새 프로젝트 생성
-2. Realtime Database 활성화
-3. 웹 앱 추가 후 구성 정보 복사
-4. `src/config/firebase.ts` 파일에 본인의 Firebase 설정 정보 입력:
+향후 Cloudflare Workers/D1/KV를 연동할 경우 `.env` 파일 생성:
 
-```typescript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+```env
+VITE_API_ENDPOINT=your-cloudflare-workers-url
 ```
 
 ### 3. 개발 서버 실행
@@ -139,9 +163,36 @@ npm run build
 npm run preview  # 빌드 결과 미리보기
 ```
 
-## 📝 Firebase 데이터 구조
+### 5. Cloudflare Pages 배포
 
-### Messages
+#### 방법 1: Wrangler CLI 사용
+
+```bash
+# Wrangler 설치 (이미 devDependencies에 포함)
+npm install
+
+# Cloudflare 로그인
+npx wrangler login
+
+# 빌드 및 배포
+npm run deploy
+```
+
+#### 방법 2: Cloudflare Dashboard 사용
+
+1. [Cloudflare Dashboard](https://dash.cloudflare.com/) 접속
+2. Pages 메뉴로 이동
+3. "Create a project" 클릭
+4. GitHub 저장소 연결 또는 직접 업로드
+5. 빌드 설정:
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Framework preset**: `Vite`
+6. 배포 완료 후 `*.pages.dev` 도메인 확인
+
+## 📝 데이터 구조 (향후 백엔드 연동 시)
+
+### Messages (Cloudflare D1 또는 KV)
 ```json
 {
   "messages": {
@@ -163,71 +214,87 @@ npm run preview  # 빌드 결과 미리보기
 }
 ```
 
-### Public Message (라이너 노트)
-```json
-{
-  "publicMessage": {
-    "from": "Nayeon",
-    "title": "To. My Dear Visitor",
-    "content": "앨범 소개 메시지..."
-  }
-}
-```
-
 ## 🎨 디자인 컨셉
 
-### Y2K 미학 요소
-- **홀로그램 효과**: CD 표면의 무지개빛 반사
-- **노이즈/그레인**: CRT 모니터 느낌의 배경 질감
-- **스캔라인**: 옛날 TV 화면 효과
-- **글리치 타이포그래피**: 디지털 에러 느낌의 텍스트 효과
-- **네온 컬러**: 청록색(#A5F2F3)과 마젠타(#FF00FF) 그라데이션
+### 스크랩북 미학
+- **콜라주 레이아웃**: 스티커, 테이프, 손글씨 메모가 자유롭게 배치
+- **레트로 질감**: 모눈종이 배경, 노이즈 텍스처, 미색(#f4f4f0) 톤
+- **CD 플레이어**: 투명 유리 케이스, 회전하는 CD, 금속 나사
+- **영수증 디자인**: 지그재그 테두리, 바코드, 종이 질감
 
 ### 인터랙션 디자인
-- **커서 변화**: 상황에 따라 기본/포인터/열쇠 모양으로 변경
-- **사운드 피드백**: 마우스 호버, 클릭, 성공, 오류 시 각각 다른 소리
-- **애니메이션**: CD 회전, 페이드 인/아웃, 글리치 효과 등
+- **커서 변화**: 상황에 따라 커스텀 커서로 변경
+- **사운드 피드백**: 클릭, 호버 시 각각 다른 소리
+- **스티커 애니메이션**: hover 시 회전, 확대, 색상 변화
+- **CD 회전**: 재생 중 애니메이션 (animate-spin-slow)
 
-## 🎵 오디오 시스템
+## 🎵 음악 트랙
 
-### BGM (자동 재생)
-- Carol of the Bells 멜로디 기반
-- Web Audio API로 실시간 생성
-- 템포: 180 BPM
-- 음색: Square 파형
+### 큐레이션된 7개 트랙
+1. **Natural** - Young K
+2. **To Be Young** - Anne-Marie
+3. **Myself** - Post Malone
+4. **Twilight Zone** - Ariana Grande
+5. **Can We Make It** - Valley
+6. **Dover beach** - Baby Queen
+7. **Journey** - Woodz
 
-### 효과음
-- **hover**: 트랙 위에 마우스 올릴 때
-- **click**: 버튼 클릭 시
-- **success**: 로그인 성공, 답장 전송 성공
-- **error**: 로그인 실패
-- **open**: 트랙 열릴 때
+### 오디오 시스템
+- HTML5 Audio API 사용
+- 무한 반복 재생 (loop)
+- 이전/다음 트랙 순환
+- 트랙별 앨범 아트 표시
 
 ## 📱 반응형 디자인
 
-- **모바일**: 전체 화면 몰입형 경험, 스크롤 스냅
-- **태블릿/데스크탑**: CD 플레이어 중심 레이아웃, 모달 오버레이
+### 모바일 (< 768px)
+- 라디오 바 스타일 상단 플레이어
+- 수직 스크롤 레이아웃 (CD 플레이어 → EJECT → 메모)
+- CD 플레이어 180px × 180px
+- CD 렉 60% 스케일
+- 영수증 버튼 기본 크기
 
-## 🔧 주요 기능 구현
+### 데스크탑 (≥ 768px)
+- 스크랩북 데스크 레이아웃
+- CD 플레이어 중앙 배치 (360px × 360px)
+- 스티커들이 여백에 자유롭게 배치
+- 영수증 버튼 150% 확대
+- 모든 요소 절대 위치 지정
 
-### 1. 랜덤 트랙 표시
-로그인 전에는 24개 트랙 중 랜덤한 12개만 표시하여 미스터리한 느낌을 줍니다.
+## 🔧 주요 기능
 
-### 2. 로그인 시스템
-이름과 비밀번호로 Firebase에서 메시지를 찾아 해당하는 트랙만 표시합니다.
+### 1. 인트로 → 라이너 노트 → 메인 플로우
+모바일에서 자연스러운 스토리텔링 경험을 위한 단계적 전환
 
-### 3. DAW 스타일 UI
-실제 음악 작업 소프트웨어(Logic, Ableton 등)의 UI를 모방하여 답장을 작성합니다.
+### 2. CD 렉 시스템
+7개의 CD가 흩어진 형태로 쌓여있으며 클릭하면 플레이리스트 모달 표시
 
-### 4. 실시간 읽음 상태
-메시지를 열면 자동으로 읽음 상태가 Firebase에 업데이트됩니다.
+### 3. 플레이리스트 모달
+- 앨범 아트와 트랙 정보 표시
+- 모바일: 수직 레이아웃 (앨범 아트 위, 트랙 리스트 아래)
+- 데스크탑: 좌우 레이아웃 (앨범 아트 좌, 트랙 리스트 우)
+- 각 트랙 클릭으로 즉시 재생
+
+### 4. 숨겨진 메시지 시스템 (향후 구현)
+- 영수증 버튼으로 접근
+- 바코드 스캐너 스타일 로그인 UI
+- Cloudflare Workers API 연동 예정
 
 ## 🎯 사용 사례
 
-- 🎄 **새해 인사**: 특별한 방식으로 새해 메시지 전달
-- 🎁 **생일 축하**: 비밀번호로 보호된 개인화된 생일 메시지
-- 💌 **감사 인사**: 고객, 팀원, 친구에게 특별한 감사 편지
-- 🎓 **졸업 메시지**: 졸업생들에게 각각의 트랙 배정
+- 🎄 **새해 인사**: 음악과 함께하는 특별한 연하장
+- 🎁 **선물 카드**: QR 코드와 함께 CD 플레이어 링크 공유
+- 📀 **플레이리스트 공유**: 큐레이션된 음악을 스토리텔링과 함께
+- 💌 **감사 인사**: 스크랩북 느낌의 따뜻한 메시지 전달
+
+## 🚀 향후 개발 계획
+
+- [ ] Cloudflare Workers API 연동 (메시지 CRUD)
+- [ ] Cloudflare D1 또는 KV로 메시지 저장소 구현
+- [ ] 관리자 대시보드 (메시지 생성/관리)
+- [ ] 공유 기능 (링크 복사, QR 코드 생성)
+- [ ] 다국어 지원 (EN/KO)
+- [ ] PWA 지원 (오프라인 재생)
 
 ## 📄 라이선스
 

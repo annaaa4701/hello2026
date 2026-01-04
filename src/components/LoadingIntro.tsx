@@ -25,7 +25,14 @@ export const LoadingIntro: React.FC<LoadingIntroProps> = ({
         <div className="absolute inset-0 rounded-full blur-3xl bg-white/5 animate-pulse"></div>
 
         {/* CD 본체 Container */}
-        <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] rounded-full flex items-center justify-center animate-spin-slow shadow-2xl border border-white/10 bg-black">
+        <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] rounded-full flex items-center justify-center animate-spin-slow shadow-2xl border border-white/10 bg-black overflow-hidden">
+          
+          {/* CD 이미지 */}
+          <img 
+            src="/cdplayer2025/assets/cd.svg" 
+            alt="CD" 
+            className="absolute inset-0 w-full h-full object-cover rounded-full opacity-90"
+          />
           
           {/* CD 표면 (홀로그램 + 메탈릭) */}
           <div className="absolute inset-0 rounded-full cd-hologram opacity-40 mix-blend-color-dodge"></div>
@@ -56,7 +63,7 @@ export const LoadingIntro: React.FC<LoadingIntroProps> = ({
                </defs>
                <text className="text-[9px] font-bold fill-white/60 tracking-[0.2em] font-mono uppercase">
                  <textPath xlinkHref="#curve" startOffset="0%">
-                   Trust the uncertainty • Thanks to all the dips and cracks • Resilience • 
+                   Trust the uncertainty  
                  </textPath>
                </text>
             </svg>
@@ -108,7 +115,7 @@ export const LoadingIntro: React.FC<LoadingIntroProps> = ({
         
         {/* 버튼 밑 캡션 */}
         <p className="text-[9px] text-gray-600 text-center mt-4 font-mono tracking-widest group-hover:text-gray-400 transition-colors">
-          INSERT COIN OR PRESS START
+          INSERT YOUR CD
         </p>
       </div>
 
