@@ -82,12 +82,13 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     }
 
     // 존재 확인
-    let exists: { id: number } | null = null;
+    type ExistsType = { id: number };
+    let exists: ExistsType | null = null;
     try {
       exists = (await env.DB
         .prepare("SELECT id FROM letters WHERE pw_hash = ?")
         .bind(pwHash)
-        .first()) as typeof exists;
+        .first()) as ExistsType | null;
     } catch (dbError) {
       console.error("[reply.ts] DB query error:", dbError);
       return new Response(

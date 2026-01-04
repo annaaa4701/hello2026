@@ -81,18 +81,20 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       });
     }
 
-    let row: {
+    type RowType = {
       content: string;
       reply: string | null;
       from_name: string;
       first_opened_at: string | null;
-    } | null = null;
+    };
+
+    let row: RowType | null = null;
 
     try {
       row = (await env.DB
         .prepare("SELECT content, reply, from_name, first_opened_at FROM letters WHERE pw_hash = ?")
         .bind(pwHash)
-        .first()) as typeof row;
+        .first()) as RowType | null;
     } catch (dbError) {
       console.error("[open.ts] DB query error:", dbError);
       return new Response(
