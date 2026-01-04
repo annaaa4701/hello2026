@@ -68,7 +68,7 @@ export default function App() {
   const handleStart = () => { 
     setStarted(true); // 메인 화면 표시
     setShowPublicLetter(true); // 공개편지 열기
-    playSound('click'); 
+    playSoundFile('turn-a-page-336933.mp3', 0.6); // 시작할 때 페이지 넘기는 소리
   };
   
   const togglePlayPause = () => { 
@@ -275,7 +275,10 @@ export default function App() {
 
             {/* --- E. HANDWRITTEN MEMO (모바일: EJECT 다음, 데스크탑: Right Top) --- */}
             <div 
-              onClick={() => setShowPublicLetter(true)}
+              onClick={() => {
+                playSoundFile('turn-a-page-336933.mp3', 0.5);
+                setShowPublicLetter(true);
+              }}
               className="flex justify-center md:block md:absolute md:top-12 md:right-12 z-10 cursor-pointer hover:rotate-1 transition-transform duration-300 origin-top-right mt-0 md:mt-0"
             >
                <HandwrittenMemo />

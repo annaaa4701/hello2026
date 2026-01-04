@@ -121,10 +121,10 @@ export const LinerNote: React.FC<LinerNoteProps> = ({
                     onClick={onViewPlaylist}
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
-                    className="group w-full md:w-auto flex items-center justify-center gap-2 px-6 py-4 md:py-3 bg-[#111] text-white font-mono text-xs hover:bg-[#000] transition-all rounded md:rounded-none shadow-lg md:shadow-none active:scale-95 md:active:scale-100"
+                    className="group w-full md:w-auto flex items-center justify-center gap-2 px-6 py-4 md:px-8 md:py-4 bg-[#111] text-white font-mono text-xs md:text-sm tracking-wide hover:bg-[#000] hover:shadow-xl transition-all rounded md:rounded-sm shadow-lg active:scale-95"
                   >
                     <span>VIEW TRACKLIST</span>
-                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                </div>
             </div>
