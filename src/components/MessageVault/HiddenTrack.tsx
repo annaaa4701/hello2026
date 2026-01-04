@@ -21,6 +21,12 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
   // 초기 상태: 이미 답장이 있으면 '전송 완료' 상태로 시작
   const [hasSentReply, setHasSentReply] = useState(!!messageData.reply);
 
+  // messageData.reply가 변경되면 상태 업데이트
+  useEffect(() => {
+    setReplyContent(messageData.reply || '');
+    setHasSentReply(!!messageData.reply);
+  }, [messageData.reply]);
+
   const handleSend = () => {
     if (!replyContent.trim()) return;
     

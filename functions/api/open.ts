@@ -37,7 +37,7 @@ type Env = { "letters-db": any; [key: string]: any };
 
 type OpenRequest = { password: string };
 type OpenResponse =
-  | { ok: true; content: string; reply: string | null; from: string }
+  | { ok: true; content: string; reply: string | null; from: string; to: string }
   | { ok: false; error: string };
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }) => {
@@ -110,6 +110,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       content: string;
       reply: string | null;
       from_name: string;
+      to_name: string;
       first_opened_at: string | null;
     };
 
@@ -117,7 +118,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
 
     console.log("[open.ts] Executing DB query...");
     try {
-      const stmt = DB.prepare("SELECT content, reply, from_name, first_opened_at FROM letters WHERE pw_hash = ?");
+      const stmt = DB.prepare("SELECT content, reply, from_name, to_name, first_opened_at FROM letters WHERE pw_hash = ?");
       console.log("[open.ts] Statement prepared");
       
       const boundStmt = stmt.bind(pwHash);
@@ -171,7 +172,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     console.log("[open.ts] ✅ Success! Returning letter data");
     console.log("[open.ts] ========== API REQUEST END ==========");
     return new Response(
-      JSON.stringify({ ok: true, content: row.content, reply: row.reply, from: row.from_name } satisfies OpenResponse),
+      JSON.stringify({ ok: true, content: row.content, reply: row.reply, from: row.from_name, to: row.to_name || "You" } satisfies OpenResponse),
       { headers: { "content-type": "application/json; charset=utf-8" } }
     );
   } catch (error) {
