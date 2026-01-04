@@ -17,13 +17,13 @@ import './styles/global.css';
 
 // 🎵 Music Data
 const TRACKS = [
-  { id: 1, title: "Natural", artist: "Young K", src: "/cdplayer2025/assets/music/track1.mp3", cover: "/cdplayer2025/assets/1.jpg" },
-  { id: 2, title: "To Be Young", artist: "Anne-Marie", src: "/cdplayer2025/assets/music/track2.mp3", cover: "/cdplayer2025/assets/2.jpg" },
-  { id: 3, title: "Myself", artist: "Post Malone", src: "/cdplayer2025/assets/music/track3.mp3", cover: "/cdplayer2025/assets/3.jpg" },
-  { id: 4, title: "Twilight Zone", artist: "Ariana Grande", src: "/cdplayer2025/assets/music/track4.mp3", cover: "/cdplayer2025/assets/4.jpg" },
-  { id: 5, title: "Can We Make It", artist: "Valley", src: "/cdplayer2025/assets/music/track5.mp3", cover: "/cdplayer2025/assets/5.jpg" },
-  { id: 6, title: "Dover beach", artist: "Baby Queen", src: "/cdplayer2025/assets/music/track6.mp3", cover: "/cdplayer2025/assets/6.jpg" },
-  { id: 7, title: "Journey", artist: "Woodz", src: "/cdplayer2025/assets/music/track7.mp3", cover: "/cdplayer2025/assets/7.jpg" },
+  { id: 1, title: "Natural", artist: "Young K", src: "/assets/music/track1.mp3", cover: "/assets/1.jpg" },
+  { id: 2, title: "To Be Young", artist: "Anne-Marie", src: "/assets/music/track2.mp3", cover: "/assets/2.jpg" },
+  { id: 3, title: "Myself", artist: "Post Malone", src: "/assets/music/track3.mp3", cover: "/assets/3.jpg" },
+  { id: 4, title: "Twilight Zone", artist: "Ariana Grande", src: "/assets/music/track4.mp3", cover: "/assets/4.jpg" },
+  { id: 5, title: "Can We Make It", artist: "Valley", src: "/assets/music/track5.mp3", cover: "/assets/5.jpg" },
+  { id: 6, title: "Dover beach", artist: "Baby Queen", src: "/assets/music/track6.mp3", cover: "/assets/6.jpg" },
+  { id: 7, title: "Journey", artist: "Woodz", src: "/assets/music/track7.mp3", cover: "/assets/7.jpg" },
 ];
 
 export default function App() {
@@ -194,7 +194,7 @@ export default function App() {
                           src={currentTrack.cover} 
                           className={`w-full h-full object-cover rounded-full shadow-xl border-[2px] md:border-[4px] border-white/20 ${isPlaying ? 'animate-spin-slow' : ''}`}
                           alt="CD"
-                          onError={(e) => (e.currentTarget.src = '/cdplayer2025/assets/cd.svg')}
+                          onError={(e) => (e.currentTarget.src = '/assets/cd.svg')}
                         />
                         {/* Center Hole */}
                         <div className="absolute w-8 h-8 md:w-16 md:h-16 bg-[#2d3436] rounded-full border border-white/10 shadow-inner flex items-center justify-center">
@@ -263,12 +263,12 @@ export default function App() {
             */}
             {/* 1. Sticker 1 (별): 제목 'BEGINNINGS' 오른쪽 끝 빈 공간 */}
             <div className="hidden md:block md:absolute md:top-8 md:right-[22rem] z-0 rotate-0 opacity-100">
-                 <img src="/cdplayer2025/stickers/sticker7.svg" alt="star" className="w-24 drop-shadow-md hover:spin-slow transition-all cursor-pointer" />
+                 <img src="/stickers/sticker7.svg" alt="star" className="w-24 drop-shadow-md hover:spin-slow transition-all cursor-pointer" />
             </div>
 
             {/* 4. Sticker 4 (낙서): 제목 'NEW' 위쪽 여백 */}
             <div className="hidden md:block md:absolute md:top-8 md:left-[17%] z-0 rotate-[-12deg] opacity-100">
-                 <img src="/cdplayer2025/stickers/sticker5.svg" alt="scribble" className="w-48 drop-shadow-md" />
+                 <img src="/stickers/sticker5.svg" alt="scribble" className="w-48 drop-shadow-md" />
             </div>
 
             {/* 노란색 스마일 테이프: 제목과 겹치지 않게 'RESILIENCE' 라벨 오른쪽 아래로 이동 */}
@@ -282,17 +282,17 @@ export default function App() {
             */}
             {/* 2. Sticker 2 (바코드): 영수증 뒤에 큼지막하게 깔아주기 */}
             <div className="hidden md:block md:absolute md:top-[55%] md:left-[10%] rotate-[-2deg] z-0 opacity-100">
-                 <img src="/cdplayer2025/stickers/sticker2.svg" alt="barcode" className="w-48 drop-shadow-md" />
+                 <img src="/stickers/sticker2.svg" alt="barcode" className="w-48 drop-shadow-md" />
             </div>
 
             {/* 3. Sticker 3 (오브제): 타이틀과 영수증 사이의 텅 빈 공간 채우기 */}
             <div className="hidden md:block md:absolute md:top-[70%] md:left-[20%] z-0 rotate-[15deg] scale-300 opacity-100">
-                 <img src="/cdplayer2025/stickers/sticker3.svg" alt="deco" className="w-60 drop-shadow-sm hover:rotate-0 transition-transform duration-300" />
+                 <img src="/stickers/sticker3.svg" alt="deco" className="w-60 drop-shadow-sm hover:rotate-0 transition-transform duration-300" />
             </div>
 
             {/* 7. Sticker 7 (테이프/오브제): 영수증 바로 위를 장식 */}
             <div className="hidden md:block md:absolute md:bottom-48 md:left-[25%] z-10 rotate-[-5deg] opacity-100 mix-blend-multiply">
-                 <img src="/cdplayer2025/stickers/sticker1.svg" alt="tape" className="w-20 drop-shadow-md" />
+                 <img src="/stickers/sticker1.svg" alt="tape" className="w-20 drop-shadow-md" />
             </div>
 
 
@@ -302,17 +302,17 @@ export default function App() {
             
             {/* 5. Sticker 5 (데코): 메모지 왼쪽 상단에 '핀'처럼 배치 */}
             <div className="hidden md:block md:absolute md:top-6 md:right-[22rem] z-20 rotate-[10deg]">
-                 <img src="/cdplayer2025/stickers/sticker4.svg" alt="deco" className="w-20 drop-shadow-md hover:-translate-y-2 transition-transform" />
+                 <img src="/stickers/sticker4.svg" alt="deco" className="w-20 drop-shadow-md hover:-translate-y-2 transition-transform" />
             </div>
 
             {/* 6. Sticker 6 (큰 배경): 플레이어 오른쪽 뒤편에 은은하게 깔기 */}
             <div className="hidden md:block md:absolute md:top-[55%] md:right-[28%] z-0 rotate-[10deg] opacity-60">
-                 <img src="/cdplayer2025/stickers/sticker8.svg" alt="deco" className="w-32 drop-shadow-md hover:grayscale-0 transition-all" />
+                 <img src="/stickers/sticker8.svg" alt="deco" className="w-32 drop-shadow-md hover:grayscale-0 transition-all" />
             </div>
 
             {/* 8. Sticker 8 (도형): 화면 오른쪽 끝 중앙 여백 채우기 */}
             <div className="hidden md:block md:absolute md:top-[40%] md:right-8 z-10 rotate-[5deg] opacity-100">
-                 <img src="/cdplayer2025/stickers/sticker6.svg" alt="deco" className="w-32 drop-shadow-md" />
+                 <img src="/stickers/sticker6.svg" alt="deco" className="w-32 drop-shadow-md" />
             </div> 
 
             {/* 2026 하트 테이프: 메모지 아래 공간 */}

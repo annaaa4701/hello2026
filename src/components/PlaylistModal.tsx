@@ -10,49 +10,49 @@ const tracks = [
     id: 1, 
     artist: 'Young K', 
     title: 'Natural', 
-    cover: '/cdplayer2025/assets/1.jpg', 
+    cover: '/assets/1.jpg', 
     note: "꾸며내지 않은 자연스러운 모습 그대로가 가장 멋지다는 걸 알려주고 싶었어." 
   },
   { 
     id: 2, 
     artist: 'Anne-Marie', 
     title: 'To Be Young', 
-    cover: '/cdplayer2025/assets/2.jpg', 
+    cover: '/assets/2.jpg', 
     note: "우린 아직 젊고, 실수해도 괜찮아. 2026년은 더 과감하게 도전해보자!" 
   },
   { 
     id: 3, 
     artist: 'Post Malone', 
     title: 'Myself', 
-    cover: '/cdplayer2025/assets/3.jpg', 
+    cover: '/assets/3.jpg', 
     note: "남들의 시선보다는 나 자신에게 집중하는 한 해가 되길 바라며." 
   },
   { 
     id: 4, 
     artist: 'Ariana Grande', 
     title: 'Twilight Zone', 
-    cover: '/cdplayer2025/assets/4.jpg', 
+    cover: '/assets/4.jpg', 
     note: "가끔은 현실에서 벗어나 꿈같은 순간들을 즐기는 여유를 가졌으면 해." 
   },
   { 
     id: 5, 
     artist: 'Valley', 
     title: 'Can We Make It', 
-    cover: '/cdplayer2025/assets/5.jpg', 
+    cover: '/assets/5.jpg', 
     note: "어떤 어려움이 와도 우리는 결국 해낼 수 있을 거야. 믿어!" 
   },
   { 
     id: 6, 
     artist: 'Baby Queen', 
     title: 'Dover beach', 
-    cover: '/cdplayer2025/assets/6.jpg', 
+    cover: '/assets/6.jpg', 
     note: "때론 멀리 떨어진 해변처럼, 나만의 공간이 필요할 때가 있어." 
   },
   { 
     id: 7, 
     artist: 'Woodz', 
     title: 'Journey', 
-    cover: '/cdplayer2025/assets/7.jpg', 
+    cover: '/assets/7.jpg', 
     note: "끝이 아닌 여정 그 자체를 즐기며, 파도보다 더 크게 외쳐보자!" 
   },
 ];

@@ -29,7 +29,7 @@ export const LoadingIntro: React.FC<LoadingIntroProps> = ({
           
           {/* CD 이미지 */}
           <img 
-            src="/cdplayer2025/assets/cd.svg" 
+            src="/assets/cd.svg" 
             alt="CD" 
             className="absolute inset-0 w-full h-full object-cover rounded-full opacity-90"
           />
