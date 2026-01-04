@@ -91,7 +91,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
     .prepare("SELECT id FROM letters WHERE pw_hash = ?")
     .bind(pwHash);
 
-  const row = await selectStmt.first<{ id: number }>();
+  const row = (await selectStmt.first()) as { id: number } | null;
 
   if (!row) {
     return new Response(

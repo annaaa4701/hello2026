@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const HandwrittenMemo = () => {
   return (
     <div className="relative w-72 h-auto bg-[#fcfbf9] p-6 shadow-[2px_2px_15px_rgba(0,0,0,0.15)] rotate-1 transform hover:rotate-0 transition-transform duration-500">
