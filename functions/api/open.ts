@@ -33,7 +33,7 @@ function rateLimitOrThrow(ip: string) {
   hits.set(ip, cur);
 }
 
-type Env = { DB: any };
+type Env = { "letters-db": any; [key: string]: any };
 
 type OpenRequest = { password: string };
 type OpenResponse =
@@ -49,9 +49,12 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     // D1 바인딩 체크
     console.log("[open.ts] Checking DB binding...");
     console.log("[open.ts] env.DB exists:", !!env.DB);
+    console.log("[open.ts] env['letters-db'] exists:", !!env["letters-db"]);
     console.log("[open.ts] env keys:", Object.keys(env));
     
-    if (!env.DB) {
+    const DB = env["letters-db"] || env.DB;
+    
+    if (!DB) {
       console.error("[open.ts] ❌ DB binding not found!");
       return new Response(
         JSON.stringify({ ok: false, error: "Database not configured" }),
@@ -114,7 +117,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
 
     console.log("[open.ts] Executing DB query...");
     try {
-      const stmt = env.DB.prepare("SELECT content, reply, from_name, first_opened_at FROM letters WHERE pw_hash = ?");
+      const stmt = DB.prepare("SELECT content, reply, from_name, first_opened_at FROM letters WHERE pw_hash = ?");
       console.log("[open.ts] Statement prepared");
       
       const boundStmt = stmt.bind(pwHash);
@@ -153,7 +156,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       console.log("[open.ts] First time opening, updating timestamp...");
       const now = new Date().toISOString();
       try {
-        await env.DB
+        await DB
           .prepare("UPDATE letters SET first_opened_at = ? WHERE pw_hash = ?")
           .bind(now, pwHash)
           .run();

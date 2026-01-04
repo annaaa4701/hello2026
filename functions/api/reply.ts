@@ -33,7 +33,7 @@ function rateLimitOrThrow(ip: string) {
   hits.set(ip, cur);
 }
 
-type Env = { DB: any };
+type Env = { "letters-db": any; [key: string]: any };
 
 type ReplyRequest = { password: string; reply: string };
 type ReplyResponse = { ok: true } | { ok: false; error: string };
@@ -41,7 +41,9 @@ type ReplyResponse = { ok: true } | { ok: false; error: string };
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }) => {
   try {
     // D1 바인딩 체크
-    if (!env.DB) {
+    const DB = env["letters-db"] || env.DB;
+    
+    if (!DB) {
       console.error("[reply.ts] DB binding not found");
       return new Response(
         JSON.stringify({ ok: false, error: "Database not configured" }),
@@ -85,7 +87,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     type ExistsType = { id: number };
     let exists: ExistsType | null = null;
     try {
-      exists = (await env.DB
+      exists = (await DB
         .prepare("SELECT id FROM letters WHERE pw_hash = ?")
         .bind(pwHash)
         .first()) as ExistsType | null;
@@ -109,7 +111,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
 
     const now = new Date().toISOString();
 
-    const result = await env.DB
+    const result = await DB
       .prepare("UPDATE letters SET reply = ?, updated_at = ? WHERE pw_hash = ?")
       .bind(reply, now, pwHash)
       .run();
