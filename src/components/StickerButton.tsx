@@ -246,13 +246,13 @@ export const TapeSticker: React.FC<CommonProps & { imgSrc?: string; color?: stri
  */
 export const CDRackButton: React.FC<CommonProps> = ({ onClick, className = '' }) => {
   const cds = [
-    { artist: "YOUNG K", title: "Natural", color: "#f2f2f2", text: "#111", rotate: "rotate-[-2deg]", translate: "-translate-x-4" },
-    { artist: "ANNE-MARIE", title: "To Be Young", color: "#1a1a1a", text: "#f2f2f2", rotate: "rotate-[3deg]", translate: "translate-x-2" },
-    { artist: "POST MALONE", title: "Myself", color: "#cc0000", text: "#fff", rotate: "rotate-[-1deg]", translate: "translate-x-0" },
+    { artist: "YOUNG K", title: "Natural", color: "#cee7f3", text: "#111", rotate: "rotate-[-2deg]", translate: "-translate-x-4" },
+    { artist: "ANNE-MARIE", title: "To Be Young", color: "#181717", text: "#f2f2f2", rotate: "rotate-[3deg]", translate: "translate-x-2" },
+    { artist: "POST MALONE", title: "Myself", color: "#a91b18", text: "#fff", rotate: "rotate-[-1deg]", translate: "translate-x-0" },
     { artist: "ARIANA GRANDE", title: "Twilight Zone", color: "#e5e5e5", text: "#333", rotate: "rotate-[4deg]", translate: "-translate-x-2" },
     { artist: "VALLEY", title: "Can We Make It", color: "#333", text: "#ccc", rotate: "rotate-[-3deg]", translate: "translate-x-3" },
-    { artist: "BABY QUEEN", title: "Dover beach", color: "#f2f2f2", text: "#111", rotate: "rotate-[2deg]", translate: "-translate-x-1" },
-    { artist: "WOODZ", title: "Journey", color: "#1a1a1a", text: "#f2f2f2", rotate: "rotate-[-2deg]", translate: "translate-x-1" },
+    { artist: "BABY QUEEN", title: "Dover beach", color: "#f8faed", text: "#111", rotate: "rotate-[2deg]", translate: "-translate-x-1" },
+    { artist: "WOODZ", title: "Journey", color: "#cee7f3", text: "#111", rotate: "", translate: "translate-x-1" },
   ];
   
   return (
@@ -272,11 +272,11 @@ export const CDRackButton: React.FC<CommonProps> = ({ onClick, className = '' })
               shadow-[0_4px_6px_-1px_rgba(0,0,0,0.4)]
               flex items-center justify-between px-4
               font-bebas tracking-wider text-lg
-              ${cd.color === '#1a1a1a' || cd.color === '#333' ? 'bg-zinc-900' : cd.color === '#cc0000' ? 'bg-red-700' : 'bg-gray-100'}
               ${cd.rotate} ${cd.translate}
               transition-transform duration-300 ease-out
             `}
             style={{ 
+                backgroundColor: cd.color,
                 color: cd.text, 
                 zIndex: cds.length - i,
                 // 플라스틱 반사 그라디언트

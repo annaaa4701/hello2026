@@ -203,6 +203,18 @@ export default function App() {
                </div>
             </div>
 
+            {/* 네온 별 스티커 - 상단 중앙 빈 공간 */}
+            <div className="hidden md:block md:absolute md:top-[8%] md:left-[40%] z-20 animate-pulse rotate-[55deg] scale-[150%]">
+               <img 
+                  src="/star.svg" 
+                  alt="star" 
+                  className="w-16 h-16 drop-shadow-[0_0_15px_rgba(255,255,0,0.8)]"
+                  style={{
+                    filter: 'drop-shadow(0 0 10px rgba(255, 255, 0, 0.9)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.6)) brightness(1.3) saturate(1.5)'
+                  }}
+               />
+            </div>
+
             {/* --- B. CD PLAYER & CD RACK (모바일: 좌우 배치, 데스크탑: 중앙) --- */}
             <div className="w-full md:w-auto flex flex-row md:block justify-center items-center gap-2 px-8 md:px-0 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20 my-0 md:my-0">
                {/* CD Player */}
@@ -271,15 +283,26 @@ export default function App() {
 
             {/* --- D. EJECT / LOGIN BUTTON (모바일: CD 플레이어 다음, 데스크탑: Left Bottom) --- */}
             <div className="flex justify-center md:absolute md:bottom-16 md:left-16 z-40 mt-0 md:mt-0">
-               <div className="flex items-center gap-4">
-                  <ReceiptButton onClick={() => { 
-                    playSoundFile('cash-drawer-and-receipt-105386.mp3', 0.4);
-                    setShowLogin(true);
-                  }} className="md:scale-150" />
-                  
-                
-                  
-               </div>
+               <ReceiptButton onClick={() => { 
+                 playSoundFile('cash-drawer-and-receipt-105386.mp3', 0.4);
+                 setShowLogin(true);
+               }} className="md:scale-150" />
+            </div>
+
+            {/* Desktop에서만 보이는 화살표 강조 */}
+            <div className="hidden md:flex md:absolute md:bottom-[10%] md:left-[18%] items-center gap-2 animate-bounce z-40">
+               <img 
+                  src="/arrow.svg" 
+                  alt="arrow" 
+                  className="w-14 h-14 opacity-100 drop-shadow-lg"
+                  style={{ 
+                    filter: 'drop-shadow(2px 2px 4px rgba(255, 0, 0, 0.3))',
+                    transform: 'scaleX(-1)'
+                  }}
+               />
+               <span className="font-mono text-sm text-red-600 font-bold tracking-wider rotate-[-2deg]">
+                  CLICK HERE!
+               </span>
             </div>
 
             {/* --- E. HANDWRITTEN MEMO (모바일: EJECT 다음, 데스크탑: Right Top) --- */}
@@ -302,17 +325,17 @@ export default function App() {
                 제목을 피해 빈 공간에 배치합니다.
             */}
             {/* 1. Sticker 1 (별): 제목 'BEGINNINGS' 오른쪽 끝 빈 공간 */}
-            <div className="hidden md:block md:absolute md:top-8 md:right-[22rem] z-0 rotate-0 opacity-100">
-                 <img src="/stickers/sticker7.svg" alt="star" className="w-24 drop-shadow-md hover:spin-slow transition-all cursor-pointer" />
+            <div className="hidden md:block md:absolute md:top-[8%] md:right-[28%] z-0 rotate-0 opacity-100">
+                 <img src="/stickers/sticker3.svg" alt="star" className="w-48 drop-shadow-md hover:spin-slow transition-all cursor-pointer" />
             </div>
 
             {/* 4. Sticker 4 (낙서): 제목 'NEW' 위쪽 여백 */}
-            <div className="hidden md:block md:absolute md:top-8 md:left-[17%] z-0 rotate-[-12deg] opacity-100">
+            <div className="hidden md:block md:absolute md:top-[8%] md:left-[17%] z-0 rotate-[-12deg] opacity-100">
                  <img src="/stickers/sticker5.svg" alt="scribble" className="w-48 drop-shadow-md" />
             </div>
 
             {/* 노란색 스마일 테이프: 제목과 겹치지 않게 'RESILIENCE' 라벨 오른쪽 아래로 이동 */}
-            <div className="hidden md:block md:absolute md:top-[20rem] md:left-[18rem] z-20 rotate-[-2deg] scale-90 opacity-90 hover:scale-110 transition-transform shadow-sm">
+            <div className="hidden md:block md:absolute md:top-[45%] md:left-[18%] z-20 rotate-[2deg] scale-90 opacity-90 hover:scale-110 transition-transform shadow-sm">
                  <TapeSticker label="KEEP SMILING :)" color="#ffec40" onClick={() => {}} />
             </div>
 
@@ -326,12 +349,12 @@ export default function App() {
             </div>
 
             {/* 3. Sticker 3 (오브제): 타이틀과 영수증 사이의 텅 빈 공간 채우기 */}
-            <div className="hidden md:block md:absolute md:top-[70%] md:left-[20%] z-0 rotate-[15deg] scale-300 opacity-100">
-                 <img src="/stickers/sticker3.svg" alt="deco" className="w-60 drop-shadow-sm hover:rotate-0 transition-transform duration-300" />
+            <div className="hidden md:block md:absolute md:top-[70%] md:left-[20%] z-0 rotate-[15deg] scale-100 opacity-100">
+                 <img src="/stickers/sticker7.svg" alt="deco" className="w-20 drop-shadow-sm hover:rotate-0 transition-transform duration-300" />
             </div>
 
             {/* 7. Sticker 7 (테이프/오브제): 영수증 바로 위를 장식 */}
-            <div className="hidden md:block md:absolute md:bottom-48 md:left-[25%] z-10 rotate-[-5deg] opacity-100 mix-blend-multiply">
+            <div className="hidden md:block md:absolute md:bottom-[20%] md:left-[25%] z-10 rotate-[-5deg] opacity-100 mix-blend-multiply">
                  <img src="/stickers/sticker1.svg" alt="tape" className="w-20 drop-shadow-md" />
             </div>
 
@@ -341,27 +364,27 @@ export default function App() {
             */}
             
             {/* 5. Sticker 5 (데코): 메모지 왼쪽 상단에 '핀'처럼 배치 */}
-            <div className="hidden md:block md:absolute md:top-6 md:right-[22rem] z-20 rotate-[10deg]">
+            <div className="hidden md:block md:absolute md:top-[26%] md:right-[30%] z-20 rotate-[85deg]">
                  <img src="/stickers/sticker4.svg" alt="deco" className="w-20 drop-shadow-md hover:-translate-y-2 transition-transform" />
             </div>
 
             {/* 6. Sticker 6 (큰 배경): 플레이어 오른쪽 뒤편에 은은하게 깔기 */}
-            <div className="hidden md:block md:absolute md:top-[55%] md:right-[28%] z-0 rotate-[10deg] opacity-60">
-                 <img src="/stickers/sticker8.svg" alt="deco" className="w-32 drop-shadow-md hover:grayscale-0 transition-all" />
+            <div className="hidden md:block md:absolute md:top-[35%] md:right-[28%] z-0 rotate-[10deg] opacity-60">
+                 <img src="/stickers/sticker8.svg" alt="deco" className="w-20s drop-shadow-md hover:grayscale-0 transition-all" />
             </div>
 
             {/* 8. Sticker 8 (도형): 화면 오른쪽 끝 중앙 여백 채우기 */}
-            <div className="hidden md:block md:absolute md:top-[40%] md:right-8 z-10 rotate-[5deg] opacity-100">
+            <div className="hidden md:block md:absolute md:top-[40%] md:right-[5%] z-10 rotate-[5deg] opacity-100">
                  <img src="/stickers/sticker6.svg" alt="deco" className="w-32 drop-shadow-md" />
             </div> 
 
             {/* 2026 하트 테이프: 메모지 아래 공간 */}
-            <div className="hidden md:block md:absolute md:top-[28rem] md:right-16 z-20 rotate-[4deg] hover:scale-105 transition-transform shadow-md">
-                 <TapeSticker label="2026 ♡" color="#FFB7B2" onClick={() => {}} />
+            <div className="hidden md:block md:absolute md:top-[45%] md:right-[16%] z-20 rotate-[-4deg] hover:scale-105 transition-transform shadow-md">
+                 <TapeSticker label="2026 ♡" color="#317b73" onClick={() => {}} />
             </div>
 
             {/* 중앙 하단 라벨 */}
-            <div className="hidden md:block md:absolute md:bottom-20 md:left-[42%] z-0 rotate-[-1deg] opacity-70">
+            <div className="hidden md:block md:absolute md:bottom-[10%] md:left-[42%] z-0 rotate-[-1deg] opacity-70">
                  <div className="bg-white/80 border-2 border-[#1a1a1a] px-3 py-1 font-barcode text-xl tracking-widest hover:bg-black hover:text-white transition-colors cursor-default">
                     * ORIGINAL_SOUND *
                  </div>
