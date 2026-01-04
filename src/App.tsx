@@ -66,7 +66,8 @@ export default function App() {
   }, [isPlaying]);
 
   const handleStart = () => { 
-    setShowPublicLetter(true); 
+    setStarted(true); // 메인 화면 표시
+    setShowPublicLetter(true); // 공개편지 열기
     playSound('click'); 
   };
   
