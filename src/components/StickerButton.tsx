@@ -120,59 +120,89 @@ export const DymoButton: React.FC<CommonProps & { variant?: 'black' | 'red' | 'b
   );
 };
 
-/** 🧾 Receipt Button (영수증 스타일) */
+/** 🧾 Receipt Button (영수증 스타일 - 모달 트리거) */
 export const ReceiptButton: React.FC<CommonProps> = ({ onClick, className = '' }) => {
+  // 모달과 동일한 미색 배경
+  const PAPER_COLOR = '#fdfbf7';
+
   return (
     <button
       onClick={onClick}
       className={`
-        group relative w-24 md:w-28 bg-[#fffdf0] text-[#1a1a1a]
-        shadow-[2px_2px_8px_rgba(0,0,0,0.15)]
-        rotate-[-6deg] hover:rotate-0 hover:scale-105 hover:shadow-xl
-        transition-all duration-300 ease-out
+        group relative w-28 md:w-32 bg-[#fdfbf7] text-[#1a1a1a]
+        shadow-[2px_4px_12px_rgba(0,0,0,0.15)]
+        rotate-[-6deg] hover:rotate-0 hover:scale-105 hover:shadow-2xl hover:z-50
+        transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]
         flex flex-col items-center
-        pb-2 pt-4 px-3
+        pt-0 pb-0
         font-mono text-[10px] leading-tight
         ${className}
       `}
     >
-      {/* 🧾 영수증 상단 지그재그 (CSS Radial Gradient 이용) */}
-      <div className="absolute top-0 left-0 w-full h-2 bg-[#fffdf0]"
-           style={{ background: 'radial-gradient(circle, transparent 50%, #fffdf0 50%) -4px -4px / 8px 8px repeat-x' }}>
+      {/* ✂️ 상단 찢어진 효과 */}
+      <div className="w-full h-2 relative"
+        style={{ 
+          backgroundImage: `radial-gradient(circle, transparent 50%, ${PAPER_COLOR} 50%)`,
+          backgroundSize: '8px 8px',
+          backgroundPosition: '-4px -4px',
+          backgroundRepeat: 'repeat-x'
+        }}>
       </div>
 
-      {/* 내용 */}
-      <div className="flex flex-col items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-        <span className="font-bold uppercase tracking-wider border-b border-black/20 pb-1 mb-1">
+      {/* 📄 내용 영역 */}
+      <div className="w-full px-3 py-2 flex flex-col items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity">
+        {/* 종이 질감 */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] opacity-40 mix-blend-multiply pointer-events-none"></div>
+
+        <span className="font-bold uppercase tracking-wider border-b-2 border-black/10 pb-1 mb-1 text-xs">
           RECEIPT
         </span>
         
-        <div className="w-full flex justify-between text-[9px] text-gray-500">
+        <div className="w-full flex justify-between text-[8px] text-gray-500 font-bold">
             <span>DATE</span>
             <span>2026.01</span>
         </div>
         
-        <div className="w-full text-left my-1">
-            <p>1 x HAPPINESS</p>
-            <p>1 x RESILIENCE</p>
+        <div className="w-full text-left my-1 space-y-[2px]">
+            <div className="flex justify-between">
+                <span>1 x HAPPINESS</span>
+                <span>$10.13</span>
+            </div>
+            <div className="flex justify-between">
+                <span>1 x RESILIENCE</span>
+                <span>$10.13</span>
+            </div>
         </div>
 
         <div className="w-full border-t border-dashed border-black/30 my-1"></div>
 
-        {/* 바코드 (클릭 유도) */}
-        <div className="mt-1 flex flex-col items-center">
-            <span className="font-barcode text-3xl h-6">CODE123</span>
-            <span className="text-[8px] tracking-[0.2em] mt-1">SCAN ME</span>
+        {/* TOTAL */}
+        <div className="w-full flex justify-between text-[9px] font-black">
+            <span>TOTAL</span>
+            <span>HAPPY NEW YEAR</span>
+        </div>
+
+        <div className="w-full border-t border-dashed border-black/30 my-1"></div>
+
+        {/* 🔑 코드 입력 유도 부분 (강조) */}
+        <div className="mt-1 flex flex-col items-center w-full bg-black/5 p-1 rounded-sm group-hover:bg-yellow-100 transition-colors">
+            <span className="font-barcode text-xl h-6 text-black">HELLO2026</span>
+            <span className="text-[7px] font-black tracking-[0.1em] mt-1 text-red-600 animate-pulse">
+              ENTER ACCESS CODE  
+            </span>
         </div>
       </div>
 
-      {/* 🧾 영수증 하단 지그재그 */}
-      <div className="absolute bottom-[-4px] left-0 w-full h-2 bg-[#fffdf0] rotate-180"
-           style={{ background: 'radial-gradient(circle, transparent 50%, #fffdf0 50%) -4px -4px / 8px 8px repeat-x' }}>
+      {/* ✂️ 하단 찢어진 효과 */}
+      <div className="w-full h-2 relative"
+        style={{ 
+          backgroundImage: `radial-gradient(circle, transparent 50%, ${PAPER_COLOR} 50%)`,
+          backgroundSize: '8px 8px',
+          backgroundPosition: '-4px 4px',
+          backgroundRepeat: 'repeat-x',
+          transform: 'rotate(180deg)'
+        }}>
       </div>
-      
-      {/* 종이 질감 오버레이 */}
-      <div className="absolute inset-0 bg-black/5 pointer-events-none mix-blend-multiply"></div>
     </button>
   );
 };
