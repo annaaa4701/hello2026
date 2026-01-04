@@ -35,7 +35,7 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
   };
 
   const handleRevise = () => {
-    setHasSentReply(false);
+    setHasSentReply(false); // 편집 가능 상태로 전환
   };
 
   // 모달 열릴 때 body 스크롤 막기
@@ -45,7 +45,7 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-0 md:p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-[200] flex items-start md:items-center justify-center bg-black/70 backdrop-blur-sm p-0 md:p-4 overflow-y-auto">
       
       {/* 닫기 버튼 */}
       <button onClick={onClose} className="fixed top-4 right-4 text-white/50 hover:text-white transition-colors z-50 p-2 bg-black/20 rounded-full md:bg-transparent">
@@ -56,13 +56,13 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
       <div className={`
         relative 
         w-full md:w-full md:max-w-6xl md:aspect-[2.2/1]
-        min-h-screen md:min-h-0 /* 모바일: 전체 화면 높이, 데스크탑: 내용물 높이 */
+        min-h-fit md:min-h-0
         bg-[#fdfbf7] shadow-[0_30px_60px_rgba(0,0,0,0.5)] 
         transform transition-all duration-700 ease-out
         translate-y-0 opacity-100
         flex flex-col md:flex-row 
         rounded-none md:rounded-sm overflow-hidden
-        my-auto /* 세로 중앙 정렬 */
+        my-4 md:my-auto
       `}>
         
         <div className="absolute inset-0 pointer-events-none opacity-40 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] mix-blend-multiply z-10"></div>
@@ -141,7 +141,7 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
              
              {/* 🔥 수정됨: 리얼한 빈티지 스탬프 디자인 */}
              {hasSentReply && (
-                <div className="absolute top-1/2 right-8 md:right-12 -translate-y-1/2 rotate-[-15deg] z-30 pointer-events-none">
+                <div className="absolute top-1/2 right-8 md:right-12 -translate-y-1/2 rotate-[-15deg] z-30 pointer-events-none scale-[0.6]">
                     <div 
                         className="animate-stamp inline-flex items-center justify-center border-[4px] border-red-800 text-red-800 px-6 py-2 font-black text-4xl md:text-5xl opacity-80 mix-blend-multiply tracking-widest rounded-sm"
                         style={{
@@ -162,24 +162,22 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
                 <PenTool size={18} className="text-gray-400 mb-1" />
              </div>
 
-             {/* 📝 답장 입력 영역 (줄 노트) */}
-             <div className="flex-1 relative min-h-[300px]">
-                {/* 🔥 수정됨: 줄 간격 및 높이 미세 조정 (h-10 = 2.5rem) */}
-                <div className="absolute inset-0 flex flex-col pt-[0.5rem]">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i} className="w-full h-10 border-b border-blue-100"></div>
-                    ))}
-                </div>
-
+             {/* 📝 답장 입력 영역 (밑줄 스타일) */}
+             <div className="flex-1 relative min-h-[300px] md:min-h-[350px]">
                 <textarea
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
                     placeholder="답장을 적어주세요..."
                     disabled={hasSentReply || isSending}
-                    // 🔥 수정됨: 줄 높이(leading)와 padding-top을 맞춰서 글씨가 줄 위에 오도록 조정
-                    className={`relative w-full h-full bg-transparent font-hand text-2xl leading-[2.5rem] resize-none outline-none z-10 transition-colors pt-[0.1rem] pl-1
-                        ${hasSentReply ? 'text-gray-400 cursor-default' : 'text-[#1a1a1a] placeholder:text-gray-300'}
+                    className={`relative w-full h-full bg-transparent font-hand text-xl md:text-2xl leading-relaxed resize-none outline-none z-10 transition-colors
+                        ${hasSentReply ? 'text-gray-600 cursor-default' : 'text-[#1a1a1a] placeholder:text-gray-300'}
                     `}
+                    style={{
+                        backgroundImage: 'repeating-linear-gradient(transparent, transparent 2.4rem, #e5e7eb 2.4rem, #e5e7eb calc(2.4rem + 1px))',
+                        backgroundSize: '100% 100%',
+                        lineHeight: '2.5rem',
+                        paddingTop: '0.3rem'
+                    }}
                     spellCheck={false}
                 />
              </div>
