@@ -39,63 +39,98 @@ type ReplyRequest = { password: string; reply: string };
 type ReplyResponse = { ok: true } | { ok: false; error: string };
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }) => {
-  const ip = getClientIp(request);
-
   try {
-    rateLimitOrThrow(ip);
-  } catch (e) {
-    if (e instanceof Response) return e;
-    throw e;
-  }
+    // D1 바인딩 체크
+    if (!env.DB) {
+      console.error("[reply.ts] DB binding not found");
+      return new Response(
+        JSON.stringify({ ok: false, error: "Database not configured" }),
+        { 
+          status: 500,
+          headers: { "content-type": "application/json; charset=utf-8" }
+        }
+      );
+    }
 
-  let body: ReplyRequest;
-  try {
-    body = (await request.json()) as ReplyRequest;
-  } catch {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid JSON body" } satisfies ReplyResponse), {
-      status: 400,
+    const ip = getClientIp(request);
+
+    try {
+      rateLimitOrThrow(ip);
+    } catch (e) {
+      if (e instanceof Response) return e;
+      throw e;
+    }
+
+    let body: ReplyRequest;
+    try {
+      body = (await request.json()) as ReplyRequest;
+    } catch {
+      return new Response(JSON.stringify({ ok: false, error: "Invalid JSON body" } satisfies ReplyResponse), {
+        status: 400,
+        headers: { "content-type": "application/json; charset=utf-8" },
+      });
+    }
+
+    const pwHash = (body.password ?? "").trim();
+    const reply = body.reply ?? "";
+
+    if (!pwHash) {
+      return new Response(JSON.stringify({ ok: false, error: "Password is required" } satisfies ReplyResponse), {
+        status: 400,
+        headers: { "content-type": "application/json; charset=utf-8" },
+      });
+    }
+
+    // 존재 확인
+    let exists: { id: number } | null = null;
+    try {
+      exists = (await env.DB
+        .prepare("SELECT id FROM letters WHERE pw_hash = ?")
+        .bind(pwHash)
+        .first()) as typeof exists;
+    } catch (dbError) {
+      console.error("[reply.ts] DB query error:", dbError);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Database query failed" }),
+        { 
+          status: 500,
+          headers: { "content-type": "application/json; charset=utf-8" }
+        }
+      );
+    }
+
+    if (!exists) {
+      return new Response(JSON.stringify({ ok: false, error: "Letter not found" } satisfies ReplyResponse), {
+        status: 404,
+        headers: { "content-type": "application/json; charset=utf-8" },
+      });
+    }
+
+    const now = new Date().toISOString();
+
+    const result = await env.DB
+      .prepare("UPDATE letters SET reply = ?, updated_at = ? WHERE pw_hash = ?")
+      .bind(reply, now, pwHash)
+      .run();
+
+    if (!result.success) {
+      return new Response(JSON.stringify({ ok: false, error: "Failed to update reply" } satisfies ReplyResponse), {
+        status: 500,
+        headers: { "content-type": "application/json; charset=utf-8" },
+      });
+    }
+
+    return new Response(JSON.stringify({ ok: true } satisfies ReplyResponse), {
       headers: { "content-type": "application/json; charset=utf-8" },
     });
+  } catch (error) {
+    console.error("[reply.ts] Runtime error:", error);
+    return new Response(
+      JSON.stringify({ ok: false, error: "Internal server error" }),
+      { 
+        status: 500,
+        headers: { "content-type": "application/json; charset=utf-8" }
+      }
+    );
   }
-
-  const pwHash = (body.password ?? "").trim();
-  const reply = body.reply ?? "";
-
-  if (!pwHash) {
-    return new Response(JSON.stringify({ ok: false, error: "Password is required" } satisfies ReplyResponse), {
-      status: 400,
-      headers: { "content-type": "application/json; charset=utf-8" },
-    });
-  }
-
-  // 존재 확인
-  const exists = (await env.DB
-    .prepare("SELECT id FROM letters WHERE pw_hash = ?")
-    .bind(pwHash)
-    .first()) as { id: number } | null; // [web:81]
-
-  if (!exists) {
-    return new Response(JSON.stringify({ ok: false, error: "Letter not found" } satisfies ReplyResponse), {
-      status: 404,
-      headers: { "content-type": "application/json; charset=utf-8" },
-    });
-  }
-
-  const now = new Date().toISOString();
-
-  const result = await env.DB
-    .prepare("UPDATE letters SET reply = ?, updated_at = ? WHERE pw_hash = ?")
-    .bind(reply, now, pwHash)
-    .run(); // [web:81]
-
-  if (!result.success) {
-    return new Response(JSON.stringify({ ok: false, error: "Failed to update reply" } satisfies ReplyResponse), {
-      status: 500,
-      headers: { "content-type": "application/json; charset=utf-8" },
-    });
-  }
-
-  return new Response(JSON.stringify({ ok: true } satisfies ReplyResponse), {
-    headers: { "content-type": "application/json; charset=utf-8" },
-  });
 };

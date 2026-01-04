@@ -41,60 +41,96 @@ type OpenResponse =
   | { ok: false; error: string };
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }) => {
-  const ip = getClientIp(request);
-
   try {
-    rateLimitOrThrow(ip);
-  } catch (e) {
-    if (e instanceof Response) return e;
-    throw e;
-  }
+    // D1 바인딩 체크
+    if (!env.DB) {
+      console.error("[open.ts] DB binding not found");
+      return new Response(
+        JSON.stringify({ ok: false, error: "Database not configured" }),
+        { 
+          status: 500,
+          headers: { "content-type": "application/json; charset=utf-8" }
+        }
+      );
+    }
 
-  let body: OpenRequest;
-  try {
-    body = (await request.json()) as OpenRequest;
-  } catch {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid JSON body" } satisfies OpenResponse), {
-      status: 400,
-      headers: { "content-type": "application/json; charset=utf-8" },
-    });
-  }
+    const ip = getClientIp(request);
 
-  const pwHash = (body.password ?? "").trim(); // 테스트 단계: 평문 비교
-  if (!pwHash) {
-    return new Response(JSON.stringify({ ok: false, error: "Password is required" } satisfies OpenResponse), {
-      status: 400,
-      headers: { "content-type": "application/json; charset=utf-8" },
-    });
-  }
+    try {
+      rateLimitOrThrow(ip);
+    } catch (e) {
+      if (e instanceof Response) return e;
+      throw e;
+    }
 
-  const row = (await env.DB
-    .prepare("SELECT content, reply, from_name, first_opened_at FROM letters WHERE pw_hash = ?")
-    .bind(pwHash)
-    .first()) as {
+    let body: OpenRequest;
+    try {
+      body = (await request.json()) as OpenRequest;
+    } catch {
+      return new Response(JSON.stringify({ ok: false, error: "Invalid JSON body" } satisfies OpenResponse), {
+        status: 400,
+        headers: { "content-type": "application/json; charset=utf-8" },
+      });
+    }
+
+    const pwHash = (body.password ?? "").trim(); // 테스트 단계: 평문 비교
+    if (!pwHash) {
+      return new Response(JSON.stringify({ ok: false, error: "Password is required" } satisfies OpenResponse), {
+        status: 400,
+        headers: { "content-type": "application/json; charset=utf-8" },
+      });
+    }
+
+    let row: {
       content: string;
       reply: string | null;
       from_name: string;
       first_opened_at: string | null;
-    } | null; // [web:81]
+    } | null = null;
 
-  if (!row) {
-    return new Response(JSON.stringify({ ok: false, error: "Not found" } satisfies OpenResponse), {
-      status: 404,
-      headers: { "content-type": "application/json; charset=utf-8" },
-    });
+    try {
+      row = (await env.DB
+        .prepare("SELECT content, reply, from_name, first_opened_at FROM letters WHERE pw_hash = ?")
+        .bind(pwHash)
+        .first()) as typeof row;
+    } catch (dbError) {
+      console.error("[open.ts] DB query error:", dbError);
+      return new Response(
+        JSON.stringify({ ok: false, error: "Database query failed" }),
+        { 
+          status: 500,
+          headers: { "content-type": "application/json; charset=utf-8" }
+        }
+      );
+    }
+
+    if (!row) {
+      return new Response(JSON.stringify({ ok: false, error: "Not found" } satisfies OpenResponse), {
+        status: 404,
+        headers: { "content-type": "application/json; charset=utf-8" },
+      });
+    }
+
+    if (row.first_opened_at === null) {
+      const now = new Date().toISOString();
+      await env.DB
+        .prepare("UPDATE letters SET first_opened_at = ? WHERE pw_hash = ?")
+        .bind(now, pwHash)
+        .run();
+    }
+
+    return new Response(
+      JSON.stringify({ ok: true, content: row.content, reply: row.reply, from: row.from_name } satisfies OpenResponse),
+      { headers: { "content-type": "application/json; charset=utf-8" } }
+    );
+  } catch (error) {
+    console.error("[open.ts] Runtime error:", error);
+    return new Response(
+      JSON.stringify({ ok: false, error: "Internal server error" }),
+      { 
+        status: 500,
+        headers: { "content-type": "application/json; charset=utf-8" }
+      }
+    );
   }
-
-  if (row.first_opened_at === null) {
-    const now = new Date().toISOString();
-    await env.DB
-      .prepare("UPDATE letters SET first_opened_at = ? WHERE pw_hash = ?")
-      .bind(now, pwHash)
-      .run(); // [web:81]
-  }
-
-  return new Response(
-    JSON.stringify({ ok: true, content: row.content, reply: row.reply, from: row.from_name } satisfies OpenResponse),
-    { headers: { "content-type": "application/json; charset=utf-8" } }
-  );
 };
