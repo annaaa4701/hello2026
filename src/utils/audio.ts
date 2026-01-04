@@ -5,31 +5,15 @@ export const audioCtx = typeof window !== 'undefined'
   ? new (window.AudioContext || (window as any).webkitAudioContext)() 
   : null;
 
-// 사운드 파일 재생 함수
-const playSoundFile = (src: string, volume: number = 0.5) => {
-  const audio = new Audio(src);
+// 효과음 MP3 파일 재생 함수
+export const playSoundFile = (filename: string, volume: number = 0.5) => {
+  const audio = new Audio(`/assets/${filename}`);
   audio.volume = volume;
-  audio.play().catch(err => console.log('Sound play failed:', err));
+  audio.play().catch(err => console.log('Audio play failed:', err));
 };
 
 // 사운드 효과 재생
 export const playSound = (type: SoundType) => {
-  // 새로운 사운드 파일들
-  if (type === 'playDisc') {
-    playSoundFile('/assets/spring-click-sound-95507.mp3', 0.6);
-    return;
-  } else if (type === 'turnPage') {
-    playSoundFile('/assets/turn-a-page-336933.mp3', 0.5);
-    return;
-  } else if (type === 'receipt') {
-    playSoundFile('/assets/cash-drawer-and-receipt-105386.mp3', 0.5);
-    return;
-  } else if (type === 'cdCase') {
-    playSoundFile('/assets/plastic-cd-case-opening-and-closing-104083.mp3', 0.5);
-    return;
-  }
-
-  // 기존 Web Audio API 사운드들
   if (!audioCtx) return;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();

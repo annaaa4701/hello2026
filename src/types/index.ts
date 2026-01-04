@@ -18,7 +18,7 @@ export interface MessageData {
 }
 
 // 사운드 타입
-export type SoundType = 'hover' | 'click' | 'success' | 'error' | 'open' | 'playDisc' | 'turnPage' | 'receipt' | 'cdCase';
+export type SoundType = 'hover' | 'click' | 'success' | 'error' | 'open';
 
 // 커서 종류
 export type CursorVariant = 'default' | 'pointer' | 'key' | 'snowflake' | 'quill' | 'stamp';

@@ -1,6 +1,6 @@
 // src/App.tsx
 import { useState, useEffect, useRef } from 'react';
-import { playSound } from './utils/audio';
+import { playSound, playSoundFile } from './utils/audio';
 
 // Components
 import { CustomCursor } from './components/CustomCursor';
@@ -72,7 +72,7 @@ export default function App() {
   
   const togglePlayPause = () => { 
     setIsPlaying(!isPlaying); 
-    playSound('playDisc'); 
+    playSoundFile('spring-click-sound-95507.mp3', 0.3);
   };
   
   const nextTrack = () => { 
@@ -243,19 +243,28 @@ export default function App() {
 
                {/* CD Rack - 모바일에서 플레이어 옆에 배치 */}
                <div className="flex md:hidden items-center scale-[0.6]">
-                  <CDRackButton onClick={() => setShowPlaylist(true)} />
+                  <CDRackButton onClick={() => {
+                    playSoundFile('plastic-cd-case-opening-and-closing-104083.mp3', 0.4);
+                    setShowPlaylist(true);
+                  }} />
                </div>
             </div>
 
             {/* --- C. MESSY CD STACK (Desktop Only - Right Bottom) --- */}
             <div className="hidden md:flex justify-center md:absolute md:bottom-12 md:right-12 z-30 transition-transform hover:-translate-y-2 active:scale-95">
-               <CDRackButton onClick={() => { playSound('cdCase'); setShowPlaylist(true); }} />
+               <CDRackButton onClick={() => {
+                 playSoundFile('plastic-cd-case-opening-and-closing-104083.mp3', 0.4);
+                 setShowPlaylist(true);
+               }} />
             </div>
 
             {/* --- D. EJECT / LOGIN BUTTON (모바일: CD 플레이어 다음, 데스크탑: Left Bottom) --- */}
             <div className="flex justify-center md:absolute md:bottom-16 md:left-16 z-40 mt-0 md:mt-0">
                <div className="flex items-center gap-4">
-                  <ReceiptButton onClick={() => { playSound('receipt'); setShowLogin(true); }} className="md:scale-150" />
+                  <ReceiptButton onClick={() => { 
+                    playSoundFile('cash-drawer-and-receipt-105386.mp3', 0.4);
+                    setShowLogin(true);
+                  }} className="md:scale-150" />
                   
                 
                   
@@ -422,7 +431,7 @@ export default function App() {
             setShowPublicLetter(false); 
           }} 
           onViewPlaylist={() => {
-            playSound('turnPage');
+            playSoundFile('turn-a-page-336933.mp3', 0.5);
             setShowPublicLetter(false);
             setShowPlaylist(true);
             if (!isPlaying) setIsPlaying(true);
