@@ -72,7 +72,7 @@ export default function App() {
   
   const togglePlayPause = () => { 
     setIsPlaying(!isPlaying); 
-    playSound('click'); 
+    playSound('playDisc'); 
   };
   
   const nextTrack = () => { 
@@ -249,13 +249,13 @@ export default function App() {
 
             {/* --- C. MESSY CD STACK (Desktop Only - Right Bottom) --- */}
             <div className="hidden md:flex justify-center md:absolute md:bottom-12 md:right-12 z-30 transition-transform hover:-translate-y-2 active:scale-95">
-               <CDRackButton onClick={() => setShowPlaylist(true)} />
+               <CDRackButton onClick={() => { playSound('cdCase'); setShowPlaylist(true); }} />
             </div>
 
             {/* --- D. EJECT / LOGIN BUTTON (모바일: CD 플레이어 다음, 데스크탑: Left Bottom) --- */}
             <div className="flex justify-center md:absolute md:bottom-16 md:left-16 z-40 mt-0 md:mt-0">
                <div className="flex items-center gap-4">
-                  <ReceiptButton onClick={() => setShowLogin(true)} className="md:scale-150" />
+                  <ReceiptButton onClick={() => { playSound('receipt'); setShowLogin(true); }} className="md:scale-150" />
                   
                 
                   
@@ -422,6 +422,7 @@ export default function App() {
             setShowPublicLetter(false); 
           }} 
           onViewPlaylist={() => {
+            playSound('turnPage');
             setShowPublicLetter(false);
             setShowPlaylist(true);
             if (!isPlaying) setIsPlaying(true);
