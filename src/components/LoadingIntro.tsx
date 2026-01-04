@@ -52,7 +52,7 @@ export const LoadingIntro: React.FC<LoadingIntroProps> = ({
              <p className="text-[6px] md:text-[8px] font-mono text-gray-500 tracking-widest text-center leading-tight">
                THE<br/>RESILIENCE<br/>MIX
              </p>
-             <p className="text-[5px] text-gray-600 mt-2 font-mono">2026 LP</p>
+             <p className="text-[5px] text-gray-600 mt-2 font-mono">2026 CD</p>
           </div>
 
           {/* CD 위의 타이포그래피 (회전함 - SVG textPath) */}

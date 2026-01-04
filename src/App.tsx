@@ -34,6 +34,7 @@ export default function App() {
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
   const [foundMessage, setFoundMessage] = useState<any>(null);
+  const [currentPassword, setCurrentPassword] = useState<string>(''); // 추가: 현재 사용 중인 비밀번호
   const [loginError, setLoginError] = useState(false);
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   
@@ -104,6 +105,7 @@ export default function App() {
 
       setLoginError(false);
       setShowLogin(false);
+      setCurrentPassword(pw); // 비밀번호 저장
       setFoundMessage({
         content: data.content,
         reply: data.reply,
@@ -359,14 +361,18 @@ export default function App() {
               const res = await fetch('/api/reply', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({ password: 'stored-pw', reply: txt }),
+                body: JSON.stringify({ password: currentPassword, reply: txt }),
               });
               
               const data = await res.json();
               
               if (data.ok) {
                 playSound('success');
-                setShowLetter(false);
+                // foundMessage 업데이트 (답장 내용 반영)
+                setFoundMessage((prev: any) => ({
+                  ...prev,
+                  reply: txt
+                }));
               } else {
                 playSound('error');
               }
