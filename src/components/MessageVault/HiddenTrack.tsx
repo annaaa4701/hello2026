@@ -1,6 +1,6 @@
 // src/components/MessageVault/HiddenTrack.tsx
 import React, { useState, useEffect } from 'react';
-import { X, PenTool, Check, Send, RotateCcw } from 'lucide-react';
+import { X } from 'lucide-react';
 import { MessageData } from '../../types';
 
 interface HiddenTrackProps {
@@ -18,10 +18,9 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
 }) => {
   const [replyContent, setReplyContent] = useState(messageData.reply || '');
   const [isSending, setIsSending] = useState(false);
-  // 초기 상태: 이미 답장이 있으면 '전송 완료' 상태로 시작
   const [hasSentReply, setHasSentReply] = useState(!!messageData.reply);
 
-  // messageData.reply가 변경되면 상태 업데이트
+  // 데이터 동기화
   useEffect(() => {
     setReplyContent(messageData.reply || '');
     setHasSentReply(!!messageData.reply);
@@ -29,21 +28,16 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
 
   const handleSend = () => {
     if (!replyContent.trim()) return;
-    
     setIsSending(true);
-    // 전송 시뮬레이션
     setTimeout(() => {
       setIsSending(false);
-      setHasSentReply(true); // 도장 쾅! 입력창 잠금
-      
-      // 실제 데이터 저장
+      setHasSentReply(true); 
       onReply(replyContent); 
     }, 1500);
   };
 
-  // ✏️ 수정 모드로 변경하는 함수
   const handleRevise = () => {
-    setHasSentReply(false); // 도장 제거 & 입력창 잠금 해제
+    setHasSentReply(false);
   };
 
   useEffect(() => {
@@ -52,173 +46,163 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
       
-      {/* 닫기 (우측 상단) */}
+      {/* 닫기 버튼 */}
       <button onClick={onClose} className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-50">
         <X size={32} />
       </button>
 
-      {/* 📋 클립보드 / 엽서 컨테이너 */}
+      {/* 📋 엽서 컨테이너 */}
       <div className={`
-        relative w-full max-w-2xl bg-[#fdfbf7] shadow-[0_20px_50px_rgba(0,0,0,0.5)] 
+        relative 
+        w-[85vw] md:w-full md:max-w-6xl md:aspect-[2.2/1] /* 데스크탑: 와이드 엽서 비율 */
+        min-h-[600px] md:min-h-0 /* 모바일 최소 높이 확보 */
+        bg-[#fdfbf7] shadow-[0_30px_60px_rgba(0,0,0,0.5)] 
         transform transition-all duration-700 ease-out
-        translate-y-0 rotate-1 opacity-100
-        flex flex-col md:flex-row overflow-visible rounded-sm mt-8
+        translate-y-0 opacity-100
+        flex flex-col md:flex-row 
+        rounded-sm overflow-hidden
       `}>
-        {/* 종이 질감 */}
-        <div className="absolute inset-0 pointer-events-none opacity-30 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] mix-blend-multiply"></div>
         
-        {/* 📎 리얼한 불독 클립 (Bulldog Clip) */}
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
-            {/* 클립 몸통 (검은 금속) */}
-            <div className="w-24 h-8 bg-[#1a1a1a] rounded-t-sm rounded-b-md shadow-lg flex items-center justify-center relative border-t border-gray-600">
-                <div className="w-20 h-[2px] bg-gray-700 mt-[-10px]"></div>
-                {/* 금속 광택 */}
+        {/* 전체 종이 질감 오버레이 */}
+        <div className="absolute inset-0 pointer-events-none opacity-40 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] mix-blend-multiply z-10"></div>
+        
+        {/* 📎 불독 클립 (중앙 상단 고정) */}
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center scale-75 md:scale-100">
+            <div className="w-24 h-8 bg-[#222] rounded-t-sm rounded-b-md shadow-xl flex items-center justify-center relative border-t border-gray-600">
+                <div className="w-20 h-[2px] bg-gray-600 mt-[-10px]"></div>
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none"></div>
             </div>
-            {/* 클립 손잡이 (은색 와이어) */}
-            <div className="w-20 h-8 border-x-4 border-t-4 border-[#888] rounded-t-lg -mt-6 -z-10 shadow-sm"></div>
+            <div className="w-20 h-8 border-x-4 border-t-4 border-[#666] rounded-t-lg -mt-6 -z-10 shadow-sm"></div>
         </div>
 
 
-        {/* [LEFT] 친구의 편지 (보낸 사람) */}
-        <div className="w-full md:w-1/2 p-8 pt-12 border-b md:border-b-0 md:border-r border-[#dcdcdc] bg-[#f4f1ea] relative">
+        {/* =================================================
+            [LEFT] 메시지 (친구의 편지) 
+        ================================================== */}
+        <div className="w-full md:w-1/2 p-6 md:p-10 bg-[#f4f1ea] relative flex flex-col">
             
-            {/* 📮 우표 + 소인 애니메이션 영역 */}
-            <div className="border-b-2 border-[#1a1a1a] pb-4 mb-4 flex justify-between items-end">
-                <div className="relative pl-2">
-                    {/* 1. 밑에 깔린 우표 (Postage Stamp) */}
-                    <div className="w-16 h-20 bg-[#e0e0e0] border-4 border-white shadow-sm relative overflow-hidden flex items-center justify-center">
-                        {/* 톱니 모양 테두리 (CSS) */}
+            {/* 📮 우표 및 수신자 정보 */}
+            <div className="flex justify-between items-start mb-6 border-b-2 border-[#1a1a1a]/10 pb-4">
+                {/* 우표 + 소인 */}
+                <div className="relative pl-2 pt-2">
+                    <div className="w-16 h-20 bg-[#e0e0e0] border-4 border-white shadow-sm relative overflow-hidden flex items-center justify-center group">
                         <div className="absolute inset-0 border-[2px] border-dashed border-[#ccc] opacity-50 m-1"></div>
                         <span className="font-barcode text-4xl rotate-90 opacity-20">2026</span>
                         <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 opacity-80"></div>
                         <span className="absolute bottom-1 text-[8px] font-mono tracking-widest">AIR MAIL</span>
                     </div>
-
-                    {/* 2. 위에 찍히는 소인 (Postmark) - 애니메이션 */}
-                    <div className="absolute -top-2 -right-12 z-10 animate-stamp">
+                    {/* 소인 애니메이션 */}
+                    <div className="absolute -top-2 -right-8 z-10 animate-stamp">
                         <div className="w-24 h-24 rounded-full border-2 border-red-800 opacity-70 flex items-center justify-center rotate-[-15deg] mix-blend-multiply">
                             <div className="absolute inset-0 border border-red-800 rounded-full scale-90"></div>
-                            <div className="text-center">
-                                <span className="block text-[8px] font-mono text-red-900 tracking-widest">RESILIENCE</span>
+                            <div className="text-center leading-none">
+                                <span className="block text-[8px] font-mono text-red-900 tracking-widest mb-1">RESILIENCE</span>
                                 <span className="block text-xl font-bebas text-red-800">2026.01.01</span>
-                                <span className="block text-[8px] font-mono text-red-900">BUSAN</span>
+                                <span className="block text-[8px] font-mono text-red-900 mt-1">BUSAN</span>
                             </div>
-                            {/* 물결 무늬 */}
-                            <div className="absolute top-1/2 -right-8 w-12 h-4 border-y border-red-800 rotate-12 opacity-50"></div>
-                            <div className="absolute top-1/2 -left-8 w-12 h-4 border-y border-red-800 -rotate-12 opacity-50"></div>
+                            <div className="absolute top-1/2 -right-6 w-12 h-4 border-y border-red-800 rotate-12 opacity-50"></div>
+                            <div className="absolute top-1/2 -left-6 w-12 h-4 border-y border-red-800 -rotate-12 opacity-50"></div>
                         </div>
                     </div>
                 </div>
 
-                {/* 받는 사람 이름 (DB 연동) */}
-                <div className="text-right">
-                    <span className="font-mono text-xs text-gray-500 block mb-1">To.</span>
-                    <span className="font-hand text-xl text-red-600 border-b border-red-200 pb-1">
+                {/* ✅ 수정됨: To. 이름 (검은색) */}
+                <div className="text-right mt-2">
+                    <span className="font-mono text-xs text-gray-400 block mb-1 tracking-widest">To.</span>
+                    <span className="font-hand text-2xl text-[#1a1a1a] border-b border-gray-300 pb-1 pr-2 inline-block min-w-[100px]">
                         {messageData.to || 'You'}
                     </span>
                 </div>
             </div>
 
-            <div className="h-[calc(100%-100px)] flex flex-col">
-                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 relative z-10">
-                    <p className="font-hand text-xl text-[#333] leading-loose whitespace-pre-line">
-                        "{messageData.content}"
-                    </p>
-                </div>
+            {/* 📜 편지 본문 (스크롤 영역) */}
+            {/* flex-1과 overflow-y-auto를 사용하여 긴 편지도 스크롤로 처리 */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 relative z-10 mb-4 min-h-[200px]">
+                <p className="font-hand text-xl md:text-2xl text-[#333] leading-loose whitespace-pre-line">
+                    "{messageData.content}"
+                </p>
+            </div>
 
-                <div className="mt-6 text-right">
-                    <p className="font-mono text-xs text-gray-500 mb-1">SENDER</p>
-                    <p className="font-bebas text-xl text-[#1a1a1a] tracking-wide">{messageData.from}</p>
-                </div>
+            {/* ✅ 수정됨: 보낸 사람 (글꼴 통일) */}
+            <div className="mt-auto text-right border-t border-[#1a1a1a]/10 pt-4">
+                <p className="font-mono text-[10px] text-gray-400 mb-1 tracking-widest">FROM</p>
+                <p className="font-hand text-xl text-[#1a1a1a] tracking-wide">{messageData.from}</p>
             </div>
         </div>
 
 
-        {/* [RIGHT] 답장 쓰기 (받는 사람) */}
-        <div className="w-full md:w-1/2 p-8 pt-12 bg-[#fff] relative">
-             
-             {/* ✅ SENT 도장 (전송 완료 시에만 표시) */}
-             {hasSentReply && (
-                <div className="absolute top-1/2 right-8 -translate-y-1/2 rotate-[-15deg] z-30 pointer-events-none">
-                    <div className="animate-stamp inline-block border-[4px] border-red-700 text-red-700 px-6 py-2 font-black text-3xl opacity-80 mix-blend-multiply tracking-[0.2em] rounded-sm" style={{fontFamily: 'impact, sans-serif'}}>
+        {/* ✂️ [MIDDLE] 절취선 (Perforation) */}
+        <div className="relative flex-shrink-0 flex flex-col md:flex-row items-center justify-center bg-[#fdfbf7]">
+             {/* 데스크탑: 세로 점선 */}
+             <div className="hidden md:block h-[90%] w-[1px] border-l-2 border-dashed border-gray-300 relative"></div>
+             {/* 모바일: 가로 점선 */}
+             <div className="md:hidden w-[90%] h-[1px] border-t-2 border-dashed border-gray-300 relative my-4"></div>
+        </div>
+
+        {/* =================================================
+            [RIGHT] 답장 카드 (FEEDBACK CARD) 
+        ================================================== */}
+        <div className="w-full md:w-1/2 p-6 md:p-10 bg-[#fdfbf7] flex flex-col relative">
+            
+            {/* SENT 스탬프 (전송 후에만 표시) */}
+            {hasSentReply && (
+                <div className="absolute top-6 right-6 z-20">
+                    <div className="text-5xl font-black text-red-600 border-[6px] border-red-600 px-6 py-3 rotate-[-12deg] tracking-[0.5em] opacity-80 mix-blend-multiply" style={{ fontFamily: 'Impact, sans-serif' }}>
                         SENT
                     </div>
                 </div>
-             )}
+            )}
 
-             <div className="h-full flex flex-col">
-                <div className="border-b-2 border-[#1a1a1a] pb-2 mb-4 flex justify-between items-end">
-                    <span className="font-bebas text-2xl text-[#1a1a1a]">FEEDBACK CARD</span>
-                    <PenTool size={16} className="text-gray-400" />
+            <div className="h-full flex flex-col">
+                <div className="mb-4 pb-3 border-b border-gray-200">
+                    <h3 className="font-bebas text-2xl tracking-wider text-[#1a1a1a]">
+                        FEEDBACK CARD
+                    </h3>
                 </div>
 
-                {/* 답장 입력 영역 (줄공책 스타일) */}
+                {/* ✅ 수정됨: 줄 간격 넓힘 + leading-[3rem] */}
                 <div className="flex-1 relative">
-                    {/* 줄 배경 */}
-                    <div className="absolute inset-0 flex flex-col pt-[6px]">
-                        {Array.from({ length: 12 }).map((_, i) => (
-                            <div key={i} className="w-full h-8 border-b border-blue-200"></div>
+                    {/* 줄 무늬 배경 */}
+                    <div className="absolute inset-0 flex flex-col space-y-2">
+                        {[...Array(8)].map((_, i) => (
+                            <div key={i} className="flex-1 border-b border-gray-200"></div>
                         ))}
                     </div>
 
-                    {/* 텍스트 입력 */}
+                    {/* textarea */}
                     <textarea
                         value={replyContent}
                         onChange={(e) => setReplyContent(e.target.value)}
-                        placeholder="답장을 적어주세요..."
-                        disabled={hasSentReply || isSending} // 전송 완료시 비활성화 (수정하려면 버튼 눌러야 함)
-                        className={`relative w-full h-full bg-transparent font-hand text-xl leading-[2rem] resize-none outline-none z-10 transition-colors
-                            ${hasSentReply ? 'text-gray-400 cursor-default' : 'text-[#333] placeholder:text-gray-300'}
+                        placeholder="답장을 작성하세요..."
+                        disabled={hasSentReply || isSending}
+                        className={`w-full h-full resize-none bg-transparent font-hand text-lg leading-[3rem] relative z-10 focus:outline-none custom-scrollbar
+                            ${hasSentReply ? 'text-gray-400 cursor-default' : 'text-[#1a1a1a] placeholder:text-gray-300'}
                         `}
-                        spellCheck={false}
                     />
                 </div>
 
-                {/* 하단 버튼 영역 */}
-                <div className="mt-6 flex justify-between items-center">
-                    <div className="flex gap-2">
-                        <div className="flex items-center gap-1 text-[10px] font-mono text-gray-400">
-                             <Check size={12} className={hasSentReply ? "text-red-500" : "text-gray-300"} /> 
-                             <span>SATISFACTION</span>
-                        </div>
-                    </div>
-
-                    {/* ✅ 버튼 로직 변경: 전송 전(Send) vs 전송 후(Revise) */}
+                {/* ✅ 버튼 영역: SEND / REVISE */}
+                <div className="mt-8 flex gap-3">
                     {!hasSentReply ? (
-                        // [전송 버튼]
                         <button
                             onClick={handleSend}
-                            disabled={isSending || !replyContent.trim()}
-                            className={`
-                                group flex items-center gap-2 px-4 py-2 rounded-sm border-2 border-[#1a1a1a]
-                                transition-all duration-200
-                                ${isSending ? 'bg-gray-100 cursor-wait' : 'bg-white hover:bg-[#1a1a1a] hover:text-white'}
-                            `}
+                            disabled={!replyContent.trim() || isSending}
+                            className="flex-1 px-6 py-3 font-bebas text-lg tracking-wider bg-[#1a1a1a] hover:bg-[#333] text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                         >
-                            {isSending ? (
-                                <span className="font-mono text-sm animate-pulse">SENDING...</span>
-                            ) : (
-                                <>
-                                    <span className="font-bebas text-lg tracking-wider">SEND REPLY</span>
-                                    <Send size={16} className="group-hover:translate-x-1 transition-transform"/>
-                                </>
-                            )}
+                            {isSending ? 'SENDING...' : 'SEND'}
                         </button>
                     ) : (
-                        // [수정 버튼] - 도장 찍힌 후 나타남
                         <button
                             onClick={handleRevise}
-                            className="group flex items-center gap-2 px-4 py-2 rounded-sm border-2 border-gray-400 text-gray-500 hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-all bg-white/50"
+                            className="flex-1 px-6 py-3 font-bebas text-lg tracking-wider bg-gray-100 hover:bg-gray-200 text-gray-800 transition-colors border border-gray-300 shadow-sm"
                         >
-                            <span className="font-bebas text-lg tracking-wider">REVISE / RESEND</span>
-                            <RotateCcw size={16} className="group-hover:-rotate-180 transition-transform duration-500"/>
+                            REVISE
                         </button>
                     )}
                 </div>
-             </div>
+            </div>
         </div>
 
       </div>
