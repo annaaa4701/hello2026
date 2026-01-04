@@ -1,6 +1,6 @@
 // src/components/MessageVault/HiddenTrack.tsx
 import React, { useState, useEffect } from 'react';
-import { X, PenTool, Check, Send, Stamp, RotateCcw } from 'lucide-react';
+import { X, PenTool, Check, Send, RotateCcw } from 'lucide-react';
 import { MessageData } from '../../types';
 
 interface HiddenTrackProps {
@@ -64,28 +64,65 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
         relative w-full max-w-2xl bg-[#fdfbf7] shadow-[0_20px_50px_rgba(0,0,0,0.5)] 
         transform transition-all duration-700 ease-out
         translate-y-0 rotate-1 opacity-100
-        flex flex-col md:flex-row overflow-hidden rounded-sm
+        flex flex-col md:flex-row overflow-visible rounded-sm mt-8
       `}>
-        {/* 종이 질감 오버레이 */}
+        {/* 종이 질감 */}
         <div className="absolute inset-0 pointer-events-none opacity-30 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] mix-blend-multiply"></div>
         
-        {/* 상단 집게 장식 (가상) */}
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-[#333] rounded-md shadow-lg z-20 flex items-center justify-center">
-            <div className="w-20 h-1 bg-[#555] rounded-full"></div>
+        {/* 📎 리얼한 불독 클립 (Bulldog Clip) */}
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+            {/* 클립 몸통 (검은 금속) */}
+            <div className="w-24 h-8 bg-[#1a1a1a] rounded-t-sm rounded-b-md shadow-lg flex items-center justify-center relative border-t border-gray-600">
+                <div className="w-20 h-[2px] bg-gray-700 mt-[-10px]"></div>
+                {/* 금속 광택 */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none"></div>
+            </div>
+            {/* 클립 손잡이 (은색 와이어) */}
+            <div className="w-20 h-8 border-x-4 border-t-4 border-[#888] rounded-t-lg -mt-6 -z-10 shadow-sm"></div>
         </div>
 
 
         {/* [LEFT] 친구의 편지 (보낸 사람) */}
         <div className="w-full md:w-1/2 p-8 pt-12 border-b md:border-b-0 md:border-r border-[#dcdcdc] bg-[#f4f1ea] relative">
-            <div className="border-b-2 border-[#1a1a1a] pb-2 mb-4 flex justify-between items-end">
-                <div className="flex items-center gap-2">
-                    <Stamp size={24} className="text-red-800 opacity-60" />
-                    <span className="font-bebas text-2xl text-[#1a1a1a]">MESSAGE</span>
+            
+            {/* 📮 우표 + 소인 애니메이션 영역 */}
+            <div className="border-b-2 border-[#1a1a1a] pb-4 mb-4 flex justify-between items-end">
+                <div className="relative pl-2">
+                    {/* 1. 밑에 깔린 우표 (Postage Stamp) */}
+                    <div className="w-16 h-20 bg-[#e0e0e0] border-4 border-white shadow-sm relative overflow-hidden flex items-center justify-center">
+                        {/* 톱니 모양 테두리 (CSS) */}
+                        <div className="absolute inset-0 border-[2px] border-dashed border-[#ccc] opacity-50 m-1"></div>
+                        <span className="font-barcode text-4xl rotate-90 opacity-20">2026</span>
+                        <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 opacity-80"></div>
+                        <span className="absolute bottom-1 text-[8px] font-mono tracking-widest">AIR MAIL</span>
+                    </div>
+
+                    {/* 2. 위에 찍히는 소인 (Postmark) - 애니메이션 */}
+                    <div className="absolute -top-2 -right-12 z-10 animate-stamp">
+                        <div className="w-24 h-24 rounded-full border-2 border-red-800 opacity-70 flex items-center justify-center rotate-[-15deg] mix-blend-multiply">
+                            <div className="absolute inset-0 border border-red-800 rounded-full scale-90"></div>
+                            <div className="text-center">
+                                <span className="block text-[8px] font-mono text-red-900 tracking-widest">RESILIENCE</span>
+                                <span className="block text-xl font-bebas text-red-800">2026.01.01</span>
+                                <span className="block text-[8px] font-mono text-red-900">BUSAN</span>
+                            </div>
+                            {/* 물결 무늬 */}
+                            <div className="absolute top-1/2 -right-8 w-12 h-4 border-y border-red-800 rotate-12 opacity-50"></div>
+                            <div className="absolute top-1/2 -left-8 w-12 h-4 border-y border-red-800 -rotate-12 opacity-50"></div>
+                        </div>
+                    </div>
                 </div>
-                <span className="font-hand text-lg text-red-600">To. You</span>
+
+                {/* 받는 사람 이름 (DB 연동) */}
+                <div className="text-right">
+                    <span className="font-mono text-xs text-gray-500 block mb-1">To.</span>
+                    <span className="font-hand text-xl text-red-600 border-b border-red-200 pb-1">
+                        {messageData.to || 'You'}
+                    </span>
+                </div>
             </div>
 
-            <div className="h-[calc(100%-60px)] flex flex-col">
+            <div className="h-[calc(100%-100px)] flex flex-col">
                 <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 relative z-10">
                     <p className="font-hand text-xl text-[#333] leading-loose whitespace-pre-line">
                         "{messageData.content}"

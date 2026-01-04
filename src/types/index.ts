@@ -5,7 +5,8 @@ export interface MessageData {
   receiver: string; 
   password: string; 
   content: string; 
-  from: string; 
+  from: string;
+  to?: string; // 추가: 받는 사람 이름
   doorId: number; 
   themeColor?: string;
   reply?: string;

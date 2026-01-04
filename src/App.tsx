@@ -108,6 +108,7 @@ export default function App() {
         content: data.content,
         reply: data.reply,
         from: data.from,
+        to: data.to, // 추가: 받는 사람 이름
       });
       playSound('success');
       setTimeout(() => setShowLetter(true), 800);
