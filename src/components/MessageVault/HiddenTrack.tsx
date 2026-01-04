@@ -141,14 +141,11 @@ export const HiddenTrack: React.FC<HiddenTrackProps> = ({
              
              {/* 🔥 수정됨: 리얼한 빈티지 스탬프 디자인 */}
              {hasSentReply && (
-                <div className="absolute top-1/2 right-8 md:right-12 -translate-y-1/2 rotate-[-15deg] z-30 pointer-events-none scale-[0.6]">
+                <div className="absolute top-1/2 right-4 md:right-8 -translate-y-1/2 rotate-[-15deg] z-50 pointer-events-none">
                     <div 
-                        className="animate-stamp inline-flex items-center justify-center border-[4px] border-red-800 text-red-800 px-6 py-2 font-black text-4xl md:text-5xl opacity-80 mix-blend-multiply tracking-widest rounded-sm"
+                        className="animate-stamp inline-flex items-center justify-center border-[3px] md:border-[4px] border-red-800 text-red-800 px-4 py-1 md:px-6 md:py-2 font-black text-2xl md:text-4xl opacity-80 mix-blend-multiply tracking-widest rounded-sm"
                         style={{
                             fontFamily: 'impact, sans-serif',
-                            // 거친 잉크 질감을 위한 마스크 (브라우저 호환성 확인 필요)
-                            maskImage: 'url("https://www.transparenttextures.com/patterns/grunge-wall.png")',
-                            WebkitMaskImage: 'url("https://www.transparenttextures.com/patterns/grunge-wall.png")',
                             textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
                         }}
                     >
