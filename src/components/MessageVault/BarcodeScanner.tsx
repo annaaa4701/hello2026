@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Printer } from 'lucide-react';
+import { X, ScanLine, Printer } from 'lucide-react';
 
 interface BarcodeScannerProps {
   onClose: () => void;
@@ -72,7 +72,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
           <div className="w-full border-t border-dashed border-gray-300 mb-6"></div>
 
-          {/* 2. 입력 폼 (심플한 라인 스타일) */}
+          {/* 2. 입력 폼 */}
           <form onSubmit={handleSubmit} className="w-full flex flex-col items-center z-10">
             <label className="text-xs font-bold tracking-[0.2em] mb-4 uppercase text-gray-800">
               Enter Access Code
@@ -88,7 +88,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                   onChange={e => setPw(e.target.value)}
                   maxLength={4}
                   placeholder="" 
-                  className="w-32 bg-transparent text-center font-mono text-3xl tracking-[0.5em] h-10 outline-none text-[#1a1a1a] placeholder:text-gray-300 z-10 focus:placeholder:text-transparent"
+                  // ✅ 수정됨: w-48로 넓히고, style={{paddingLeft: 0.5em}}으로 tracking 때문에 치우치는 현상 보정
+                  className="w-48 bg-transparent text-center font-mono text-3xl tracking-[0.5em] h-10 outline-none text-[#1a1a1a] placeholder:text-gray-300 z-10 focus:placeholder:text-transparent"
+                  style={{ paddingLeft: '0.5em' }}
                   autoFocus
                 />
                 
@@ -97,11 +99,11 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-6 bg-black animate-pulse pointer-events-none"></div>
                 )}
 
-                {/* 빨간 밑줄 (포인트) */}
-                <div className="w-24 h-[2px] bg-red-500 mt-2"></div>
+                {/* ✅ 수정됨: 빨간 밑줄 길이 연장 (w-24 -> w-40) */}
+                <div className="w-40 h-[2px] bg-red-500 mt-2"></div>
             </div>
 
-            {/* 도장 애니메이션 (겹쳐서 뜨도록 absolute 처리) */}
+            {/* 도장 애니메이션 영역 */}
             <div className="relative w-full h-0 flex items-center justify-center">
                 {error && !isLoading && (
                   <div className="absolute top-[-40px] rotate-[-12deg] z-50 pointer-events-none">
@@ -110,6 +112,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                     </div>
                   </div>
                 )}
+                {/* ✅ 성공 도장 */}
                 {isSuccess && !isLoading && (
                   <div className="absolute top-[-40px] rotate-[8deg] z-50 pointer-events-none">
                     <div className="animate-stamp border-[3px] border-green-700 text-green-700 px-4 py-1 font-black text-xl opacity-90 mix-blend-multiply tracking-widest bg-[#fdfbf7]/80 backdrop-blur-[1px]">
@@ -119,7 +122,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 )}
             </div>
 
-            {/* 품목 리스트 (간격 줄임) */}
+            {/* 품목 리스트 */}
             <div className="w-full text-[10px] font-mono text-gray-500 space-y-1 mb-6 px-4">
                 <div className="flex justify-between">
                     <span>1 x HAPPY NEW YEAR</span>
@@ -131,7 +134,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 </div>
             </div>
 
-            {/* 확인 버튼 (검은색) */}
+            {/* 확인 버튼 */}
             <button 
               type="submit"
               disabled={isLoading || isSuccess}
