@@ -95,26 +95,26 @@ export const LinerNote: React.FC<LinerNoteProps> = ({
             모바일: min-h-[100dvh] (전체화면 이상), snap-start (스냅 지점)
             데스크탑: 스크롤 지원 overflow-y-auto
           */}
-          <div ref={contentRef} className="w-full md:w-1/2 bg-[#F5F5F0] flex flex-col relative min-h-[100dvh] md:min-h-0 md:h-full md:overflow-y-auto snap-start custom-scrollbar">
+          <div ref={contentRef} className="w-full md:w-1/2 bg-[#F5F5F0] flex flex-col relative min-h-[100dvh] md:min-h-full snap-start">
             {/* Paper Texture Overlay */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" 
                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulance type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}>
             </div>
 
-            {/* Content Area */}
-            <div className="flex-1 p-8 pt-24 md:p-12 z-10 flex flex-col justify-center md:block">
+            {/* Content Area - 데스크탑에서 스크롤 가능 */}
+            <div className="flex-1 p-8 pt-24 md:p-12 md:pt-16 z-10 flex flex-col justify-center md:block md:overflow-y-auto custom-scrollbar">
               <div className="font-mono text-xs text-gray-500 mb-8 tracking-widest uppercase border-b border-gray-300 pb-2">
                 Foreword by {PUBLIC_MESSAGE.from}
               </div>
               
-              <p className="text-lg md:text-base leading-loose font-serif text-[#111] whitespace-pre-line text-justify pb-8 md:pb-0">
+              <p className="text-lg md:text-base leading-loose font-serif text-[#111] whitespace-pre-line text-justify pb-8">
                 {PUBLIC_MESSAGE.content}
               </p>
             </div>
 
-            {/* Footer / Action Area */}
-            <div className="p-8 pt-0 md:p-12 md:pt-6 border-t border-gray-200 md:border-t md:border-gray-300 z-20 bg-[#F5F5F0] shrink-0 pb-16 md:pb-8">
-               <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0 md:border-t md:border-gray-300 md:pt-6">
+            {/* Footer / Action Area - 항상 하단에 고정 */}
+            <div className="p-8 pt-0 md:p-8 border-t border-gray-200 md:border-gray-300 z-20 bg-[#F5F5F0] shrink-0 pb-16 md:pb-8">
+               <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
                   <span className="font-mono text-[10px] text-gray-400 hidden md:block">PAGE 01 / 01</span>
                   
                   <button
