@@ -7,6 +7,20 @@ import { X, Play, Music, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 // note: 이 노래를 고른 이유
 const tracks = [
   { 
+    id: 2, 
+    artist: 'Anne-Marie', 
+    title: 'To Be Young', 
+    cover: '/assets/2.jpg', 
+    note: "We're all a mess,\nbut I guess\nThis is what it feels like to be young" 
+  },
+  { 
+    id: 5, 
+    artist: 'Valley', 
+    title: 'Can We Make It', 
+    cover: '/assets/5.jpg', 
+    note: "The world doesn't have to be so scary\nHelp me help you help me get some clarity" 
+  },
+  { 
     id: 1, 
     artist: 'Young K', 
     title: 'Natural', 
@@ -14,11 +28,11 @@ const tracks = [
     note: "And I can't get enough\nI wish I could've been there myself" 
   },
   { 
-    id: 2, 
-    artist: 'Anne-Marie', 
-    title: 'To Be Young', 
-    cover: '/assets/2.jpg', 
-    note: "We're all a mess,\nbut I guess\nThis is what it feels like to be young" 
+    id: 7, 
+    artist: 'Woodz', 
+    title: 'Journey', 
+    cover: '/assets/7.jpg', 
+    note: "아무도 모르는 나의 깊은 맘속 맑은 하늘 넓은 바다가 있어\n파도보다 더 크게 외쳐 when tears filled my eyes 울어도 돼\n시원한 바람이 불어올 때 내 몸을 맡긴 채로 날아 멀리\n이 바다 너머 저 작은 섬의 또 다른 나를 마주쳤어" 
   },
   { 
     id: 3, 
@@ -32,14 +46,7 @@ const tracks = [
     artist: 'Ariana Grande', 
     title: 'Twilight Zone', 
     cover: '/assets/4.jpg', 
-    note: "And I swear I'm gonna lose it\nIf I keep playing your music\nBut what else is there to do?\nEverywhere I look I just see you" 
-  },
-  { 
-    id: 5, 
-    artist: 'Valley', 
-    title: 'Can We Make It', 
-    cover: '/assets/5.jpg', 
-    note: "The world doesn't have to be so scary\nHelp me help you help me get some clarity" 
+    note: "And I swear I'm gonna lose it\nIf I keep playing your music\nBut what else is there to do?\nEverywhere I look I just see you"
   },
   { 
     id: 6, 
@@ -47,13 +54,6 @@ const tracks = [
     title: 'Dover beach', 
     cover: '/assets/6.jpg', 
     note: "당연히 있을게 매일같이\n이 시간같이 힘들일 필요 없이" 
-  },
-  { 
-    id: 7, 
-    artist: 'Woodz', 
-    title: 'Journey', 
-    cover: '/assets/7.jpg', 
-    note: "아무도 모르는 나의 깊은 맘속 맑은 하늘 넓은 바다가 있어\n파도보다 더 크게 외쳐 when tears filled my eyes 울어도 돼\n시원한 바람이 불어올 때 내 몸을 맡긴 채로 날아 멀리\n이 바다 너머 저 작은 섬의 또 다른 나를 마주쳤어" 
   },
 ];
 
