@@ -158,9 +158,15 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
           <div className="w-full border-t border-dashed border-gray-300 mt-6 mb-4"></div>
 
-          {/* 바코드 */}
-          <div className="w-full text-center opacity-80">
-            <p className="font-barcode text-5xl transform scale-y-125 tracking-wider">20260101</p>
+          {/* 바코드 스캔 섹션 */}
+          <div className="w-full text-center opacity-80 relative">
+            {/* 스캔 라인 아이콘 (좌우 반복 애니메이션) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center pointer-events-none">
+              <ScanLine size={48} className="text-red-500 opacity-30 animate-pulse" strokeWidth={1} />
+            </div>
+            
+            {/* 바코드 숫자 */}
+            <p className="font-barcode text-5xl transform scale-y-125 tracking-wider relative z-10">20260101</p>
             <p className="text-[8px] mt-2 tracking-[0.3em] uppercase">Thanks for visiting</p>
           </div>
 
