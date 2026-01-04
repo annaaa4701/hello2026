@@ -65,10 +65,12 @@ Y2K 미학과 레트로 CD 플레이어의 향수를 현대적인 웹 기술로 
 - 각 트랙의 앨범 아트, 제목, 아티스트, 설명 확인
 - 원하는 트랙을 클릭하여 바로 재생
 
-### 5️⃣ 숨겨진 메시지 찾기 (향후 구현)
+### 5️⃣ 숨겨진 메시지 찾기
 - 영수증 스타일 버튼("SCAN TO UNLOCK")을 클릭
-- 이름과 비밀번호를 입력하여 특별한 메시지 확인
-- *(현재 백엔드 미연동 - Cloudflare Workers 연동 예정)*
+- 레시피 스타일의 바코드 스캐너에서 **4자리 비밀번호**만 입력
+- 바코드 폰트로 표시되는 입력창에 비밀번호 입력
+- Cloudflare D1 데이터베이스에서 암호화된 메시지 조회
+- 입력 오류 시 "INVALID" 스탬프 효과로 표시
 
 ## 🏗️ 프로젝트 구조
 
@@ -77,7 +79,7 @@ hello2026/
 ├── src/
 │   ├── components/
 │   │   ├── MessageVault/
-│   │   │   ├── BarcodeScanner.tsx      # 비밀번호 입력 모달
+│   │   │   ├── BarcodeScanner.tsx      # 비밀번호 입력 모달 (레시피 스타일)
 │   │   │   ├── HiddenTrack.tsx         # 숨겨진 메시지 뷰어
 │   │   │   └── LinerNote.tsx           # 공개 메시지 (라이너 노트)
 │   │   ├── CustomCursor.tsx            # 커스텀 커서
@@ -100,11 +102,17 @@ hello2026/
 │   │   └── firebaseService.ts          # (미사용) Firebase 함수들
 │   ├── App.tsx                         # 메인 애플리케이션
 │   └── main.tsx                        # 진입점
+├── functions/
+│   └── api/
+│       ├── open.ts                     # 메시지 조회 API (Cloudflare Functions)
+│       └── reply.ts                    # 답장 저장 API (Cloudflare Functions)
 ├── public/
 │   ├── assets/
 │   │   ├── music/                      # 7개 트랙 MP3 파일
 │   │   └── 1.jpg ~ 7.jpg              # 앨범 아트
 │   └── stickers/                       # SVG 스티커 에셋
+├── schema.sql                          # D1 데이터베이스 스키마
+├── wrangler.toml                       # Cloudflare 배포 설정
 ├── index.html
 ├── package.json
 ├── tailwind.config.js
@@ -120,8 +128,11 @@ hello2026/
 - **Vite 7.2.7** - 빌드 도구 및 개발 서버
 - **Tailwind CSS 3.4.17** - 유틸리티 기반 스타일링
 
-### Deployment
-- **Cloudflare Pages** - 정적 사이트 호스팅
+### Backend & Deployment
+- **Cloudflare Pages** - 정적 사이트 호스팅 및 자동 배포
+- **Cloudflare Functions** - 서버리스 API 엔드포인트
+- **Cloudflare D1** - SQLite 기반 엣지 데이터베이스
+- **Cloudflare R2** - 음악 파일 스토리지
 - **Wrangler 3.x** - Cloudflare 배포 CLI
 
 ### Audio
@@ -142,10 +153,42 @@ npm install
 
 ### 2. 환경 변수 설정 (선택사항)
 
-향후 Cloudflare Workers/D1/KV를 연동할 경우 `.env` 파일 생성:
+프론트엔드에서 환경 변수가 필요한 경우 `.env` 파일 생성:
 
 ```env
-VITE_API_ENDPOINT=your-cloudflare-workers-url
+# 현재는 사용하지 않음 (Cloudflare Functions가 /api/* 경로로 자동 라우팅)
+# VITE_API_ENDPOINT=your-cloudflare-workers-url
+```
+
+### 3. 개발 서버 실행
+
+```bash
+npm run dev
+```
+
+브라우저에서 `http://localhost:5173` 접속
+
+### 4. Cloudflare 배포
+
+#### D1 데이터베이스 설정
+
+```bash
+# D1 데이터베이스 생성
+wrangler d1 create letters-db
+
+# 스키마 적용
+wrangler d1 execute letters-db --file=./schema.sql
+```
+
+#### Pages 배포
+
+```bash
+# 빌드
+npm run build
+
+# GitHub 연동 시 자동 배포 (권장)
+# 또는 수동 배포:
+wrangler pages deploy dist
 ```
 
 ### 3. 개발 서버 실행
