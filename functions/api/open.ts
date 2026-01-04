@@ -21,34 +21,26 @@ function rateLimitOrThrow(ip: string) {
   cur.count += 1;
   if (cur.count > LIMIT) {
     const retryAfterSec = Math.ceil((WINDOW_MS - (now - cur.windowStart)) / 1000);
-    throw new Response(
-      JSON.stringify({ ok: false, error: "Too many requests", retryAfterSec }),
-      {
-        status: 429,
-        headers: {
-          "content-type": "application/json; charset=utf-8",
-          "retry-after": String(retryAfterSec),
-        },
-      }
-    );
+    throw new Response(JSON.stringify({ ok: false, error: "Too many requests", retryAfterSec }), {
+      status: 429,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "retry-after": String(retryAfterSec),
+      },
+    });
   }
+
   hits.set(ip, cur);
 }
 
-type Env = {
-  DB: any; // Cloudflare D1 database binding
-};
+type Env = { DB: any };
 
-type OpenRequest = {
-  password: string;
-};
-
+type OpenRequest = { password: string };
 type OpenResponse =
   | { ok: true; content: string; reply: string | null; from: string }
   | { ok: false; error: string };
 
-export const onRequestPost = async (context: { request: Request; env: Env }) => {
-  const { request, env } = context;
+export const onRequestPost = async ({ request, env }: { request: Request; env: Env }) => {
   const ip = getClientIp(request);
 
   try {
@@ -62,66 +54,47 @@ export const onRequestPost = async (context: { request: Request; env: Env }) => 
   try {
     body = (await request.json()) as OpenRequest;
   } catch {
-    return new Response(
-      JSON.stringify({ ok: false, error: "Invalid JSON body" } satisfies OpenResponse),
-      {
-        status: 400,
-        headers: { "content-type": "application/json; charset=utf-8" },
-      }
-    );
+    return new Response(JSON.stringify({ ok: false, error: "Invalid JSON body" } satisfies OpenResponse), {
+      status: 400,
+      headers: { "content-type": "application/json; charset=utf-8" },
+    });
   }
 
-  const { password } = body;
-  if (!password || typeof password !== "string") {
-    return new Response(
-      JSON.stringify({ ok: false, error: "Password is required" } satisfies OpenResponse),
-      {
-        status: 400,
-        headers: { "content-type": "application/json; charset=utf-8" },
-      }
-    );
+  const pwHash = (body.password ?? "").trim(); // 테스트 단계: 평문 비교
+  if (!pwHash) {
+    return new Response(JSON.stringify({ ok: false, error: "Password is required" } satisfies OpenResponse), {
+      status: 400,
+      headers: { "content-type": "application/json; charset=utf-8" },
+    });
   }
 
-  // TODO: password → 해시 계산 (Web Crypto API로 PBKDF2 등 사용)
-  const pwHash = password; // 임시로 평문 사용
-
-  // D1에서 편지 찾기
-  const stmt = env.DB.prepare(
-    "SELECT content, reply, from_name, first_opened_at FROM letters WHERE pw_hash = ?"
-  ).bind(pwHash);
-
-  const row = (await stmt.first()) as { 
-    content: string; 
-    reply: string | null; 
-    from_name: string;
-    first_opened_at: string | null;
-  } | null;
+  const row = (await env.DB
+    .prepare("SELECT content, reply, from_name, first_opened_at FROM letters WHERE pw_hash = ?")
+    .bind(pwHash)
+    .first()) as {
+      content: string;
+      reply: string | null;
+      from_name: string;
+      first_opened_at: string | null;
+    } | null; // [web:81]
 
   if (!row) {
-    return new Response(
-      JSON.stringify({ ok: false, error: "Not found" } satisfies OpenResponse),
-      {
-        status: 404,
-        headers: { "content-type": "application/json; charset=utf-8" },
-      }
-    );
+    return new Response(JSON.stringify({ ok: false, error: "Not found" } satisfies OpenResponse), {
+      status: 404,
+      headers: { "content-type": "application/json; charset=utf-8" },
+    });
   }
 
-  // 처음 열어보는 경우, first_opened_at 기록
   if (row.first_opened_at === null) {
     const now = new Date().toISOString();
-    await env.DB.prepare(
-      "UPDATE letters SET first_opened_at = ? WHERE pw_hash = ?"
-    ).bind(now, pwHash).run();
+    await env.DB
+      .prepare("UPDATE letters SET first_opened_at = ? WHERE pw_hash = ?")
+      .bind(now, pwHash)
+      .run(); // [web:81]
   }
 
   return new Response(
-    JSON.stringify({ 
-      ok: true, 
-      content: row.content, 
-      reply: row.reply,
-      from: row.from_name
-    } satisfies OpenResponse),
+    JSON.stringify({ ok: true, content: row.content, reply: row.reply, from: row.from_name } satisfies OpenResponse),
     { headers: { "content-type": "application/json; charset=utf-8" } }
   );
 };

@@ -19,13 +19,13 @@ export const LoadingIntro: React.FC<LoadingIntroProps> = ({
       <div className="absolute inset-0 bg-noise opacity-30 pointer-events-none"></div>
       
       {/* 💿 중앙 회전하는 CD (The Main Object) */}
-      <div className="relative group mb-8 md:mb-12 scale-75 md:scale-100 transition-transform duration-700 hover:scale-105">
+      <div className="relative group mb-6 md:mb-8 scale-[0.6] md:scale-75 transition-transform duration-700 hover:scale-[0.65] md:hover:scale-80">
         
         {/* CD 그림자/Glow */}
         <div className="absolute inset-0 rounded-full blur-3xl bg-white/5 animate-pulse"></div>
 
         {/* CD 본체 Container */}
-        <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] rounded-full flex items-center justify-center animate-spin-slow shadow-2xl border border-white/10 bg-black overflow-hidden">
+        <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full flex items-center justify-center animate-spin-slow shadow-2xl border border-white/10 bg-black overflow-hidden">
           
           {/* CD 이미지 */}
           <img 
@@ -75,14 +75,14 @@ export const LoadingIntro: React.FC<LoadingIntroProps> = ({
       </div>
 
       {/* 📝 메인 타이틀 영역 */}
-      <div className="relative z-20 text-center space-y-4 mix-blend-screen px-4">
+      <div className="relative z-20 text-center space-y-3 mix-blend-screen px-4">
         
         <p className="text-[10px] md:text-xs font-mono text-gray-500 tracking-[0.5em] mb-2 uppercase">
           First Season's greeting
         </p>
 
         {/* Glitch Title */}
-        <h1 className="text-5xl md:text-8xl font-serif font-black text-white tracking-tighter italic glitch-wrapper" data-text="RESILIENCE">
+        <h1 className="text-4xl md:text-7xl font-serif font-black text-white tracking-tighter italic glitch-wrapper" data-text="RESILIENCE">
           RESILIENCE
         </h1>
 
@@ -97,7 +97,7 @@ export const LoadingIntro: React.FC<LoadingIntroProps> = ({
       </div>
 
       {/* ▶ 재생 버튼 (Enter) */}
-      <div className="mt-12 md:mt-16 relative group z-30">
+      <div className="mt-8 md:mt-12 relative group z-30">
         <button 
           onClick={onStart}
           onMouseEnter={onMouseEnter}
