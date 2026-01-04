@@ -18,7 +18,7 @@ const tracks = [
     artist: 'Valley', 
     title: 'Can We Make It', 
     cover: '/assets/5.jpg', 
-    note: "The world doesn't have to be so scary\nHelp me help you help me get some clarity" 
+    note: "The world doesn't have to be so scary \n Help me help you help me get some clarity" 
   },
   { 
     id: 1, 
@@ -185,7 +185,7 @@ export const PlaylistModal: React.FC<PlaylistModalProps> = ({
            <div className="p-4 md:p-8 pb-3 md:pb-4 border-b-2 border-dashed border-black/10">
              <h2 className="font-black text-2xl md:text-4xl uppercase tracking-tighter flex items-center gap-2 md:gap-3">
                <Music className="w-8 h-8" strokeWidth={2.5} />
-               Resilience Mix
+               Turn your VOLUME UP!
              </h2>
              <p className="font-mono text-xs text-gray-500 mt-2 tracking-widest pl-1">
                SELECTED TRACKS FOR 2026
