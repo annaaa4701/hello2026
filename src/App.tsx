@@ -42,6 +42,7 @@ export default function App() {
   // === Audio State ===
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [volume, setVolume] = useState(0.7); // 볼륨 state 추가 (0.0 ~ 1.0)
   const currentTrack = TRACKS[currentTrackIndex];
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -50,6 +51,7 @@ export default function App() {
     if (!audioRef.current) { 
       audioRef.current = new Audio(currentTrack.src); 
       audioRef.current.loop = false; // 자동 재생을 위해 loop 비활성화
+      audioRef.current.volume = volume; // 볼륨 설정
       audioRef.current.onended = () => {
         // 트랙이 끝나면 다음 트랙으로 자동 이동
         setCurrentTrackIndex((prev) => (prev + 1) % TRACKS.length);
@@ -64,6 +66,11 @@ export default function App() {
   useEffect(() => {
     if (audioRef.current) isPlaying ? audioRef.current.play() : audioRef.current.pause();
   }, [isPlaying]);
+
+  // 볼륨 변경 시 audioRef에 적용
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume;
+  }, [volume]);
 
   const handleStart = () => { 
     setStarted(true); // 메인 화면 표시
@@ -163,6 +170,8 @@ export default function App() {
         currentTrack={`${currentTrack.title} - ${currentTrack.artist}`}
         onTogglePlay={togglePlayPause}
         onExpand={() => setShowPlaylist(true)}
+        volume={volume}
+        onVolumeChange={setVolume}
       />
 
       {/* ==============================================

@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface MobileRadioBarProps {
   isPlaying: boolean;
   currentTrack: string;
   onTogglePlay: () => void;
   onExpand: () => void;
+  volume: number;
+  onVolumeChange: (volume: number) => void;
 }
 
 export const MobileRadioBar: React.FC<MobileRadioBarProps> = ({ 
   isPlaying, 
   currentTrack, 
   onTogglePlay, 
-  onExpand 
+  onExpand,
+  volume,
+  onVolumeChange
 }) => {
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+
   return (
     <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-[#1a1a1a] text-[#f2f2f2] z-50 flex items-center shadow-xl border-b-2 border-red-600">
       
@@ -50,6 +57,38 @@ export const MobileRadioBar: React.FC<MobileRadioBarProps> = ({
           <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
         )}
       </button>
+
+      {/* 🔊 Volume Control */}
+      <div className="relative h-full">
+        <button 
+          onClick={() => setShowVolumeSlider(!showVolumeSlider)}
+          className="h-full px-4 bg-[#333] hover:bg-[#444] transition-colors border-l border-white/20"
+        >
+          {volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
+        </button>
+        
+        {/* Volume Slider Dropdown */}
+        {showVolumeSlider && (
+          <div className="absolute top-full right-0 bg-[#1a1a1a] p-3 shadow-xl border-l-2 border-r-2 border-b-2 border-red-600 w-12">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={volume * 100}
+              onChange={(e) => onVolumeChange(Number(e.target.value) / 100)}
+              className="w-full h-24 appearance-none bg-transparent cursor-pointer"
+              style={{
+                writingMode: 'vertical-lr',
+                direction: 'rtl',
+                background: `linear-gradient(to top, #ef4444 0%, #ef4444 ${volume * 100}%, #444 ${volume * 100}%, #444 100%)`
+              }}
+            />
+            <div className="text-[10px] text-center mt-2 font-mono text-gray-400">
+              {Math.round(volume * 100)}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
