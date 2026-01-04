@@ -82,8 +82,8 @@ export const PlaylistModal: React.FC<PlaylistModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-0 md:p-4 animate-fade-in-up">
       
-      {/* 💿 CD 자켓 컨테이너 */}
-      <div className="relative bg-[#f4f4f0] w-full max-w-4xl h-full md:h-[500px] shadow-2xl flex flex-col md:flex-row overflow-hidden border-0 md:border-4 border-[#1a1a1a] rounded-none md:rounded-sm">
+      {/* 💿 CD 자켓 컨테이너 - 화면 너비에 맞춰 최대 너비 설정 */}
+      <div className="relative bg-[#f4f4f0] w-full max-w-[95vw] md:max-w-6xl h-full md:h-auto md:max-h-[85vh] shadow-2xl flex flex-col md:flex-row overflow-hidden border-0 md:border-4 border-[#1a1a1a] rounded-none md:rounded-sm">
         
         {/* 닫기 버튼 */}
         <button onClick={onClose} className="absolute top-4 right-4 z-20 p-2 bg-black text-white hover:bg-red-600 transition-colors rounded-full">

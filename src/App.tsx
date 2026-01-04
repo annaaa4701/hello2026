@@ -420,9 +420,12 @@ export default function App() {
         <LinerNote 
           onClose={() => { 
             setShowPublicLetter(false); 
-            setStarted(true); 
-            setIsPlaying(true); 
           }} 
+          onViewPlaylist={() => {
+            setShowPublicLetter(false);
+            setShowPlaylist(true);
+            if (!isPlaying) setIsPlaying(true);
+          }}
           onMouseEnter={() => {}}
           onMouseLeave={() => {}}
         />

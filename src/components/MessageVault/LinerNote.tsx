@@ -4,12 +4,14 @@ import { PUBLIC_MESSAGE } from '../../constants/messages';
 
 interface LinerNoteProps {
   onClose: () => void;
+  onViewPlaylist: () => void; // 플레이리스트 보기 버튼 콜백 추가
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }
 
 export const LinerNote: React.FC<LinerNoteProps> = ({
   onClose,
+  onViewPlaylist,
   onMouseEnter,
   onMouseLeave
 }) => {
@@ -47,9 +49,9 @@ export const LinerNote: React.FC<LinerNoteProps> = ({
 
         {/* Booklet Container 
           - 모바일: 카드 스타일 제거 (bg-transparent, shadow-none), w-full
-          - 데스크탑: 기존 책(Booklet) 스타일 유지
+          - 데스크탑: 기존 책(Booklet) 스타일 유지, 화면 너비에 맞춰 최대 너비 설정
         */}
-        <div className="relative w-full max-w-5xl bg-transparent md:bg-[#F0F0F0] text-[#111] shadow-none md:shadow-2xl flex flex-col md:flex-row rounded-none md:rounded-sm overflow-visible md:overflow-hidden md:max-h-[90vh] transition-all duration-500">
+        <div className="relative w-full max-w-[95vw] md:max-w-7xl bg-transparent md:bg-[#F0F0F0] text-[#111] shadow-none md:shadow-2xl flex flex-col md:flex-row rounded-none md:rounded-sm overflow-visible md:overflow-hidden md:max-h-[90vh] transition-all duration-500">
           
           {/* === SECTION 1: HERO / TITLE === 
             모바일: h-[100dvh] (전체화면), snap-start (스냅 지점)
@@ -91,8 +93,9 @@ export const LinerNote: React.FC<LinerNoteProps> = ({
 
           {/* === SECTION 2: CONTENT / LETTER === 
             모바일: min-h-[100dvh] (전체화면 이상), snap-start (스냅 지점)
+            데스크탑: 스크롤 지원 overflow-y-auto
           */}
-          <div ref={contentRef} className="w-full md:w-1/2 bg-[#F5F5F0] flex flex-col relative min-h-[100dvh] md:min-h-0 md:h-full md:overflow-y-auto snap-start">
+          <div ref={contentRef} className="w-full md:w-1/2 bg-[#F5F5F0] flex flex-col relative min-h-[100dvh] md:min-h-0 md:h-full md:overflow-y-auto snap-start custom-scrollbar">
             {/* Paper Texture Overlay */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" 
                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulance type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}>
@@ -115,7 +118,7 @@ export const LinerNote: React.FC<LinerNoteProps> = ({
                   <span className="font-mono text-[10px] text-gray-400 hidden md:block">PAGE 01 / 01</span>
                   
                   <button
-                    onClick={onClose}
+                    onClick={onViewPlaylist}
                     onMouseEnter={onMouseEnter}
                     onMouseLeave={onMouseLeave}
                     className="group w-full md:w-auto flex items-center justify-center gap-2 px-6 py-4 md:py-3 bg-[#111] text-white font-mono text-xs hover:bg-[#000] transition-all rounded md:rounded-none shadow-lg md:shadow-none active:scale-95 md:active:scale-100"
