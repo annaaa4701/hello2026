@@ -216,9 +216,9 @@ export default function App() {
             </div>
 
             {/* --- B. CD PLAYER & CD RACK (모바일: 좌우 배치, 데스크탑: 중앙) --- */}
-            <div className="w-full md:w-auto flex flex-row md:block justify-center items-center gap-2 px-8 md:px-0 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20 my-0 md:my-0">
+            <div className="w-full md:w-auto flex flex-row md:block justify-center items-center gap-0 pl-16 pr-4 md:px-0 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20 my-0 md:my-0">
                {/* CD Player */}
-               <div className="relative w-[180px] h-[180px] md:w-[360px] md:h-[360px] shrink-0 ml-12 md:ml-0">
+               <div className="relative w-[180px] h-[180px] md:w-[360px] md:h-[360px] shrink-0">
                   {/* Glass Case Container (투명도 조정) */}
                   <div className="absolute inset-0 bg-[#fcfcfc]/40 backdrop-blur-md rounded-[24px] md:rounded-[40px] border border-white/60 shadow-[10px_10px_20px_rgba(0,0,0,0.1),inset_0_0_0_1px_rgba(255,255,255,0.5)] md:shadow-[20px_20px_40px_rgba(0,0,0,0.1),inset_0_0_0_1px_rgba(255,255,255,0.5)] flex flex-col items-center justify-center z-10">
                      

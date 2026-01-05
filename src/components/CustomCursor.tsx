@@ -8,8 +8,17 @@ interface CustomCursorProps {
 export const CustomCursor: React.FC<CustomCursorProps> = ({ variant }) => {
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [isClicking, setIsClicking] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // 모바일 감지
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     const updatePosition = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
     };
@@ -22,11 +31,15 @@ export const CustomCursor: React.FC<CustomCursorProps> = ({ variant }) => {
     window.addEventListener('mouseup', handleMouseUp);
 
     return () => {
+      window.removeEventListener('resize', checkMobile);
       window.removeEventListener('mousemove', updatePosition);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
+
+  // 모바일에서는 커서 렌더링 안 함
+  if (isMobile) return null;
 
   return (
     <div 
