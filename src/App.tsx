@@ -118,7 +118,6 @@ export default function App() {
       
       // ✅ 수정됨: 바로 닫지 않고 성공 상태 먼저 표시 (도장 애니메이션)
       setLoginSuccess(true);
-      setCurrentPassword(pw); // 비밀번호 저장
       setFoundMessage({
         content: data.content,
         reply: data.reply,
