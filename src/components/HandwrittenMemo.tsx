@@ -158,7 +158,16 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                       {/* 답장하기 버튼 */}
                       {!hasReplied && !showReplyInput && (
                         <button
-                          onClick={() => setShowReplyInput(true)}
+                          onClick={() => {
+                            setShowReplyInput(true);
+                            // 답장 페이지로 자동 스크롤
+                            setTimeout(() => {
+                              if (scrollContainerRef.current) {
+                                const width = scrollContainerRef.current.clientWidth;
+                                scrollContainerRef.current.scrollLeft = pages.length * width;
+                              }
+                            }, 100);
+                          }}
                           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 text-white rounded-lg hover:bg-black transition-colors font-serif"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -262,6 +271,13 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                     onClick={() => {
                       setReplyText(reply);
                       setShowReplyInput(true);
+                      // 답장 수정 페이지로 자동 스크롤
+                      setTimeout(() => {
+                        if (scrollContainerRef.current) {
+                          const width = scrollContainerRef.current.clientWidth;
+                          scrollContainerRef.current.scrollLeft = pages.length * width;
+                        }
+                      }, 100);
                     }}
                     className="w-full py-3 bg-gray-100 text-gray-800 rounded-lg font-serif hover:bg-gray-200 transition-colors"
                   >
