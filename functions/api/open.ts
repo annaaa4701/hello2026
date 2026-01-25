@@ -49,9 +49,10 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     // D1 바인딩 체크
     console.log("[open.ts] Checking DB binding...");
     console.log("[open.ts] env.DB exists:", !!env.DB);
+    console.log("[open.ts] env['letters-db'] exists:", !!env["letters-db"]);
     console.log("[open.ts] env keys:", Object.keys(env));
     
-    const DB = env.DB;
+    const DB = env["letters-db"] || env.DB;
     
     if (!DB) {
       console.error("[open.ts] ❌ DB binding not found!");
