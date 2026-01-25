@@ -43,7 +43,7 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
   };
 
   // 엽서 이미지로 저장하는 함수
-  const handleDownload = async () => {
+  const handleDownload = async (isReply: boolean = false) => {
     if (!printRef.current) return;
 
     try {
@@ -55,9 +55,22 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
         useCORS: true, // 이미지 등 외부 리소스 허용
       });
 
+      // 파일명 생성: 원본 편지는 fromName이 toName에게, 답장은 반대로
+      let filename = 'hello2026-letter';
+      if (fromName && toName) {
+        if (isReply) {
+          // 답장: toName이 fromName에게
+          filename = `${toName}가_${fromName}에게`;
+        } else {
+          // 원본: fromName이 toName에게
+          filename = `${fromName}가_${toName}에게`;
+        }
+      }
+      filename += `-${Date.now()}.png`;
+
       // 다운로드 링크 생성
       const link = document.createElement('a');
-      link.download = `hello2026-letter-${Date.now()}.png`;
+      link.download = filename;
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (error) {
@@ -99,7 +112,7 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
           </div>
 
           <button 
-            onClick={handleDownload}
+            onClick={() => handleDownload(false)}
             className="flex items-center gap-1 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-full hover:bg-black transition-colors shadow-sm"
           >
             {/* Download Icon */}
@@ -123,11 +136,10 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                 className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto"
               >
                 <div className="flex-1 flex flex-col justify-center">
-                  {/* 첫 페이지: From/To 표시 */}
-                  {index === 0 && fromName && toName && (
+                  {/* 첫 페이지: To만 표시 */}
+                  {index === 0 && toName && (
                     <div className="mb-6 pb-4 border-b border-gray-200">
-                      <p className="text-sm text-gray-500 font-serif mb-1">To. {toName}</p>
-                      <p className="text-sm text-gray-500 font-serif">From. {fromName}</p>
+                      <p className="text-sm text-gray-500 font-serif">To. {toName}</p>
                     </div>
                   )}
                   
@@ -141,12 +153,19 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                     {page}
                   </p>
                   
+                  {/* 마지막 페이지: From 표시 */}
+                  {index === pages.length - 1 && fromName && (
+                    <div className="mt-6 pt-4 border-t border-gray-200">
+                      <p className="text-sm text-gray-500 font-serif text-right">From. {fromName}</p>
+                    </div>
+                  )}
+                  
                   {/* 마지막 페이지에만 버튼 표시 */}
                   {index === pages.length - 1 && onReply && (
                     <div className="mt-8 space-y-3 border-t border-gray-200 pt-6">
                       {/* 편지 저장 버튼 */}
                       <button
-                        onClick={handleDownload}
+                        onClick={() => handleDownload(false)}
                         className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-serif"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -194,8 +213,8 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
              </div>
           )}
           
-          {/* 답장 입력 페이지 (showReplyInput이 true일 때만) */}
-          {onReply && showReplyInput && !hasReplied && (
+          {/* 답장 입력/수정 페이지 (showReplyInput이 true일 때) */}
+          {onReply && showReplyInput && (
             <div className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto">
               <div className="flex-1 flex flex-col justify-center">
                 {/* 답장 From/To (역순) */}
@@ -207,7 +226,7 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                 )}
                 
                 <div className="text-xs text-gray-300 font-serif mb-4 text-center">
-                  — Reply —
+                  — {hasReplied ? 'Edit Reply' : 'Reply'} —
                 </div>
                 
                 <div className="space-y-4">
@@ -242,8 +261,8 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
             </div>
           )}
           
-          {/* 이미 답장한 경우 보기 페이지 */}
-          {onReply && hasReplied && (
+          {/* 이미 답장한 경우 보기 페이지 (수정 중이 아닐 때만) */}
+          {onReply && hasReplied && !showReplyInput && (
             <div className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto">
               <div className="flex-1 flex flex-col justify-center">
                 {/* 답장 From/To (역순) */}
@@ -373,11 +392,10 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
 
           {/* 엽서 내용 (전체 내용 한 번에 표시) */}
           <div className="flex-1">
-            {/* From/To 표시 */}
-            {fromName && toName && (
+            {/* To 표시 */}
+            {toName && (
               <div className="mb-8 pb-4 border-b border-gray-300">
-                <p className="text-base text-gray-600 mb-2">To. {toName}</p>
-                <p className="text-base text-gray-600">From. {fromName}</p>
+                <p className="text-base text-gray-600">To. {toName}</p>
               </div>
             )}
             
@@ -386,13 +404,10 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
             </p>
           </div>
 
-          {/* 엽서 푸터 */}
-          <div className="mt-16 flex justify-end items-center gap-3 opacity-60">
-            <div className="w-12 h-12 border border-gray-400 rounded-full flex items-center justify-center">
-              <span className="text-xs font-bold transform -rotate-12 block">STAMP</span>
-            </div>
+          {/* 엽서 푸터 - From만 표시 */}
+          <div className="mt-16 flex justify-end">
             <div className="text-right">
-              <p className="text-sm font-bold">From. {fromName || 'Past Me'}</p>
+              <p className="text-sm font-bold text-gray-600">From. {fromName || 'Past Me'}</p>
             </div>
           </div>
         </div>
