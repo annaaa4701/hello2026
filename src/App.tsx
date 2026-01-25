@@ -36,7 +36,6 @@ export default function App() {
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
   const [foundMessage, setFoundMessage] = useState<any>(null);
-  const [currentPassword, setCurrentPassword] = useState<string>(''); // 추가: 현재 사용 중인 비밀번호
   const [loginError, setLoginError] = useState(false);
   const [isLoadingMessage, setIsLoadingMessage] = useState(false);
   
