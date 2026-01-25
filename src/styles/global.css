@@ -36,7 +36,22 @@ body {
 }
 
 /* =================================
-   💿 CD & Vinyl Effects
+   � Scrollbar Hide (for Booklet)
+   ================================= */
+
+/* Chrome, Safari, Opera */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* IE, Edge and Firefox */
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* =================================
+   �💿 CD & Vinyl Effects
    ================================= */
 
 /* CD 회전 */

@@ -5,15 +5,16 @@ import { playSound, playSoundFile } from './utils/audio';
 // Components
 import { CustomCursor } from './components/CustomCursor';
 import { MobileRadioBar } from './components/MobileRadiobar';
-import { HandwrittenMemo } from './components/HandwrittenMemo';
+import HandwrittenMemo from './components/HandwrittenMemo';
 import { TapeSticker, CDRackButton, ReceiptButton } from './components/StickerButton';
 import { BarcodeScanner } from './components/MessageVault/BarcodeScanner';
-import { HiddenTrack } from './components/MessageVault/HiddenTrack';
+
 import { LinerNote } from './components/MessageVault/LinerNote';
 import { LoadingIntro } from './components/LoadingIntro';
 import { PlaylistModal } from './components/PlaylistModal';
 
 import './styles/global.css';
+import { PUBLIC_MESSAGE } from './constants/messages';
 
 // 🎵 Music Data
 const TRACKS = [
@@ -313,8 +314,38 @@ export default function App() {
               }}
               className="flex justify-center md:block md:absolute md:top-12 md:right-12 z-10 cursor-pointer hover:rotate-1 transition-transform duration-300 origin-top-right mt-0 md:mt-0"
             >
-               <HandwrittenMemo />
+               <div className="relative w-72 h-auto bg-[#fcfbf9] p-6 shadow-[2px_2px_15px_rgba(0,0,0,0.15)] rotate-1 transform hover:rotate-0 transition-transform duration-500">
+                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#e0d8c3] opacity-80 rotate-[-2deg] shadow-sm"></div>
+                 <div className="border-b-2 border-red-600 pb-2 mb-4 flex justify-between items-end">
+                   <h2 className="font-bebas text-3xl text-[#1a1a1a] leading-none">2026 PLAN</h2>
+                   <span className="font-barcode text-2xl opacity-50">0101</span>
+                 </div>
+                 <div className="font-hand text-[#333] space-y-4 text-lg leading-relaxed">
+                   <div className="flex items-center gap-2">
+                     <span className="text-red-600 font-bold">✔</span>
+                     <span className="line-through decoration-red-500/50">Start New Beginnings</span>
+                   </div>
+                   <div className="flex items-center gap-2">
+                     <span className="text-gray-400">□</span>
+                     <span>Trust the uncertainty.</span>
+                   </div>
+                   <p className="text-sm text-gray-600 mt-4 pt-4 border-t border-dashed border-gray-300">
+                     "The music will guide you.<br/>
+                     Thanks to all the dips and cracks."
+                   </p>
+                 </div>
+                 <div className="absolute bottom-4 right-4 border-2 border-red-600 text-red-600 rounded-full w-16 h-16 flex items-center justify-center opacity-70 -rotate-12 mask-image-grunge">
+                   <span className="font-bebas text-sm text-center leading-none">CHECKED<br/>2026</span>
+                 </div>
+               </div>
             </div>
+
+            {/* 공개 편지 모달 */}
+            <HandwrittenMemo 
+              isOpen={showPublicLetter}
+              onClose={() => setShowPublicLetter(false)}
+              message={PUBLIC_MESSAGE.content}
+            />
           {/* ==============================================
                 F. COLLAGE STICKER PACK (Collage Book Style)
                 스티커를 '안전 구역(Safe Zone)'에 배치하여 
@@ -410,37 +441,10 @@ export default function App() {
       
       {/* Private Letter (Found Message) */}
       {showLetter && foundMessage && (
-        <HiddenTrack 
-          messageData={foundMessage} 
-          onClose={() => { setShowLetter(false); setFoundMessage(null); }} 
-          onReply={async (txt) => { 
-            try {
-              const res = await fetch('/api/reply', {
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({ password: currentPassword, reply: txt }),
-              });
-              
-              const data = await res.json();
-              
-              if (data.ok) {
-                playSound('success');
-                // foundMessage 업데이트 (답장 내용 + hasReplied 반영)
-                setFoundMessage((prev: any) => ({
-                  ...prev,
-                  reply: txt,
-                  hasReplied: true // DB에 has_replied=1로 저장됨
-                }));
-              } else {
-                playSound('error');
-              }
-            } catch (err) {
-              console.error('Reply error:', err);
-              playSound('error');
-            }
-          }}
-          onMouseEnter={() => {}}
-          onMouseLeave={() => {}}
+        <HandwrittenMemo 
+          isOpen={showLetter}
+          onClose={() => { setShowLetter(false); setFoundMessage(null); }}
+          message={foundMessage.content || ''}
         />
       )}
       
