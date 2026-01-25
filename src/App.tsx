@@ -124,6 +124,7 @@ export default function App() {
         from: data.from,
         to: data.to,
         hasReplied: data.hasReplied, // DB의 has_replied 필드
+        password: pw, // 답장용 비밀번호 저장
       });
       playSound('success');
       
@@ -343,6 +344,12 @@ export default function App() {
               isOpen={showPublicLetter}
               onClose={() => setShowPublicLetter(false)}
               message={PUBLIC_MESSAGE.content}
+              onReply={(txt) => {
+                // 데모용: 실제로는 저장하지 않고 콘솔에만 출력
+                console.log('공개 편지 답장 (데모):', txt);
+                alert('답장이 작성되었습니다! (데모 모드)');
+              }}
+              hasReplied={false}
             />
           {/* ==============================================
                 F. COLLAGE STICKER PACK (Collage Book Style)
@@ -443,6 +450,33 @@ export default function App() {
           isOpen={showLetter}
           onClose={() => { setShowLetter(false); setFoundMessage(null); }}
           message={foundMessage.content || ''}
+          hasReplied={foundMessage.hasReplied}
+          reply={foundMessage.reply || ''}
+          onReply={async (txt) => { 
+            try {
+              const res = await fetch('/api/reply', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ password: foundMessage.password, reply: txt }),
+              });
+              
+              const data = await res.json();
+              
+              if (data.ok) {
+                playSound('success');
+                setFoundMessage((prev: any) => ({
+                  ...prev,
+                  reply: txt,
+                  hasReplied: true
+                }));
+              } else {
+                playSound('error');
+              }
+            } catch (err) {
+              console.error('Reply error:', err);
+              playSound('error');
+            }
+          }}
         />
       )}
       

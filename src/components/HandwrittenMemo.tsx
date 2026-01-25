@@ -5,10 +5,22 @@ interface HandwrittenMemoProps {
   isOpen: boolean;
   onClose: () => void;
   message: string;
+  onReply?: (replyText: string) => void;
+  hasReplied?: boolean;
+  reply?: string;
 }
 
-const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({ isOpen, onClose, message }) => {
+const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({ 
+  isOpen, 
+  onClose, 
+  message, 
+  onReply,
+  hasReplied = false,
+  reply = ''
+}) => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [replyText, setReplyText] = useState(reply);
+  const [showReplyInput, setShowReplyInput] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const printRef = useRef<HTMLDivElement>(null); // 캡처할 엽서 영역
   
@@ -97,14 +109,14 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({ isOpen, onClose, mess
         {/* --- 가로 슬라이더 영역 --- */}
         <div 
           ref={scrollContainerRef}
-          className="flex-1 w-full overflow-x-auto overflow-y-auto snap-x snap-mandatory scrollbar-hide flex"
+          className="flex-1 w-full overflow-x-scroll overflow-y-hidden snap-x snap-mandatory scrollbar-hide flex"
           style={{ scrollBehavior: 'smooth' }}
         >
           {pages.length > 0 ? (
             pages.map((page, index) => (
               <div 
                 key={index} 
-                className="w-full flex-shrink-0 snap-center flex flex-col p-8"
+                className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto"
               >
                 <div className="flex-1 flex flex-col justify-center">
                   {/* 페이지 번호 장식 */}
@@ -116,6 +128,42 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({ isOpen, onClose, mess
                   <p className="whitespace-pre-wrap font-serif text-gray-800 leading-loose text-lg text-justify break-keep">
                     {page}
                   </p>
+                  
+                  {/* 마지막 페이지에만 버튼 표시 */}
+                  {index === pages.length - 1 && onReply && (
+                    <div className="mt-8 space-y-3 border-t border-gray-200 pt-6">
+                      {/* 편지 저장 버튼 */}
+                      <button
+                        onClick={handleDownload}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-serif"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        편지 저장하기
+                      </button>
+                      
+                      {/* 답장하기 버튼 */}
+                      {!hasReplied && !showReplyInput && (
+                        <button
+                          onClick={() => setShowReplyInput(true)}
+                          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 text-white rounded-lg hover:bg-black transition-colors font-serif"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                          </svg>
+                          답장하기
+                        </button>
+                      )}
+                      
+                      {/* 이미 답장한 경우 */}
+                      {hasReplied && (
+                        <div className="text-center py-2 text-gray-500 text-sm">
+                          ✓ 답장을 보냈습니다
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             ))
@@ -124,18 +172,125 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({ isOpen, onClose, mess
                내용이 없습니다.
              </div>
           )}
+          
+          {/* 답장 입력 페이지 (showReplyInput이 true일 때만) */}
+          {onReply && showReplyInput && !hasReplied && (
+            <div className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto">
+              <div className="flex-1 flex flex-col justify-center">
+                <div className="text-xs text-gray-300 font-serif mb-4 text-center">
+                  — Reply —
+                </div>
+                
+                <div className="space-y-4">
+                  <textarea
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    placeholder="답장을 작성해주세요..."
+                    className="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none font-serif text-gray-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setShowReplyInput(false)}
+                      className="flex-1 py-3 bg-gray-200 text-gray-800 rounded-lg font-serif hover:bg-gray-300 transition-colors"
+                    >
+                      취소
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (replyText.trim()) {
+                          onReply(replyText);
+                          setShowReplyInput(false);
+                        }
+                      }}
+                      disabled={!replyText.trim()}
+                      className="flex-1 py-3 bg-gray-800 text-white rounded-lg font-serif hover:bg-black transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    >
+                      전송
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* 이미 답장한 경우 보기 페이지 */}
+          {onReply && hasReplied && (
+            <div className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto">
+              <div className="flex-1 flex flex-col justify-center">
+                <div className="text-xs text-gray-300 font-serif mb-4 text-center">
+                  — Your Reply —
+                </div>
+                
+                <div className="space-y-4">
+                  <p className="text-center text-gray-500 text-sm mb-4">보낸 답장</p>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <p className="whitespace-pre-wrap font-serif text-gray-700 leading-relaxed">
+                      {reply}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 하단 페이지네이션 인디케이터 */}
-        <div className="p-4 flex justify-center gap-2 bg-white/50">
-          {pages.map((_, i) => (
-            <div 
-              key={i}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                i === currentPage ? 'bg-gray-800 scale-125' : 'bg-gray-300'
-              }`}
-            />
-          ))}
+        <div className="p-4 flex justify-center items-center gap-4 bg-white/50">
+          {/* 이전 버튼 */}
+          {currentPage > 0 && (
+            <button
+              onClick={() => {
+                if (scrollContainerRef.current) {
+                  const width = scrollContainerRef.current.clientWidth;
+                  scrollContainerRef.current.scrollLeft = (currentPage - 1) * width;
+                }
+              }}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600"
+              aria-label="이전 페이지"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+          
+          {/* 페이지 dots */}
+          <div className="flex gap-2">
+            {pages.map((_, i) => (
+              <div 
+                key={i}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  i === currentPage ? 'bg-gray-800 scale-125' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+            {/* Reply 페이지 dot (답장 입력중이거나 이미 답장한 경우) */}
+            {onReply && (showReplyInput || hasReplied) && (
+              <div 
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  currentPage === pages.length ? 'bg-gray-800 scale-125' : 'bg-gray-300'
+                }`}
+              />
+            )}
+          </div>
+          
+          {/* 다음 버튼 */}
+          {currentPage < (onReply && (showReplyInput || hasReplied) ? pages.length : pages.length - 1) && (
+            <button
+              onClick={() => {
+                if (scrollContainerRef.current) {
+                  const width = scrollContainerRef.current.clientWidth;
+                  scrollContainerRef.current.scrollLeft = (currentPage + 1) * width;
+                }
+              }}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600"
+              aria-label="다음 페이지"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 
