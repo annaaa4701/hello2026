@@ -8,6 +8,8 @@ interface HandwrittenMemoProps {
   onReply?: (replyText: string) => void;
   hasReplied?: boolean;
   reply?: string;
+  fromName?: string;
+  toName?: string;
 }
 
 const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({ 
@@ -16,7 +18,9 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
   message, 
   onReply,
   hasReplied = false,
-  reply = ''
+  reply = '',
+  fromName = '',
+  toName = ''
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [replyText, setReplyText] = useState(reply);
@@ -119,6 +123,14 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                 className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto"
               >
                 <div className="flex-1 flex flex-col justify-center">
+                  {/* 첫 페이지: From/To 표시 */}
+                  {index === 0 && fromName && toName && (
+                    <div className="mb-6 pb-4 border-b border-gray-200">
+                      <p className="text-sm text-gray-500 font-serif mb-1">To. {toName}</p>
+                      <p className="text-sm text-gray-500 font-serif">From. {fromName}</p>
+                    </div>
+                  )}
+                  
                   {/* 페이지 번호 장식 */}
                   <div className="text-xs text-gray-300 font-serif mb-4 text-center">
                     — Page {index + 1} —
@@ -177,6 +189,14 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
           {onReply && showReplyInput && !hasReplied && (
             <div className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto">
               <div className="flex-1 flex flex-col justify-center">
+                {/* 답장 From/To (역순) */}
+                {fromName && toName && (
+                  <div className="mb-6 pb-4 border-b border-gray-200">
+                    <p className="text-sm text-gray-500 font-serif mb-1">To. {fromName}</p>
+                    <p className="text-sm text-gray-500 font-serif">From. {toName}</p>
+                  </div>
+                )}
+                
                 <div className="text-xs text-gray-300 font-serif mb-4 text-center">
                   — Reply —
                 </div>
@@ -217,6 +237,14 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
           {onReply && hasReplied && (
             <div className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto">
               <div className="flex-1 flex flex-col justify-center">
+                {/* 답장 From/To (역순) */}
+                {fromName && toName && (
+                  <div className="mb-6 pb-4 border-b border-gray-200">
+                    <p className="text-sm text-gray-500 font-serif mb-1">To. {fromName}</p>
+                    <p className="text-sm text-gray-500 font-serif">From. {toName}</p>
+                  </div>
+                )}
+                
                 <div className="text-xs text-gray-300 font-serif mb-4 text-center">
                   — Your Reply —
                 </div>
@@ -228,6 +256,17 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                       {reply}
                     </p>
                   </div>
+                  
+                  {/* 답장 수정 버튼 */}
+                  <button
+                    onClick={() => {
+                      setReplyText(reply);
+                      setShowReplyInput(true);
+                    }}
+                    className="w-full py-3 bg-gray-100 text-gray-800 rounded-lg font-serif hover:bg-gray-200 transition-colors"
+                  >
+                    답장 수정하기
+                  </button>
                 </div>
               </div>
             </div>
@@ -318,6 +357,14 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
 
           {/* 엽서 내용 (전체 내용 한 번에 표시) */}
           <div className="flex-1">
+            {/* From/To 표시 */}
+            {fromName && toName && (
+              <div className="mb-8 pb-4 border-b border-gray-300">
+                <p className="text-base text-gray-600 mb-2">To. {toName}</p>
+                <p className="text-base text-gray-600">From. {fromName}</p>
+              </div>
+            )}
+            
             <p className="whitespace-pre-wrap text-xl leading-relaxed text-gray-800">
               {message}
             </p>
@@ -329,7 +376,7 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
               <span className="text-xs font-bold transform -rotate-12 block">STAMP</span>
             </div>
             <div className="text-right">
-              <p className="text-sm font-bold">From. Past Me</p>
+              <p className="text-sm font-bold">From. {fromName || 'Past Me'}</p>
             </div>
           </div>
         </div>

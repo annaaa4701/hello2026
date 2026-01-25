@@ -123,6 +123,8 @@ export default function App() {
         reply: data.reply,
         from: data.from,
         to: data.to,
+        from_name: data.from_name,
+        receiver_name: data.receiver_name,
         hasReplied: data.hasReplied, // DB의 has_replied 필드
         password: pw, // 답장용 비밀번호 저장
       });
@@ -452,6 +454,8 @@ export default function App() {
           message={foundMessage.content || ''}
           hasReplied={foundMessage.hasReplied}
           reply={foundMessage.reply || ''}
+          fromName={foundMessage.from_name || foundMessage.from}
+          toName={foundMessage.receiver_name || foundMessage.to}
           onReply={async (txt) => { 
             try {
               const res = await fetch('/api/reply', {
