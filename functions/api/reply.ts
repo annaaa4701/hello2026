@@ -41,11 +41,10 @@ type ReplyResponse = { ok: true } | { ok: false; error: string };
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }) => {
   try {
     // D1 바인딩 체크
-    const DB = env["letters-db"] || env.DB;
+    const DB = env.DB;
     
     if (!DB) {
       console.error("[reply.ts] DB binding not found");
-      console.error("[reply.ts] Available env keys:", Object.keys(env));
       return new Response(
         JSON.stringify({ ok: false, error: "Database not configured" }),
         { 

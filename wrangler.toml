@@ -1,8 +1,10 @@
 # Cloudflare Pages Configuration
 name = "hello2026"
+compatibility_date = "2024-01-01"
 pages_build_output_dir = "dist"
 
-# D1 바인딩은 Cloudflare Pages 대시보드에서 설정하세요
-# Settings > Functions > D1 database bindings
-# Variable name: DB
-# D1 database: letters-db
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "letters-db"
+database_id = "c23927c1-9f9a-423e-a2a5-375c2b356940"
