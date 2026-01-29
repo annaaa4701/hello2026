@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 
 interface HandwrittenMemoProps {
@@ -22,40 +22,26 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
   fromName = '',
   toName = ''
 }) => {
-  const [currentPage, setCurrentPage] = useState(0);
   const [replyText, setReplyText] = useState(reply);
   const [showReplyInput, setShowReplyInput] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const printRef = useRef<HTMLDivElement>(null); // 캡처할 엽서 영역
-  
-  // 메시지를 문단 단위로 나누기 (빈 줄 2개 기준)
-  // 내용이 짧으면 그냥 전체를 하나로 씀
-  const pages = message.split('\n\n').filter((p) => p.trim() !== '');
-
-  // 스크롤 위치에 따라 현재 페이지 번호 업데이트
-  const handleScroll = () => {
-    if (scrollContainerRef.current) {
-      const scrollLeft = scrollContainerRef.current.scrollLeft;
-      const width = scrollContainerRef.current.clientWidth;
-      const newPage = Math.round(scrollLeft / width);
-      setCurrentPage(newPage);
-    }
-  };
+  const letterContainerRef = useRef<HTMLDivElement>(null);
+  const printLetterRef = useRef<HTMLDivElement>(null); // 원본 편지 캡처용
+  const printReplyRef = useRef<HTMLDivElement>(null); // 답장 캡처용
 
   // 엽서 이미지로 저장하는 함수
   const handleDownload = async (isReply: boolean = false) => {
-    if (!printRef.current) return;
+    const targetRef = isReply ? printReplyRef : printLetterRef;
+    if (!targetRef.current) return;
 
     try {
-      // 캡처 시작 전 잠시 보이게 하거나, 보이지 않는 상태에서도 캡처 가능
-      const canvas = await html2canvas(printRef.current, {
-        backgroundColor: '#FDFBF7', // 따뜻한 종이 색감
-        scale: 2, // 고해상도 (레티나 디스플레이 대응)
+      const canvas = await html2canvas(targetRef.current, {
+        backgroundColor: '#FDFBF7',
+        scale: 2,
         logging: false,
-        useCORS: true, // 이미지 등 외부 리소스 허용
+        useCORS: true,
       });
 
-      // 파일명 생성: 원본 편지는 fromName이 toName에게, 답장은 반대로
+      // 파일명 생성
       let filename = 'hello2026-letter';
       if (fromName && toName) {
         if (isReply) {
@@ -68,7 +54,6 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
       }
       filename += `-${Date.now()}.png`;
 
-      // 다운로드 링크 생성
       const link = document.createElement('a');
       link.download = filename;
       link.href = canvas.toDataURL('image/png');
@@ -79,167 +64,107 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
     }
   };
 
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-      return () => container.removeEventListener('scroll', handleScroll);
-    }
-  }, [isOpen]);
-
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
-      {/* 메인 컨테이너 (CD 가사집 느낌) */}
-      <div className="relative w-full max-w-md bg-[#FDFBF7] rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+      {/* 메인 컨테이너 - 영수증 스타일 */}
+      <div className="relative w-full max-w-md bg-white rounded-sm shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
-        {/* 상단 헤더: 닫기 버튼 & 저장 버튼 */}
-        <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-white/50">
+        {/* 상단 헤더 - 영수증 스타일 */}
+        <div className="flex justify-between items-center p-3 border-b border-dashed border-gray-300 bg-white">
           <button 
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
             aria-label="닫기"
           >
-            {/* Close Icon */}
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
           
-          <div className="text-sm font-bold text-gray-400 tracking-widest uppercase">
-            Booklet
+          <div className="text-xs font-mono text-gray-600 tracking-wider uppercase">
+            Message Receipt
           </div>
 
-          <button 
-            onClick={() => handleDownload(false)}
-            className="flex items-center gap-1 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-full hover:bg-black transition-colors shadow-sm"
-          >
-            {/* Download Icon */}
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Save
-          </button>
+          <div className="w-8" />
         </div>
 
-        {/* --- 가로 슬라이더 영역 --- */}
+        {/* 영수증 정보 */}
+        <div className="px-6 py-3 border-b border-dashed border-gray-300 bg-gray-50 font-mono text-xs">
+          <div className="flex justify-between mb-1">
+            <span className="text-gray-500">DATE:</span>
+            <span className="text-gray-700">{new Date().toLocaleDateString('ko-KR')}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">FROM:</span>
+            <span className="text-gray-700">{fromName || 'Unknown'}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">TO:</span>
+            <span className="text-gray-700">{toName || 'Unknown'}</span>
+          </div>
+        </div>
+
+        {/* --- 편지 내용 영역 (스크롤) --- */}
         <div 
-          ref={scrollContainerRef}
-          className="flex-1 w-full overflow-x-scroll overflow-y-hidden snap-x snap-mandatory scrollbar-hide flex"
-          style={{ scrollBehavior: 'smooth' }}
+          ref={letterContainerRef}
+          className="flex-1 overflow-y-auto p-6"
         >
-          {pages.length > 0 ? (
-            pages.map((page, index) => (
-              <div 
-                key={index} 
-                className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto"
-              >
-                <div className="flex-1 flex flex-col justify-center">
-                  {/* 첫 페이지: To만 표시 */}
-                  {index === 0 && toName && (
-                    <div className="mb-6 pb-4 border-b border-gray-200">
-                      <p className="text-sm text-gray-500 font-serif">To. {toName}</p>
-                    </div>
-                  )}
-                  
-                  {/* 페이지 번호 장식 */}
-                  <div className="text-xs text-gray-300 font-serif mb-4 text-center">
-                    — Page {index + 1} —
-                  </div>
-                  
-                  {/* 본문 텍스트 */}
-                  <p className="whitespace-pre-wrap font-serif text-gray-800 leading-loose text-lg text-justify break-keep">
-                    {page}
-                  </p>
-                  
-                  {/* 마지막 페이지: From 표시 */}
-                  {index === pages.length - 1 && fromName && (
-                    <div className="mt-6 pt-4 border-t border-gray-200">
-                      <p className="text-sm text-gray-500 font-serif text-right">From. {fromName}</p>
-                    </div>
-                  )}
-                  
-                  {/* 마지막 페이지에만 버튼 표시 */}
-                  {index === pages.length - 1 && onReply && (
-                    <div className="mt-8 space-y-3 border-t border-gray-200 pt-6">
-                      {/* 편지 저장 버튼 */}
-                      <button
-                        onClick={() => handleDownload(false)}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-serif"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        편지 저장하기
-                      </button>
-                      
-                      {/* 답장하기 버튼 */}
-                      {!hasReplied && !showReplyInput && (
-                        <button
-                          onClick={() => {
-                            setShowReplyInput(true);
-                            // 답장 페이지로 자동 스크롤
-                            setTimeout(() => {
-                              if (scrollContainerRef.current) {
-                                const width = scrollContainerRef.current.clientWidth;
-                                scrollContainerRef.current.scrollLeft = pages.length * width;
-                              }
-                            }, 100);
-                          }}
-                          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 text-white rounded-lg hover:bg-black transition-colors font-serif"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                          </svg>
-                          답장하기
-                        </button>
-                      )}
-                      
-                      {/* 이미 답장한 경우 */}
-                      {hasReplied && (
-                        <div className="text-center py-2 text-gray-500 text-sm">
-                          ✓ 답장을 보냈습니다
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+          <div className="space-y-4">
+            {/* 받는 사람 정보 */}
+            <div className="pb-3 border-b border-gray-200">
+              <p className="text-sm text-gray-600 font-serif">To. {toName}</p>
+            </div>
+            
+            {/* 본문 텍스트 - 스크롤로 전체 보기 */}
+            <p className="whitespace-pre-wrap font-serif text-gray-800 leading-loose text-base text-justify break-keep">
+              {message}
+            </p>
+            
+            {/* 보낸 사람 정보 */}
+            <div className="pt-3 border-t border-gray-200">
+              <p className="text-sm text-gray-600 font-serif text-right">From. {fromName}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 답장 섹션 (있을 경우) */}
+        {onReply && (
+          <div className="border-t-2 border-dashed border-gray-300">
+            {!showReplyInput && !hasReplied && (
+              <div className="p-4">
+                <button
+                  onClick={() => setShowReplyInput(true)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-800 text-white rounded-lg hover:bg-black transition-colors font-serif"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                  </svg>
+                  답장하기
+                </button>
               </div>
-            ))
-          ) : (
-             <div className="w-full h-full flex items-center justify-center text-gray-400">
-               내용이 없습니다.
-             </div>
-          )}
-          
-          {/* 답장 입력/수정 페이지 (showReplyInput이 true일 때) */}
-          {onReply && showReplyInput && (
-            <div className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto">
-              <div className="flex-1 flex flex-col justify-center">
-                {/* 답장 From/To (역순) */}
-                {fromName && toName && (
-                  <div className="mb-6 pb-4 border-b border-gray-200">
-                    <p className="text-sm text-gray-500 font-serif mb-1">To. {fromName}</p>
-                    <p className="text-sm text-gray-500 font-serif">From. {toName}</p>
-                  </div>
-                )}
-                
-                <div className="text-xs text-gray-300 font-serif mb-4 text-center">
-                  — {hasReplied ? 'Edit Reply' : 'Reply'} —
+            )}
+
+            {/* 답장 작성/수정 폼 */}
+            {showReplyInput && (
+              <div className="p-6 bg-gray-50">
+                <div className="mb-4 pb-3 border-b border-gray-200">
+                  <p className="text-xs text-gray-500 font-mono mb-1">REPLY TO: {fromName}</p>
+                  <p className="text-xs text-gray-500 font-mono">FROM: {toName}</p>
                 </div>
                 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <textarea
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="답장을 작성해주세요..."
-                    className="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none font-serif text-gray-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    className="w-full h-40 p-4 border border-gray-300 rounded-lg resize-none font-serif text-gray-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-gray-400"
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={() => setShowReplyInput(false)}
-                      className="flex-1 py-3 bg-gray-200 text-gray-800 rounded-lg font-serif hover:bg-gray-300 transition-colors"
+                      className="flex-1 py-2.5 bg-gray-200 text-gray-800 rounded-lg font-serif text-sm hover:bg-gray-300 transition-colors"
                     >
                       취소
                     </button>
@@ -251,160 +176,97 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                         }
                       }}
                       disabled={!replyText.trim()}
-                      className="flex-1 py-3 bg-gray-800 text-white rounded-lg font-serif hover:bg-black transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      className="flex-1 py-2.5 bg-gray-800 text-white rounded-lg font-serif text-sm hover:bg-black transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                     >
                       전송
                     </button>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-          
-          {/* 이미 답장한 경우 보기 페이지 (수정 중이 아닐 때만) */}
-          {onReply && hasReplied && !showReplyInput && (
-            <div className="w-full flex-shrink-0 snap-center flex flex-col p-8 overflow-y-auto">
-              <div className="flex-1 flex flex-col justify-center">
-                {/* 답장 From/To (역순) */}
-                {fromName && toName && (
-                  <div className="mb-6 pb-4 border-b border-gray-200">
-                    <p className="text-sm text-gray-500 font-serif mb-1">To. {fromName}</p>
-                    <p className="text-sm text-gray-500 font-serif">From. {toName}</p>
-                  </div>
-                )}
-                
-                <div className="text-xs text-gray-300 font-serif mb-4 text-center">
-                  — Your Reply —
+            )}
+
+            {/* 이미 답장한 경우 */}
+            {hasReplied && !showReplyInput && (
+              <div className="p-6 bg-gray-50">
+                <div className="mb-4 pb-3 border-b border-gray-200">
+                  <p className="text-xs text-gray-500 font-mono mb-1">REPLY TO: {fromName}</p>
+                  <p className="text-xs text-gray-500 font-mono">FROM: {toName}</p>
                 </div>
                 
-                <div className="space-y-4">
-                  <p className="text-center text-gray-500 text-sm mb-4">보낸 답장</p>
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <p className="whitespace-pre-wrap font-serif text-gray-700 leading-relaxed">
+                <div className="space-y-3">
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <p className="whitespace-pre-wrap font-serif text-gray-700 leading-relaxed text-sm">
                       {reply}
                     </p>
                   </div>
                   
-                  {/* 답장 수정 버튼 */}
-                  <button
-                    onClick={() => {
-                      setReplyText(reply);
-                      setShowReplyInput(true);
-                      // 답장 수정 페이지로 자동 스크롤
-                      setTimeout(() => {
-                        if (scrollContainerRef.current) {
-                          const width = scrollContainerRef.current.clientWidth;
-                          scrollContainerRef.current.scrollLeft = pages.length * width;
-                        }
-                      }, 100);
-                    }}
-                    className="w-full py-3 bg-gray-100 text-gray-800 rounded-lg font-serif hover:bg-gray-200 transition-colors"
-                  >
-                    답장 수정하기
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setReplyText(reply);
+                        setShowReplyInput(true);
+                      }}
+                      className="flex-1 py-2.5 bg-gray-100 text-gray-800 rounded-lg font-serif text-sm hover:bg-gray-200 transition-colors"
+                    >
+                      답장 수정하기
+                    </button>
+                    <button
+                      onClick={() => handleDownload(true)}
+                      className="flex-1 py-2.5 bg-gray-800 text-white rounded-lg font-serif text-sm hover:bg-black transition-colors flex items-center justify-center gap-1"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      답장 저장
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-
-        {/* 하단 페이지네이션 인디케이터 */}
-        <div className="p-4 flex justify-center items-center gap-4 bg-white/50">
-          {/* 이전 버튼 */}
-          {currentPage > 0 && (
-            <button
-              onClick={() => {
-                if (scrollContainerRef.current) {
-                  const width = scrollContainerRef.current.clientWidth;
-                  scrollContainerRef.current.scrollLeft = (currentPage - 1) * width;
-                }
-              }}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600"
-              aria-label="이전 페이지"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-          )}
-          
-          {/* 페이지 dots */}
-          <div className="flex gap-2">
-            {pages.map((_, i) => (
-              <div 
-                key={i}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  i === currentPage ? 'bg-gray-800 scale-125' : 'bg-gray-300'
-                }`}
-              />
-            ))}
-            {/* Reply 페이지 dot (답장 입력중이거나 이미 답장한 경우) */}
-            {onReply && (showReplyInput || hasReplied) && (
-              <div 
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  currentPage === pages.length ? 'bg-gray-800 scale-125' : 'bg-gray-300'
-                }`}
-              />
             )}
           </div>
-          
-          {/* 다음 버튼 */}
-          {currentPage < (onReply && (showReplyInput || hasReplied) ? pages.length : pages.length - 1) && (
-            <button
-              onClick={() => {
-                if (scrollContainerRef.current) {
-                  const width = scrollContainerRef.current.clientWidth;
-                  scrollContainerRef.current.scrollLeft = (currentPage + 1) * width;
-                }
-              }}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600"
-              aria-label="다음 페이지"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          )}
+        )}
+
+        {/* 하단 저장 버튼 */}
+        <div className="p-4 border-t border-dashed border-gray-300 bg-white">
+          <button
+            onClick={() => handleDownload(false)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors font-serif"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            편지 저장하기
+          </button>
         </div>
       </div>
 
-      {/* --- [숨겨진 요소] 캡처용 엽서 템플릿 --- */}
-      {/* 화면에는 안 보이지만(absolute -z-50) html2canvas가 이걸 찍습니다 */}
+      {/* --- [숨겨진 요소] 캡처용 원본 편지 템플릿 --- */}
       <div className="absolute top-0 left-0 -z-50 opacity-0 pointer-events-none">
         <div 
-          ref={printRef}
+          ref={printLetterRef}
           className="w-[800px] min-h-[600px] bg-[#FDFBF7] p-16 flex flex-col relative"
-          style={{ fontFamily: 'serif' }} // 폰트는 원하는대로 변경 가능
+          style={{ fontFamily: 'serif' }}
         >
-          {/* 장식용 테두리 */}
           <div className="absolute inset-4 border-2 border-gray-800 opacity-10 pointer-events-none" />
           
-          {/* 엽서 헤더 */}
           <div className="flex justify-between items-end mb-12 border-b border-gray-200 pb-6">
-            <h1 className="text-4xl font-bold text-gray-900 tracking-tighter">
-              HELLO 2026
-            </h1>
+            <h1 className="text-4xl font-bold text-gray-900 tracking-tighter">HELLO 2026</h1>
             <div className="text-right">
               <p className="text-sm text-gray-500 uppercase tracking-widest">Time Capsule Message</p>
               <p className="text-xs text-gray-400 mt-1">{new Date().toLocaleDateString()}</p>
             </div>
           </div>
 
-          {/* 엽서 내용 (전체 내용 한 번에 표시) */}
           <div className="flex-1">
-            {/* To 표시 */}
             {toName && (
               <div className="mb-8 pb-4 border-b border-gray-300">
                 <p className="text-base text-gray-600">To. {toName}</p>
               </div>
             )}
             
-            <p className="whitespace-pre-wrap text-xl leading-relaxed text-gray-800">
-              {message}
-            </p>
+            <p className="whitespace-pre-wrap text-xl leading-relaxed text-gray-800">{message}</p>
           </div>
 
-          {/* 엽서 푸터 - From만 표시 */}
           <div className="mt-16 flex justify-end">
             <div className="text-right">
               <p className="text-sm font-bold text-gray-600">From. {fromName || 'Past Me'}</p>
@@ -413,6 +275,40 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
         </div>
       </div>
 
+      {/* --- [숨겨진 요소] 캡처용 답장 템플릿 --- */}
+      <div className="absolute top-0 left-0 -z-50 opacity-0 pointer-events-none">
+        <div 
+          ref={printReplyRef}
+          className="w-[800px] min-h-[600px] bg-[#FDFBF7] p-16 flex flex-col relative"
+          style={{ fontFamily: 'serif' }}
+        >
+          <div className="absolute inset-4 border-2 border-gray-800 opacity-10 pointer-events-none" />
+          
+          <div className="flex justify-between items-end mb-12 border-b border-gray-200 pb-6">
+            <h1 className="text-4xl font-bold text-gray-900 tracking-tighter">HELLO 2026</h1>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 uppercase tracking-widest">Reply Message</p>
+              <p className="text-xs text-gray-400 mt-1">{new Date().toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            {fromName && (
+              <div className="mb-8 pb-4 border-b border-gray-300">
+                <p className="text-base text-gray-600">To. {fromName}</p>
+              </div>
+            )}
+            
+            <p className="whitespace-pre-wrap text-xl leading-relaxed text-gray-800">{replyText || reply}</p>
+          </div>
+
+          <div className="mt-16 flex justify-end">
+            <div className="text-right">
+              <p className="text-sm font-bold text-gray-600">From. {toName || 'You'}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
