@@ -456,6 +456,8 @@ export default function App() {
           reply={foundMessage.reply || ''}
           fromName={foundMessage.from_name || foundMessage.from}
           toName={foundMessage.receiver_name || foundMessage.to}
+          createdAt={foundMessage.created_at}
+          updatedAt={foundMessage.updated_at}
           onReply={async (txt) => { 
             try {
               const res = await fetch('/api/reply', {

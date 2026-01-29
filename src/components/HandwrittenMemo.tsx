@@ -10,6 +10,8 @@ interface HandwrittenMemoProps {
   reply?: string;
   fromName?: string;
   toName?: string;
+  createdAt?: string; // 편지 작성 날짜
+  updatedAt?: string; // 답장 날짜
 }
 
 const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({ 
@@ -20,7 +22,9 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
   hasReplied = false,
   reply = '',
   fromName = '',
-  toName = ''
+  toName = '',
+  createdAt = '',
+  updatedAt = ''
 }) => {
   const [replyText, setReplyText] = useState(reply);
   const [showReplyPage, setShowReplyPage] = useState(false);
@@ -75,7 +79,7 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
         <div className="relative w-full max-w-md bg-white rounded-sm shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
           
           {/* 상단 헤더 */}
-          <div className="flex justify-between items-center p-3 border-b border-dashed border-gray-300 bg-white">
+          <div className="flex justify-end items-center p-3 border-b border-dashed border-gray-300 bg-white">
             <button 
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
@@ -85,28 +89,6 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            
-            <div className="text-xs font-mono text-gray-600 tracking-wider uppercase">
-              Message Receipt
-            </div>
-
-            <div className="w-8" />
-          </div>
-
-          {/* 영수증 정보 */}
-          <div className="px-6 py-3 border-b border-dashed border-gray-300 bg-gray-50 font-mono text-xs">
-            <div className="flex justify-between mb-1">
-              <span className="text-gray-500">DATE:</span>
-              <span className="text-gray-700">{new Date().toLocaleDateString('ko-KR')}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">FROM:</span>
-              <span className="text-gray-700">{fromName || 'Unknown'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">TO:</span>
-              <span className="text-gray-700">{toName || 'Unknown'}</span>
-            </div>
           </div>
 
           {/* 편지 내용 영역 (스크롤) */}
@@ -124,6 +106,9 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
               </p>
               
               <div className="pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-400 font-serif text-right mb-1">
+                  {createdAt ? new Date(createdAt).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR')}
+                </p>
                 <p className="text-sm text-gray-600 font-serif text-right">From. {fromName}</p>
               </div>
             </div>
@@ -209,10 +194,6 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          
-          <div className="text-xs font-mono text-gray-600 tracking-wider uppercase">
-            Reply Message
-          </div>
 
           <button 
             onClick={onClose}
@@ -223,22 +204,6 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        </div>
-
-        {/* 영수증 정보 */}
-        <div className="px-6 py-3 border-b border-dashed border-gray-300 bg-gray-50 font-mono text-xs">
-          <div className="flex justify-between mb-1">
-            <span className="text-gray-500">DATE:</span>
-            <span className="text-gray-700">{new Date().toLocaleDateString('ko-KR')}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">REPLY TO:</span>
-            <span className="text-gray-700">{fromName || 'Unknown'}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">FROM:</span>
-            <span className="text-gray-700">{toName || 'Unknown'}</span>
-          </div>
         </div>
 
         {/* 답장 내용 영역 (스크롤) */}
@@ -265,6 +230,9 @@ const HandwrittenMemo: React.FC<HandwrittenMemoProps> = ({
             )}
             
             <div className="pt-3 border-t border-gray-200">
+              <p className="text-xs text-gray-400 font-serif text-right mb-1">
+                {updatedAt ? new Date(updatedAt).toLocaleDateString('ko-KR') : new Date().toLocaleDateString('ko-KR')}
+              </p>
               <p className="text-sm text-gray-600 font-serif text-right">From. {toName}</p>
             </div>
           </div>
